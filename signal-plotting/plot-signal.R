@@ -1,6 +1,8 @@
-data <- read.delim("./signals/t_1397260381.data.csv",
+data <- read.delim("./stephen/wh_1397932403.data.csv",
                    header = FALSE, sep = ",", quote = "",
                    dec = ".", fill = TRUE, comment.char = "")
 
-plot(data[,1], data[,2], xlab="time(ms)",
-     ylab="g-force", main="", type="l")
+plot(data[,1], data[,2], xlab="time (us)",
+     ylab="g-force", main="", type="l",  ylim=c(-1,.75),
+     xlim=c(1e6, 3e6)
+     )
