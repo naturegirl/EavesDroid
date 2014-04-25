@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Scanner;
 import java.util.StringTokenizer;
 
@@ -71,6 +72,36 @@ public class FeatureExtractor {
         pw.close();
         ob.close();
         return signals;
+    }
+    
+    /**
+     * Computes the minimum GForce recorded by the accelerometer for the
+     * given key presses readings. 
+     * @param signals
+     * @return minimum g-force recorded
+     */
+    private double feature_min(ArrayList<Signal> signals) {
+        double minGForce = Double.MAX_VALUE;
+        for (Iterator<Signal> iter = signals.iterator(); iter.hasNext();) {
+            Signal signal = iter.next();
+            minGForce = Math.min(signal.getGForce(), minGForce);
+        }
+        return minGForce;
+    }
+
+    /**
+     * Computes the maximum GForce recorded by the accelerometer for the
+     * given key presses readings. 
+     * @param signals
+     * @return maximum g-force recorded
+     */
+    private double feature_max(ArrayList<Signal> signals) {
+        double minGForce = Double.MIN_VALUE;
+        for (Iterator<Signal> iter = signals.iterator(); iter.hasNext();) {
+            Signal signal = iter.next();
+            minGForce = Math.max(signal.getGForce(), minGForce);
+        }
+        return minGForce;
     }
 
     private double feature_mean(ArrayList<Signal> signals){
