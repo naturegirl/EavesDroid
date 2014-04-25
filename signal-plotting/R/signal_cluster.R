@@ -11,7 +11,7 @@ row <- nrow(signals)
 
 #print(signals)
 
-result<-Mclust(signals[,1:5], G=3)
+result<-Mclust(signals[,1:5], G=2)
 print(summary(result))
 print(result)
 plot(result, what="classification")
