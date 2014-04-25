@@ -73,4 +73,42 @@ public class FeatureExtractor {
         return signals;
     }
 
+    private double feature_mean(ArrayList<Signal> signals){
+      double sum = 0;
+      int size = signals.size();
+      
+      for(int i = 0; i < size; i++){
+        sum = sum + (signals.get(i)).getGforce();
+      }
+
+      double mean = sum/size;
+      return mean;
+    }
+
+    private double feature_variance(ArrayList<Signal> signals){
+      double mean = feature_mean(signals);
+      double sum = 0;
+      int size = signals.size();
+
+      for(int i = 0; i<size; i++){
+        sum = sum + Math.pow(((signals.get(i)).getGforce() - mean), 2);
+      }
+      
+      double variance = sum/size;
+      return variance;
+    }
+    
+    private double feature_mean(ArrayList<Signal> signals){
+      double sum = 0;
+      int size = signals.size();
+      
+      for(int i = 0; i<size; i++){
+        sum = sum + Math.pow((signals.get(i)).getGforce(), 2);
+      } 
+      
+      double square_mean = sum/size;
+      double sqrt = Math.sqrt(square_mean);
+      return sqrt;
+    }
+
 }
