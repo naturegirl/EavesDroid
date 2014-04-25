@@ -18,32 +18,57 @@ public class FeatureExtractor {
     
     public static final double G = 9.81;
     public static final BigInteger FACTOR = new BigInteger("1000");
+    private static ArrayList<Features> featuresList;
 
     public static void main(String[] args) throws IOException {
-        if (args.length != 2) {
+        if (args.length != 1) {
             System.out.println("Usage: java FeatureExtractor " +
-                    "<directory to traverse> <int-label>");
+                    "<directory to traverse>");
             System.out.println("Example: java FeatureExtractor " +
-                    "~/signal-plotting/data/c 3");
+                    "~/signal-plotting/data/c");
             System.exit(0);
         }
         String path = "./" + args[0];
-        File f = new File(path);
-        File[] files = f.listFiles();
+        File directory = new File(path);
+
         FeatureExtractor ob = new FeatureExtractor();
-        ArrayList<Features> featuresList = new ArrayList<Features>();
-        String featuresFile = "./" + args[0] + ".data.csv";
-        int label = Integer.parseInt(args[1]);
-        
-        for (File file : files) {
+        featuresList = new ArrayList<Features>();
+        ob.readKeyPresses(directory);
+
+        String featuresFile = directory.getAbsolutePath() + ".data.csv";
+        ob.writeToFile(featuresList, featuresFile);
+    }
+    
+    /**
+     * Recursively traverse the directory of key presses to extract the
+     * features for the letters' signals and label them correctly
+     * 
+     * @param directory
+     * @throws FileNotFoundException
+     */
+    private void readKeyPresses(File directory)
+            throws FileNotFoundException {
+        File[] files = directory.listFiles();
+        int label = this.getLabel(directory.getName());
+
+        for (File file: files) {
             if (file.getAbsolutePath().endsWith(".csv")) {
-                ArrayList<Signal> signals = ob.processCSV(file);
-                Features features = ob.getFeatures(signals);
+                ArrayList<Signal> signals = this.processCSV(file);
+                Features features = this.getFeatures(signals);
                 features.setLabel(label);
                 featuresList.add(features);
+            } else if (file.isDirectory()) {
+                this.readKeyPresses(file);
             }
         }
-        ob.writeToFile(featuresList, featuresFile);
+    }
+    
+    private int getLabel(String dirName) {
+        if (dirName.length() != 1) {
+            return -1;
+        }
+        char letter = dirName.toLowerCase().charAt(0);
+        return (letter - 'a' + 1);
     }
 
     /**
