@@ -4,6 +4,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.StringTokenizer;
 
@@ -11,7 +12,7 @@ import java.util.StringTokenizer;
  * @author aks0
  *
  */
-public class GForceComputation {
+public class FeatureExtractor {
     
     public static final double G = 9.81;
     public static final BigInteger FACTOR = new BigInteger("1000");
@@ -25,29 +26,33 @@ public class GForceComputation {
         String path = "./" + args[0];
         File f = new File(path);
         File[] files = f.listFiles();
-        GForceComputation ob = new GForceComputation();
+        FeatureExtractor ob = new FeatureExtractor();
         for (File file : files) {
             if (file.getAbsolutePath().endsWith(".csv")) {
                 String datafile = file.getName().replaceFirst("[.][^.]+$", "");
                 datafile = path + "/" + datafile + ".data.csv";
-                ob.processCSV(file, datafile);
+                ArrayList<Signal> signals = ob.processCSV(file, datafile);
             }
         }
     }
 
     /**
-     * Reads the csv file and outputs the time vs. gforce computation for
+     * Reads the csv file and outputs the Signal computation for
      * each row of data
      * 
      * @param file csv file to read the data from 
      * @param datafile name of the output .data.csv file
      * @throws IOException
+     * @return ArrayList of Signals from the file
      */
-    private void processCSV(File file, String datafile) throws IOException {
+    private ArrayList<Signal> processCSV(File file,
+            String datafile) throws IOException {
         Scanner ob = new Scanner(file);
         PrintWriter pw = new PrintWriter(
                 new BufferedWriter(new FileWriter(datafile)));
         BigInteger start_time = null;
+        ArrayList<Signal> signals = new ArrayList<Signal>();
+        
         while(ob.hasNextLine()) {
             StringTokenizer data = new StringTokenizer(ob.nextLine(), ",");
             BigInteger time = new BigInteger(data.nextToken());
@@ -61,11 +66,11 @@ public class GForceComputation {
             double x = Double.parseDouble(data.nextToken());
             double y = Double.parseDouble(data.nextToken());
             double z = Double.parseDouble(data.nextToken());
-            double gforce = Math.sqrt(x*x + y*y + z*z) - G;
-            pw.println(time + ", " + gforce);
+            signals.add(new Signal(time, x, y, z));
         }
         pw.close();
         ob.close();
+        return signals;
     }
 
 }
