@@ -64,6 +64,9 @@ public class FeatureExtractor {
         Features features = new Features();
         features.setMin(this.feature_min(signals));
         features.setMax(this.feature_max(signals));
+        features.setMean(this.feature_mean(signals));
+        features.setVariance(this.feature_variance(signals));
+        features.setRms(this.feature_rms(signals));
         return features;
     }
 
