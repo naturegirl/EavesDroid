@@ -23,6 +23,8 @@ public class FeatureExtractor {
         if (args.length != 2) {
             System.out.println("Usage: java FeatureExtractor " +
                     "<directory to traverse> <int-label>");
+            System.out.println("Example: java FeatureExtractor " +
+                    "~/signal-plotting/data/c 3");
             System.exit(0);
         }
         String path = "./" + args[0];
