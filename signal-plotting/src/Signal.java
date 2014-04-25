@@ -3,7 +3,6 @@ import java.math.BigInteger;
 
 public class Signal {
     public static final double G = 9.81;
-    public static final BigInteger FACTOR = new BigInteger("1000");
 
     private BigInteger timestamp;
     private double x;
