@@ -12,3 +12,6 @@
 
 # Java
 *.class
+
+# Eclipse Files
+.*
