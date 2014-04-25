@@ -1,6 +1,5 @@
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -29,45 +28,13 @@ public class FeatureExtractor {
         File f = new File(path);
         File[] files = f.listFiles();
         FeatureExtractor ob = new FeatureExtractor();
-        ArrayList<Features> featuresList = new ArrayList<Features>();
-        String featuresFile = "./" + args[0] + ".data.csv";
-
         for (File file : files) {
             if (file.getAbsolutePath().endsWith(".csv")) {
-                ArrayList<Signal> signals = ob.processCSV(file);
-                Features features = ob.getFeatures(signals);
-                featuresList.add(features);
+                String datafile = file.getName().replaceFirst("[.][^.]+$", "");
+                datafile = path + "/" + datafile + ".data.csv";
+                ArrayList<Signal> signals = ob.processCSV(file, datafile);
             }
         }
-        ob.writeToFile(featuresList, featuresFile);
-    }
-
-    /**
-     * Write the features for a letter to a features list file at the
-     * same level as the directory.
-     * @param featuresList
-     * @param datafile
-     * @throws IOException
-     */
-    private void writeToFile(ArrayList<Features> featuresList,
-            String datafile) throws IOException {
-        
-        PrintWriter pw = new PrintWriter(
-                new BufferedWriter(new FileWriter(datafile)));
-        for(Iterator<Features> iter = featuresList.iterator(); iter.hasNext();){
-            pw.println(iter.next().toString());
-        }
-        pw.close();
-    }
-
-    private Features getFeatures(ArrayList<Signal> signals) {
-        Features features = new Features();
-        features.setMin(this.feature_min(signals));
-        features.setMax(this.feature_max(signals));
-        features.setMean(this.feature_mean(signals));
-        features.setVariance(this.feature_variance(signals));
-        features.setRms(this.feature_rms(signals));
-        return features;
     }
 
     /**
@@ -78,11 +45,12 @@ public class FeatureExtractor {
      * @param datafile name of the output .data.csv file
      * @throws IOException
      * @return ArrayList of Signals from the file
-     * @throws FileNotFoundException 
      */
-    private ArrayList<Signal> processCSV(File file)
-            throws FileNotFoundException {
+    private ArrayList<Signal> processCSV(File file,
+            String datafile) throws IOException {
         Scanner ob = new Scanner(file);
+        PrintWriter pw = new PrintWriter(
+                new BufferedWriter(new FileWriter(datafile)));
         BigInteger start_time = null;
         ArrayList<Signal> signals = new ArrayList<Signal>();
         
@@ -101,6 +69,7 @@ public class FeatureExtractor {
             double z = Double.parseDouble(data.nextToken());
             signals.add(new Signal(time, x, y, z));
         }
+        pw.close();
         ob.close();
         return signals;
     }
