@@ -70,6 +70,7 @@ public class FeatureExtractor {
         features.setMean(this.feature_mean(signals));
         features.setVariance(this.feature_variance(signals));
         features.setRms(this.feature_rms(signals));
+        features.setKurtosis(this.feature_kurtosis(signals));
         return features;
     }
 
@@ -175,5 +176,32 @@ public class FeatureExtractor {
       double sqrt = Math.sqrt(square_mean);
       return sqrt;
     }
+
+    /**
+     * Kurtosis is a measure of whether the data are peaked or flat relative
+     * to a normal distribution. That is, data sets with high kurtosis tend to
+     * have a distinct peak near the mean, decline rather rapidly, and have
+     * heavy tails. Data sets with low kurtosis tend to have a flat top near
+     * the mean rather than a sharp peak. A uniform distribution would be the
+     * extreme case.
+     * 
+     * src: http://itl.nist.gov/div898/handbook/eda/section3/eda35b.htm
+     * @param signals
+     * @return
+     */
+    private double feature_kurtosis(ArrayList<Signal> signals){
+        double mean = feature_mean(signals);
+        double variance = feature_variance(signals);
+        
+        double quad_sum = 0;
+        for (Iterator<Signal> iter = signals.iterator(); iter.hasNext();) {
+            quad_sum = quad_sum + Math.pow(iter.next().getGForce() - mean, 4);
+        }
+        
+        double kurtosis = quad_sum
+                          / (signals.size() - 1)
+                          / (variance * variance);
+        return kurtosis;
+      }
 
 }
