@@ -5,6 +5,7 @@ public class Features {
     private double mean;
     private double variance;
     private double rms;
+    private double skewness;
     private double kurtosis;
     private int label;
 
@@ -51,6 +52,7 @@ public class Features {
     @Override
     public String toString() {
         return  this.mean + "," +
+                this.skewness + "," +
                 this.kurtosis + "," +
                 this.variance + "," +
                 this.min + "," +
@@ -60,11 +62,19 @@ public class Features {
     }
     
     public static String getFeaturesName() {
-        return "mean, kurtosis, variance, min, max, rms, label";
+        return "mean, skewness, kurtosis, variance, min, max, rms, label";
     }
 
     public void setLabel(int label) {
         this.label = label;
+    }
+
+    public double getSkewness() {
+        return skewness;
+    }
+
+    public void setSkewness(double skewness) {
+        this.skewness = skewness;
     }
 
     public double getKurtosis() {

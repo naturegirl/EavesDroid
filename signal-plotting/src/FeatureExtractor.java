@@ -70,6 +70,7 @@ public class FeatureExtractor {
         features.setMean(this.feature_mean(signals));
         features.setVariance(this.feature_variance(signals));
         features.setRms(this.feature_rms(signals));
+        features.setSkewness(this.feature_skewness(signals));
         features.setKurtosis(this.feature_kurtosis(signals));
         return features;
     }
@@ -176,6 +177,28 @@ public class FeatureExtractor {
       double sqrt = Math.sqrt(square_mean);
       return sqrt;
     }
+
+    /**
+     * Skewness is a measure of the asymmetry of our signal.
+     * A positive skew means that the right tail is longer
+     * and a negative skew means that the left tail is longer.
+     *
+     * @param signals
+     * @return
+     */
+    private double feature_skewness(ArrayList<Signal> signals) {
+        double mean = feature_mean(signals);
+        double variance = feature_variance(signals);
+        double sum = 0;
+        for (Signal s : signals) {
+            sum += Math.pow(s.getGForce() - mean, 3); 
+        }
+        double skewness = sum 
+                / (signals.size() - 1)
+                / Math.pow(variance, 1.5);
+        return skewness;
+    }
+
 
     /**
      * Kurtosis is a measure of whether the data are peaked or flat relative
