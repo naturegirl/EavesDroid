@@ -1,0 +1,14 @@
+# OS X
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Emacs
+
+*~
+[#]*[#]
+.\#*
+
+
+# Java
+*.class

@@ -1,7 +1,8 @@
 library(mclust)
 library(scatterplot3d)
 
-path <- "~/Documents/School/Interacting_With_Data/cos424project/signal-plotting/data/nm.features.csv"
+#path <- "~/Documents/School/Interacting_With_Data/cos424project/signal-plotting/data/nm.features.csv"
+path <- "~/Documents/Princeton/cos424/finalproject/code/cos424project/signal-plotting/data/abc.features.csv"
 
 signals <- read.csv(path, header=TRUE, sep=",")
 
@@ -10,7 +11,7 @@ row <- nrow(signals)
 
 #print(signals)
 
-result<-Mclust(signals[,1:5], G=3)
+result<-Mclust(signals[,1:5], G=2)
 print(summary(result))
 print(result)
 plot(result, what="classification")

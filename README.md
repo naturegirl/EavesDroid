@@ -11,3 +11,20 @@ acceleration relative to the gravity, one needs to compute the following
 **g-force** = ![equation](http://bit.ly/1nySUx2)
 
 Here *g* = 9.81 m/s<sup>2</sup> is the acceleration due to gravity.
+
+## Steps
+
+1. Clean signal files, removing head and tail. 
+
+2. Collect remaining features: ffts, mfccs
+
+3. Breaking down of a recorded word signal into characters
+
+4. L/R predictor (i.e. neural network)
+
+5. Clustering on training set (distance, normalization?)
+
+6. Clustering on test set
+
+7. Dictionary, most likely word (Clustering returns top 5 characters)
+
