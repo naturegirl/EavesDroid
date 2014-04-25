@@ -21,7 +21,7 @@ public class FeatureExtractor {
 
     public static void main(String[] args) throws IOException {
         if (args.length != 2) {
-            System.out.println("Usage: java GForceComputation " +
+            System.out.println("Usage: java FeatureExtractor " +
                     "<directory to traverse> <int-label>");
             System.exit(0);
         }
