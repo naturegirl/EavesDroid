@@ -56,6 +56,7 @@ public class FeatureExtractor {
         
         PrintWriter pw = new PrintWriter(
                 new BufferedWriter(new FileWriter(datafile)));
+        pw.println(Features.getFeaturesName());
         for(Iterator<Features> iter = featuresList.iterator(); iter.hasNext();){
             pw.println(iter.next().toString());
         }

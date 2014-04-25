@@ -52,6 +52,10 @@ public class Features {
         return this.mean + "," + this.variance + "," + this.min + "," +
                 this.max + "," + this.rms + "," + label;
     }
+    
+    public static String getFeaturesName() {
+        return "mean, variance, min, max, rms, label";
+    }
 
     public void setLabel(int label) {
         this.label = label;
