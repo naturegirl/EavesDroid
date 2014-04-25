@@ -5,6 +5,7 @@ public class Features {
     private double mean;
     private double variance;
     private double rms;
+    private int label;
 
     public double getMin() {
         return min;
@@ -49,6 +50,10 @@ public class Features {
     @Override
     public String toString() {
         return this.mean + "," + this.variance + "," + this.min + "," +
-                this.max + "," + this.rms;
+                this.max + "," + this.rms + "," + label;
+    }
+
+    public void setLabel(int label) {
+        this.label = label;
     }
 }

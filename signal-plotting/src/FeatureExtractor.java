@@ -20,9 +20,9 @@ public class FeatureExtractor {
     public static final BigInteger FACTOR = new BigInteger("1000");
 
     public static void main(String[] args) throws IOException {
-        if (args.length == 0) {
+        if (args.length != 2) {
             System.out.println("Usage: java GForceComputation " +
-                    "<directory to traverse>");
+                    "<directory to traverse> <int-label>");
             System.exit(0);
         }
         String path = "./" + args[0];
@@ -31,11 +31,13 @@ public class FeatureExtractor {
         FeatureExtractor ob = new FeatureExtractor();
         ArrayList<Features> featuresList = new ArrayList<Features>();
         String featuresFile = "./" + args[0] + ".data.csv";
-
+        int label = Integer.parseInt(args[1]);
+        
         for (File file : files) {
             if (file.getAbsolutePath().endsWith(".csv")) {
                 ArrayList<Signal> signals = ob.processCSV(file);
                 Features features = ob.getFeatures(signals);
+                features.setLabel(label);
                 featuresList.add(features);
             }
         }
