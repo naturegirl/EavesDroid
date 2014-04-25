@@ -89,4 +89,19 @@ public class FeatureExtractor {
         return minGForce;
     }
 
+    /**
+     * Computes the maximum GForce recorded by the accelerometer for the
+     * given key presses readings. 
+     * @param signals
+     * @return maximum g-force recorded
+     */
+    private double feature_max(ArrayList<Signal> signals) {
+        double minGForce = Double.MIN_VALUE;
+        for (Iterator<Signal> iter = signals.iterator(); iter.hasNext();) {
+            Signal signal = iter.next();
+            minGForce = Math.max(signal.getGForce(), minGForce);
+        }
+        return minGForce;
+    }
+
 }
