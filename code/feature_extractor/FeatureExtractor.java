@@ -19,6 +19,8 @@ public class FeatureExtractor {
     public static final double G = 9.81;
     public static final BigInteger FACTOR = new BigInteger("1000");
     public static final boolean WANT_GFORCE_DATA = false;
+    public static final boolean WANT_LR_LABEL = false;
+
     private static ArrayList<Features> featuresList;
 
     public static void main(String[] args) throws IOException {
@@ -73,6 +75,12 @@ public class FeatureExtractor {
     }
     
     private int getLabel(String dirName) {
+        if (WANT_LR_LABEL) {
+            if (dirName.equals("enter") || dirName.equals("space")) {
+                return 0;
+            }
+            return this.getLRLabel(dirName.charAt(0));
+        }
         if (dirName.equals("enter")) {
             return 27;
         } else if (dirName.equals("space")) {
@@ -80,6 +88,23 @@ public class FeatureExtractor {
         }
         char letter = dirName.toLowerCase().charAt(0);
         return (letter - 'a' + 1);
+    }
+    
+    private int getLRLabel(char ch) {
+        char[] left = {'a','b','c','d','e','f','g','q',
+                        'r','s','t','v','w','x','z'};
+        char[] right = {'h','i','j','k','l','m','n','o','p','u','y'};
+        for (int i = 0; i < left.length; i++) {
+            if (left[i] == ch) {
+                return 1;   // L
+            }
+        }
+        for (int i = 0; i < right.length; i++) {
+            if (right[i] == ch) {
+                return 2;   // R
+            }
+        }
+        return 0;
     }
 
     /**
