@@ -1,0 +1,1 @@
+data related to separating a recorded word into characters
