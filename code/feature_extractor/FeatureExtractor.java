@@ -44,16 +44,22 @@ public class FeatureExtractor {
      * features for the letters' signals and label them correctly
      * 
      * @param directory
-     * @throws FileNotFoundException
+     * @throws IOException 
      */
-    private void readKeyPresses(File directory)
-            throws FileNotFoundException {
+    private void readKeyPresses(File directory) throws IOException {
         File[] files = directory.listFiles();
         int label = this.getLabel(directory.getName());
 
         for (File file: files) {
             if (file.getAbsolutePath().endsWith(".csv")) {
                 ArrayList<Signal> signals = this.processCSV(file);
+                // write g-force's to file
+                String filepath = file.getAbsolutePath();
+                this.writeGForceToFile(
+                        signals,
+                        filepath.substring(0, filepath.length()-4) +
+                        ".gforce.csv"
+                );
                 Features features = this.getFeatures(signals);
                 features.setLabel(label);
                 featuresList.add(features);
@@ -69,6 +75,25 @@ public class FeatureExtractor {
         }
         char letter = dirName.toLowerCase().charAt(0);
         return (letter - 'a' + 1);
+    }
+
+    /**
+     * Writes the time vs g-force values for a key press
+     * @param rows of signal for a keypress
+     * @param filename
+     * @throws IOException
+     */
+    private void writeGForceToFile(ArrayList<Signal> signals,
+            String filename) throws IOException {
+        
+        PrintWriter pw = new PrintWriter(
+                new BufferedWriter(new FileWriter(filename)));
+        pw.println("timestamp, gforce");
+        for(Iterator<Signal> iter = signals.iterator(); iter.hasNext();){
+            Signal row = iter.next();
+            pw.println(row.getTimeStamp().toString() + "," + row.getGForce());
+        }
+        pw.close();
     }
 
     /**
