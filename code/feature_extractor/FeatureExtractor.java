@@ -18,6 +18,7 @@ public class FeatureExtractor {
     
     public static final double G = 9.81;
     public static final BigInteger FACTOR = new BigInteger("1000");
+    public static final boolean WANT_GFORCE_DATA = false;
     private static ArrayList<Features> featuresList;
 
     public static void main(String[] args) throws IOException {
@@ -54,12 +55,14 @@ public class FeatureExtractor {
             if (file.getAbsolutePath().endsWith(".csv")) {
                 ArrayList<Signal> signals = this.processCSV(file);
                 // write g-force's to file
-                String filepath = file.getAbsolutePath();
-                this.writeGForceToFile(
-                        signals,
-                        filepath.substring(0, filepath.length()-4) +
-                        ".gforce.csv"
-                );
+                if (WANT_GFORCE_DATA) {
+                    String filepath = file.getAbsolutePath();
+                    this.writeGForceToFile(
+                            signals,
+                            filepath.substring(0, filepath.length()-4) +
+                            ".gforce.csv"
+                            );
+                }
                 Features features = this.getFeatures(signals);
                 features.setLabel(label);
                 featuresList.add(features);
@@ -70,8 +73,10 @@ public class FeatureExtractor {
     }
     
     private int getLabel(String dirName) {
-        if (dirName.length() != 1) {
-            return -1;
+        if (dirName.equals("enter")) {
+            return 27;
+        } else if (dirName.equals("space")) {
+            return 28;
         }
         char letter = dirName.toLowerCase().charAt(0);
         return (letter - 'a' + 1);
