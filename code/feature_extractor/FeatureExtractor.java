@@ -18,6 +18,9 @@ public class FeatureExtractor {
     
     public static final double G = 9.81;
     public static final BigInteger FACTOR = new BigInteger("1000");
+    public static final boolean WANT_GFORCE_DATA = false;
+    public static final boolean WANT_LR_LABEL = false;
+
     private static ArrayList<Features> featuresList;
 
     public static void main(String[] args) throws IOException {
@@ -44,16 +47,24 @@ public class FeatureExtractor {
      * features for the letters' signals and label them correctly
      * 
      * @param directory
-     * @throws FileNotFoundException
+     * @throws IOException 
      */
-    private void readKeyPresses(File directory)
-            throws FileNotFoundException {
+    private void readKeyPresses(File directory) throws IOException {
         File[] files = directory.listFiles();
         int label = this.getLabel(directory.getName());
 
         for (File file: files) {
             if (file.getAbsolutePath().endsWith(".csv")) {
                 ArrayList<Signal> signals = this.processCSV(file);
+                // write g-force's to file
+                if (WANT_GFORCE_DATA) {
+                    String filepath = file.getAbsolutePath();
+                    this.writeGForceToFile(
+                            signals,
+                            filepath.substring(0, filepath.length()-4) +
+                            ".gforce.csv"
+                            );
+                }
                 Features features = this.getFeatures(signals);
                 features.setLabel(label);
                 featuresList.add(features);
@@ -64,11 +75,55 @@ public class FeatureExtractor {
     }
     
     private int getLabel(String dirName) {
-        if (dirName.length() != 1) {
-            return -1;
+        if (WANT_LR_LABEL) {
+            if (dirName.equals("enter") || dirName.equals("space")) {
+                return 0;
+            }
+            return this.getLRLabel(dirName.charAt(0));
+        }
+        if (dirName.equals("enter")) {
+            return 27;
+        } else if (dirName.equals("space")) {
+            return 28;
         }
         char letter = dirName.toLowerCase().charAt(0);
         return (letter - 'a' + 1);
+    }
+    
+    private int getLRLabel(char ch) {
+        char[] left = {'a','b','c','d','e','f','g','q',
+                        'r','s','t','v','w','x','z'};
+        char[] right = {'h','i','j','k','l','m','n','o','p','u','y'};
+        for (int i = 0; i < left.length; i++) {
+            if (left[i] == ch) {
+                return 1;   // L
+            }
+        }
+        for (int i = 0; i < right.length; i++) {
+            if (right[i] == ch) {
+                return 2;   // R
+            }
+        }
+        return 0;
+    }
+
+    /**
+     * Writes the time vs g-force values for a key press
+     * @param rows of signal for a keypress
+     * @param filename
+     * @throws IOException
+     */
+    private void writeGForceToFile(ArrayList<Signal> signals,
+            String filename) throws IOException {
+        
+        PrintWriter pw = new PrintWriter(
+                new BufferedWriter(new FileWriter(filename)));
+        pw.println("timestamp, gforce");
+        for(Iterator<Signal> iter = signals.iterator(); iter.hasNext();){
+            Signal row = iter.next();
+            pw.println(row.getTimeStamp().toString() + "," + row.getGForce());
+        }
+        pw.close();
     }
 
     /**
