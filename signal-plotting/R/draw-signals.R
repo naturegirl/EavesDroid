@@ -10,6 +10,9 @@ for (j in 1:num_dirs) {
   
   num_letter_files <- length(letter_files)
   for (k in 1:num_letter_files) {
+    if (regexpr(".csv", letter_files[k], fixed=T)[1] == -1) {
+      next
+    }
     data <- read.delim(letter_files[k],
                    header = FALSE, sep = ",", quote = "",
                    dec = ".", fill = TRUE, comment.char = "")
