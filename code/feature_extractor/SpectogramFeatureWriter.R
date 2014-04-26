@@ -7,7 +7,7 @@ files
 
 num_dirs <- length(files)
 
-for (j in 1:num_dirs) {
+for (j in 1:1) {
   letter_files <- list.files(files[j], full.names = TRUE)
   letter_files
   current_letter <- basename(files[j])
@@ -18,7 +18,7 @@ for (j in 1:num_dirs) {
   colnames(output) <- labels
   
   num_letter_files <- length(letter_files)
-  for (k in 1:num_letter_files) {
+  for (k in 1:1) {
     
     # read data
     data <- read.delim(letter_files[k], header = FALSE, sep = ",", quote = "",
