@@ -31,14 +31,14 @@ public class FeatureExtractor {
                     "~/signal-plotting/data/c");
             System.exit(0);
         }
-        String path = "./" + args[0];
+        String path = "../../data/original_recordings/" + args[0];
         File directory = new File(path);
 
         FeatureExtractor ob = new FeatureExtractor();
         featuresList = new ArrayList<Features>();
         ob.readKeyPresses(directory);
-
-        String featuresFile = directory.getAbsolutePath() + ".data.csv";
+        
+        String featuresFile = "../../data/features/" + args[0] + ".csv";
         ob.writeToFile(featuresList, featuresFile);
     }
     
