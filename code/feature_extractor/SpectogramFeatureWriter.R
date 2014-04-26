@@ -30,7 +30,7 @@ for (j in 1:num_dirs) {
     filename <- basename(filename)
     
     # uncomment if you want to write the spectogram
-    #write.spectogram(data, current_letter, filename);
+    write.spectogram(data, current_letter, filename);
     
     # compute and append feature
     y <- as.vector(data$V2);
@@ -43,12 +43,14 @@ for (j in 1:num_dirs) {
   
   csv_filename <- paste(feature_outputdir, 'fft_', current_letter, '.csv', sep="");
   write.csv(output, csv_filename, row.names=F)
+  print(paste('writing', csv_filename))
 }
 
 # @data: data read from csv file
 # current_letter: 'a', 'b', ...
 # filename: filename stripped of file extension, i.e. 'a_1397933294'
 write.spectogram <- function(data, current_letter, filename) {
+  dir.create(paste(diagram_outputdir, current_letter,sep=""), showWarnings = F)
   filename <- paste(diagram_outputdir, current_letter, '/',filename,".jpg", sep="")
   
   # data
