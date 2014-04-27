@@ -9,6 +9,10 @@
 [#]*[#]
 .\#*
 
+# R studio
+.Rhistory
+.Rapp.history
+
 
 # Java
 *.class
