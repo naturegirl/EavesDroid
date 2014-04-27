@@ -26,12 +26,13 @@ public class FeatureExtractor {
     public static void main(String[] args) throws IOException {
         if (args.length != 1) {
             System.out.println("Usage: java FeatureExtractor " +
-                    "<directory to traverse>");
-            System.out.println("Example: java FeatureExtractor " +
-                    "~/signal-plotting/data/c");
+                    "<letter or 'all'>");
+            System.out.println("Example: java FeatureExtractor a");
             System.exit(0);
         }
-        String path = "../../data/original_recordings" + args[0];
+        String path = "../../data/original_recordings/" + args[0];
+        if (args[0].equals("all"))
+            path = "../../data/original_recordings/";
         File directory = new File(path);
 
         FeatureExtractor ob = new FeatureExtractor();
@@ -143,6 +144,7 @@ public class FeatureExtractor {
             pw.println(iter.next().toString());
         }
         pw.close();
+        System.out.println("writing "+datafile);
     }
 
     private Features getFeatures(ArrayList<Signal> signals) {
