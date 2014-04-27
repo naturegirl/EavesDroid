@@ -78,8 +78,8 @@ def plot_show():
 	plt.show()
 
 if __name__ == "__main__":
-	key_array = []
 	for i in range(ord('a'), ord('z')+1):
-#print chr(i)
 		process_dir(os.path.join("../../data/timestamp-vs-gforce/",chr(i)))
 
+	process_dir(os.path.join("../../data/timestamp-vs-gforce/","space"))
+	process_dir(os.path.join("../../data/timestamp-vs-gforce/","enter"))
