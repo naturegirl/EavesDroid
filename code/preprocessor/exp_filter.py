@@ -1,3 +1,4 @@
+import os
 import matplotlib.pyplot as plt
 
 def load_csv(filename):
@@ -29,6 +30,37 @@ def snip_ends(ts, gf):
 			break;
 	ei = i
 	return ts[si:ei],gf[si:ei]
+
+def process_dir(path, smooth=True):
+	HEADER = "timestamp, gforce\n"
+	PCDIR = "processed"
+	proc_path = os.path.join(path, PCDIR)
+	if not os.path.exists(proc_path):
+		try:
+			os.mkdir(proc_path)
+		except OSError as error:
+			print error
+	for filename in os.listdir(path):
+		file_path = os.path.join(path, filename)
+		if os.path.isdir(file_path):
+			continue;
+		ts,gf = load_csv(file_path)
+		ts,gf = snip_ends(ts, gf)
+		if smooth:
+			gf = exp_smooth(gf, 0.09)
+			gf = exp_smooth(gf, 0.2)
+		of_path = os.path.join(proc_path, filename)
+		ofd = open(of_path, "wr+")
+		ofd.write(HEADER)
+			
+		'''plot_init()
+		plot_addfig(1)
+		insert_subplot(411)
+		plot_signal(ts, gf, "Smoothed Signal")
+		plot_show()'''
+		
+		for i in range(0, len(ts)):
+			ofd.write(str(ts[i])+","+str(gf[i])+"\n")
 	
 def plot_init():
 	plt.clf()
@@ -45,23 +77,9 @@ def plot_signal(ts, gf, label):
 def plot_show():
 	plt.show()
 
-if __name__ == "__main__":	
-	ts,gf = load_csv("../../data/"+
-			"timestamp-vs-gforce/a/a_1397933233.gforce.csv")
-	ts,gf = snip_ends(ts, gf)
-	gf2 = exp_smooth(gf, 0.09)
-	gf3 = exp_smooth(gf2, 0.2)
-#gf3 = exp_smooth(gf3, 0.1)
-	plot_init()
-	plot_addfig(1)
-	insert_subplot(411)
-	plot_signal(ts, gf, "Original Signal")
-	plot_signal(ts, gf2, "Smoothed Signal")
-	insert_subplot(412)
-	plot_signal(ts, gf, "Original Signal")
-	insert_subplot(413)
-	plot_signal(ts, gf2, "Smoothed Signal")
-	insert_subplot(414)
-	plot_signal(ts, gf3, "Smoothed Signal-2")
-	plot_show()
+if __name__ == "__main__":
+	key_array = []
+	for i in range(ord('a'), ord('z')+1):
+#print chr(i)
+		process_dir(os.path.join("../../data/timestamp-vs-gforce/",chr(i)))
 
