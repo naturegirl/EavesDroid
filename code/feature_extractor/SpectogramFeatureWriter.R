@@ -7,7 +7,7 @@ files
 
 num_dirs <- length(files)
 
-for (j in 1:1) {
+for (j in 1:num_dirs) {
   letter_files <- list.files(files[j], full.names = TRUE)
   letter_files
   current_letter <- basename(files[j])
@@ -18,7 +18,7 @@ for (j in 1:1) {
   colnames(output) <- labels
   
   num_letter_files <- length(letter_files)
-  for (k in 1:1) {
+  for (k in 1:num_letter_files) {
     
     # read data
     data <- read.delim(letter_files[k], header = FALSE, sep = ",", quote = "",
@@ -30,7 +30,7 @@ for (j in 1:1) {
     filename <- basename(filename)
     
     # uncomment if you want to write the spectogram
-    write.spectogram(data, current_letter, filename);
+    #write.spectogram(data, current_letter, filename);
     
     # compute and append feature
     y <- as.vector(data$V2);
