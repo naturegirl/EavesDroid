@@ -31,7 +31,7 @@ public class FeatureExtractor {
                     "~/signal-plotting/data/c");
             System.exit(0);
         }
-        String path = "../../data/original_recordings/" + args[0];
+        String path = "../../data/original_recordings" + args[0];
         File directory = new File(path);
 
         FeatureExtractor ob = new FeatureExtractor();
