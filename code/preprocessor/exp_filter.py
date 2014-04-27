@@ -46,7 +46,7 @@ def plot_show():
 	plt.show()
 
 if __name__ == "__main__":	
-	ts,gf = load_csv("/home/wathsala/cos424/cos424project/data/"+
+	ts,gf = load_csv("../../data/"+
 			"timestamp-vs-gforce/a/a_1397933233.gforce.csv")
 	ts,gf = snip_ends(ts, gf)
 	gf2 = exp_smooth(gf, 0.09)
