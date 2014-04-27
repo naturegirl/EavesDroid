@@ -4,18 +4,18 @@ library(rpart)
 library(scatterplot3d)
 
 #path <- "~/Documents/School/Interacting_With_Data/cos424project/signal-plotting/data/nm.features.csv"
-#path <- "~/Documents/School/Interacting_With_Data/cos424project/data/test.csv"
-path <- "~/Documents/School/Interacting_With_Data/cos424project/data/LR_output/lr-labelled-training-data.csv"
+path <- "~/Documents/School/Interacting_With_Data/cos424project/data/features/all.csv"
+#path <- "~/Documents/School/Interacting_With_Data/cos424project/data/LR_output/lr-labelled-training-data.csv"
 
 signals <- read.csv(path, header=TRUE, sep=",")
 
 #unlabeled signals
-features <- signals[,1:7]
-labels <- signals[,8]
+features <- signals[,1:22]
+labels <- signals[,23]
 #print(signals)
 
 result<-Mclust(features, G=8)
-#print(summary(result))
+print(summary(result))
 #print(result)
 #plot(result, what="classification")
 #par(new=TRUE)
@@ -38,7 +38,7 @@ for(c in 1:col){
   clusterLabeling[1,c] = which.max(clusterLetter[,c])
 }
 
-#print(clusterLabeling)
+print(clusterLabeling)
 
 #data(Glass, package="mlbench")
 #index <- 1:nrow(Glass)
