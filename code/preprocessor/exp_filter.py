@@ -31,10 +31,9 @@ def snip_ends(ts, gf):
 	ei = i
 	return ts[si:ei],gf[si:ei]
 
-def process_dir(path, smooth=True):
+def process_dir(path, outdir, smooth=True):
 	HEADER = "timestamp, gforce\n"
-	PCDIR = "processed"
-	proc_path = os.path.join(path, PCDIR)
+	proc_path = outdir
 	if not os.path.exists(proc_path):
 		try:
 			os.mkdir(proc_path)
@@ -52,16 +51,16 @@ def process_dir(path, smooth=True):
 		of_path = os.path.join(proc_path, filename)
 		ofd = open(of_path, "wr+")
 		ofd.write(HEADER)
-			
+
 		'''plot_init()
 		plot_addfig(1)
 		insert_subplot(411)
 		plot_signal(ts, gf, "Smoothed Signal")
 		plot_show()'''
-		
+
 		for i in range(0, len(ts)):
 			ofd.write(str(ts[i])+","+str(gf[i])+"\n")
-	
+
 def plot_init():
 	plt.clf()
 
@@ -79,7 +78,12 @@ def plot_show():
 
 if __name__ == "__main__":
 	for i in range(ord('a'), ord('z')+1):
-		process_dir(os.path.join("../../data/timestamp-vs-gforce/",chr(i)))
+		process_dir(
+			os.path.join("../../data/timestamp-vs-gforce/",chr(i)),
+			os.path.join("../../data/smoothed-cut-letters/",chr(i))
+			)
 
-	process_dir(os.path.join("../../data/timestamp-vs-gforce/","space"))
-	process_dir(os.path.join("../../data/timestamp-vs-gforce/","enter"))
+	process_dir(os.path.join("../../data/timestamp-vs-gforce/","space"),
+		    os.path.join("../../data/smoothed-cut-letters/","space"))
+	process_dir(os.path.join("../../data/timestamp-vs-gforce/","enter"),
+		    os.path.join("../../data/smoothed-cut-letters/","enter"))
