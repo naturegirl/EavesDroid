@@ -19,6 +19,7 @@ public class FeatureExtractor {
     public static final double G = 9.81;
     public static final BigInteger FACTOR = new BigInteger("1000");
     public static boolean WANT_GFORCE_DATA = false;
+    public static double SMOOTH_ALPHA = -1;
     public static final boolean WANT_LR_LABEL = false;
 
     private static ArrayList<Features> featuresList;
@@ -32,10 +33,13 @@ public class FeatureExtractor {
             System.out.println("Example: java FeatureExtractor a");
             System.exit(0);
         }
-        if (args.length == 2) {
+        if (args.length >= 2) {
             if (args[1].equals("gforce")) {
                 WANT_GFORCE_DATA = true;
             }
+        }
+        if (args.length >= 3) {
+            SMOOTH_ALPHA = Double.parseDouble(args[2]);
         }
         String path = "../../data/" + args[0];
         if (args[0].equals("all"))
@@ -64,6 +68,9 @@ public class FeatureExtractor {
         for (File file: files) {
             if (file.getAbsolutePath().endsWith(".csv")) {
                 ArrayList<Signal> signals = this.processCSV(file);
+                //this.smoothGForce(signals);
+                this.stripSignalHead(signals);
+                this.stripSignalTail(signals);
                 // write g-force's to file
                 if (WANT_GFORCE_DATA) {
                     String filepath = file.getAbsolutePath();
@@ -82,6 +89,66 @@ public class FeatureExtractor {
         }
     }
     
+    private void stripSignalHead(ArrayList<Signal> signals) {
+        int max_index = 0;
+        int min_index = 0;
+        for(int i = 0; i < signals.size(); i++){
+            Signal signal = signals.get(i);
+            if (signal.getGForce() > signals.get(max_index).getGForce()) {
+                max_index = i;
+            }
+            if (signal.getGForce() < signals.get(min_index).getGForce()) {
+                min_index = i;
+            }
+        }
+        int peak_index = Math.min(max_index, min_index);
+        BigInteger peak_timestamp = signals.get(peak_index).getTimeStamp();
+        BigInteger threshold = new BigInteger("500000"); // 500ms
+        int cut_off_index = 0;
+        for (int i = peak_index; i >= 0; i--) {
+            BigInteger diff = signals.get(i).getTimeStamp().subtract(
+                    peak_timestamp).abs(); 
+            if (diff.compareTo(threshold) > 0) {
+                cut_off_index = i;
+                break;
+            }
+        }
+        for (int i = cut_off_index; i >= 0; i--) {
+            signals.remove(i);
+        }
+    }
+    
+    private void stripSignalTail(ArrayList<Signal> signals) {
+        double sum = 0;
+        int n = 100;
+        for (int i = signals.size()-n; i < signals.size(); i++) {
+            sum += signals.get(i).getGForce();
+        }
+        double mean = sum / n;
+        double sq_diff_sum = 0;
+        for (int i = signals.size()-n; i < signals.size(); i++) {
+            sq_diff_sum += Math.pow(signals.get(i).getGForce()-mean,2);
+        }
+        double std_dev = Math.sqrt(sq_diff_sum/n);
+        System.out.println("Mean = " + mean + "\nStd-dev = " + std_dev);
+    }
+    
+    private void smoothGForce(ArrayList<Signal> signals) {
+        if (SMOOTH_ALPHA == -1) {
+            return;
+        }
+        Iterator<Signal> iter = signals.iterator();
+        Signal signal = iter.next();
+        Signal prevSignal = signal;
+        while (iter.hasNext()) {
+            signal = iter.next();
+            double new_gforce = prevSignal.getGForce() + SMOOTH_ALPHA *
+                    (signal.getGForce() - prevSignal.getGForce()); 
+            signal.setGForce(new_gforce);
+            prevSignal = signal;
+        }
+    }
+
     private int getLabel(String dirName) {
         if (WANT_LR_LABEL) {
             if (dirName.equals("enter") || dirName.equals("space")) {

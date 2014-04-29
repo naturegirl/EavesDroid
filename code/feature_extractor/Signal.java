@@ -37,6 +37,10 @@ public class Signal {
     public double getGForce() {
         return this.gforce;
     }
+    
+    public void setGForce(double gforce) {
+        this.gforce = gforce;
+    }
 
     @Override
     public String toString() {
