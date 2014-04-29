@@ -18,19 +18,26 @@ public class FeatureExtractor {
     
     public static final double G = 9.81;
     public static final BigInteger FACTOR = new BigInteger("1000");
-    public static final boolean WANT_GFORCE_DATA = false;
+    public static boolean WANT_GFORCE_DATA = false;
     public static final boolean WANT_LR_LABEL = false;
 
     private static ArrayList<Features> featuresList;
 
     public static void main(String[] args) throws IOException {
-        if (args.length != 1) {
+        if (args.length < 1) {
             System.out.println("Usage: java FeatureExtractor " +
-                    "<letter or 'all'>");
+                    "<data-folder or 'all'> <<gforce>>");
+            System.out.println("'all' defaults to ./../data/" +
+                    "original-recordings/");
             System.out.println("Example: java FeatureExtractor a");
             System.exit(0);
         }
-        String path = "../../data/original_recordings/" + args[0];
+        if (args.length == 2) {
+            if (args[1].equals("gforce")) {
+                WANT_GFORCE_DATA = true;
+            }
+        }
+        String path = "../../data/" + args[0];
         if (args[0].equals("all"))
             path = "../../data/original_recordings/";
         File directory = new File(path);
