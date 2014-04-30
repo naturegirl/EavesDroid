@@ -2,7 +2,7 @@
 
 if [[ $# != 3 ]]
 then
-    echo 'usage: ./get-gforce-smoothed.sh <input-dir> <output-dir>';
+    echo 'usage: ./get-gforce-smoothed.sh <input-dir> <output-dir> <alpha>';
     exit
 fi
 
@@ -20,8 +20,8 @@ python ../preprocessor/exp_filter.py $path/$1 $path/$2
 
 # run the feature extractor to extract the gforce values
 java -cp . FeatureExtractor $2 gforce $3
-rm -f $path/features/$2.csv
-echo "cleaning the features file $path/features/$2.csv"
+# rm -f $path/features/$2.csv
+# echo "cleaning the features file $path/features/$2.csv"
 
 # clean the class files
 rm -f *.class
