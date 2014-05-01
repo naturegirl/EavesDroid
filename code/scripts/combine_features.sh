@@ -11,7 +11,8 @@ then
 fi
 
 # header for the ffts features
-head -n 1 $path/fft_a.csv > $path/$1.data1.tmp.csv
+find $path -name "fft_*.csv" | head -n 1 | xargs -I {} head -n 1 {} \
+> $path/$1.data1.tmp.csv
 echo "header of the ffts extracted"
 
 # append all the fft files into one
