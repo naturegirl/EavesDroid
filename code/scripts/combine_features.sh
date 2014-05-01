@@ -16,8 +16,8 @@ head -n 1 $path/fft_a.csv > $path/data1.tmp.csv
 find $path -name "fft*\.csv" -exec sed '1 d' {} \; >> $path/data1.tmp.csv
 
 # remove trailing  character from the file if any
-#sed -e "s///" $path/all.csv > $path/all.tmp.csv
-cat $path/all.csv > $path/all.tmp.csv
+sed -e "s///g" $path/all.csv > $path/all.tmp.csv
+#cat $path/all.csv > $path/all.tmp.csv
 
 # line by line concatenation of the files
 paste -d"," $path/all.tmp.csv $path/data1.tmp.csv > $path/all_combined.tmp.csv
