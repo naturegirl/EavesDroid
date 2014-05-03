@@ -20,7 +20,8 @@ public class FeatureExtractor {
     public static final BigInteger FACTOR = new BigInteger("1000");
     public static boolean WANT_GFORCE_DATA = false;
     public static final boolean WANT_LR_LABEL = false;
-    public static final boolean WANT_UP_LABEL = true;
+    public static final boolean WANT_UP_LABEL = false;
+    public static final boolean WANT_PAIRED_LABEL = true;
 
     private static ArrayList<Features> featuresList;
 
@@ -143,6 +144,12 @@ public class FeatureExtractor {
             }
             return this.getUDLabel(dirName.charAt(0));
         }
+        if (WANT_PAIRED_LABEL) {
+            if (dirName.equals("enter") || dirName.equals("space")) {
+                return 0;
+            }
+            return this.getPairedLabel(dirName.charAt(0));
+        }
         if (dirName.equals("enter")) {
             return 27;
         } else if (dirName.equals("space")) {
@@ -152,6 +159,38 @@ public class FeatureExtractor {
         return (letter - 'a' + 1);
     }
     
+    private int getPairedLabel(char ch) {
+        switch(ch) {
+        case 'q':
+        case 'w': return 1;
+        case 'e':
+        case 'r': return 2;
+        case 't':
+        case 'y': return 3;
+        case 'u':
+        case 'i': return 4;
+        case 'o':
+        case 'p': return 5;
+        case 'a':
+        case 's': return 6;
+        case 'd':
+        case 'f': return 7;
+        case 'g':
+        case 'b': return 8;
+        case 'z':
+        case 'x': return 9;
+        case 'c':
+        case 'v': return 10;
+        case 'h':
+        case 'j': return 11;
+        case 'k':
+        case 'l': return 12;
+        case 'n':
+        case 'm': return 13;
+        }
+        return 0;
+    }
+
     private int getLRLabel(char ch) {
         char[] left = {'a','b','c','d','e','f','g','q',
                         'r','s','t','v','w','x','z'};
