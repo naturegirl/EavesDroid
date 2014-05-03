@@ -21,7 +21,8 @@ public class FeatureExtractor {
     public static boolean WANT_GFORCE_DATA = false;
     public static final boolean WANT_LR_LABEL = false;
     public static final boolean WANT_UP_LABEL = false;
-    public static final boolean WANT_PAIRED_LABEL = true;
+    public static final boolean WANT_PAIRED_LABEL = false;
+    public static final boolean WANT_TRIAD_LABEL = true;
 
     private static ArrayList<Features> featuresList;
 
@@ -150,6 +151,12 @@ public class FeatureExtractor {
             }
             return this.getPairedLabel(dirName.charAt(0));
         }
+        if (WANT_TRIAD_LABEL) {
+            if (dirName.equals("enter") || dirName.equals("space")) {
+                return 0;
+            }
+            return this.getTriadLabel(dirName.charAt(0));
+        }
         if (dirName.equals("enter")) {
             return 27;
         } else if (dirName.equals("space")) {
@@ -159,6 +166,38 @@ public class FeatureExtractor {
         return (letter - 'a' + 1);
     }
     
+    private int getTriadLabel(char ch) {
+        switch(ch) {
+        case 'q':
+        case 'a':
+        case 'w': return 1;
+        case 'z':
+        case 's':
+        case 'x': return 2;
+        case 'e':
+        case 'd':
+        case 'r': return 3;
+        case 'f':
+        case 'c':
+        case 'v': return 4;
+        case 't':
+        case 'g':
+        case 'y': return 5;
+        case 'h':
+        case 'b':
+        case 'n': return 6;
+        case 'u':
+        case 'j':
+        case 'i': return 7;
+        case 'o':
+        case 'l':
+        case 'p': return 8;
+        case 'k':
+        case 'm': return 9;
+        }
+        return 0;
+    }
+
     private int getPairedLabel(char ch) {
         switch(ch) {
         case 'q':
