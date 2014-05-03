@@ -5,6 +5,7 @@ library(scatterplot3d)
 
 #path <- "~/Documents/School/Interacting_With_Data/cos424project/signal-plotting/data/nm.features.csv"
 path <- "~/Documents/School/Interacting_With_Data/cos424project/data/features/data-a-z_combined.csv"
+#path <- "~/Documents/School/Interacting_With_Data/cos424project/data/features/lr-all-combined.csv"
 #path <- "~/Documents/School/Interacting_With_Data/cos424project/data/LR_output/lr-labelled-training-data.csv"
 
 signals <- read.csv(path, header=TRUE, sep=",", stringsAsFactors = FALSE)
@@ -17,7 +18,6 @@ signals <- cbind(range01(signals[,-cols]), label=signals[,cols])
 #unlabeled signals
 features <- signals[,1:cols-1]
 label <- signals[,cols]
-
 result<-Mclust(features, G=26)
 #print(summary(result))
 #plot(result, what="classification")
