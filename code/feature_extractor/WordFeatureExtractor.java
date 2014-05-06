@@ -12,9 +12,12 @@ public class WordFeatureExtractor {
     public static final double G = 9.81;
     public static final BigInteger FACTOR = new BigInteger("1000");
     public static boolean WANT_GFORCE_DATA = false;
-    public static BigInteger before_thresh = new BigInteger("250000"); // ms
-    public static BigInteger after_thresh = new BigInteger("1000000"); // 1000ms
-
+    public static BigInteger BEFORE_THRESH = new BigInteger("250000"); // 250ms
+    public static BigInteger AFTER_THRESH = new BigInteger("1000000"); // 1000ms
+    public static double G_FORCE_THRESH = 0.25;
+    // # indices into the signal
+    private static final int BASE_REFERENCE_CUT_OFF = 10;
+    
     private static ArrayList<Features> featuresList;
 
     public static void main(String[] args) throws IOException {
@@ -59,6 +62,7 @@ public class WordFeatureExtractor {
                 ArrayList<ArrayList<Signal>> letter_signals =
                         this.breakSignal(signals);
                 this.orderLetterSignals(letter_signals);
+                System.out.println("# letters = " + letter_signals.size());
                 this.writeWordLettersGForce(
                         letter_signals,
                         filepath.substring(0, filepath.length()-4)
@@ -105,7 +109,12 @@ public class WordFeatureExtractor {
         });
         ArrayList<ArrayList<Signal>> letter_signals =
                 new ArrayList<ArrayList<Signal>>();
-        for (int i = 0; i < 6; i++) {
+        double base_ref = this.findBaseReference(signals);
+        while (sorted_signals.size() > 0) {
+            if (Math.abs(sorted_signals.get(0).getGForce() - base_ref)
+                < G_FORCE_THRESH) {
+                break;
+            }
             int max_index = signals.indexOf(sorted_signals.get(0));
             System.out.println("max_index = " + max_index);
             ArrayList<Signal> letter =
@@ -115,6 +124,14 @@ public class WordFeatureExtractor {
             sorted_signals.removeAll(letter);
         }
         return letter_signals;
+    }
+
+    private double findBaseReference(ArrayList<Signal> signals) {
+        double sum = 0;
+        for (int i = 0; i < BASE_REFERENCE_CUT_OFF; i++) {
+            sum += signals.get(i).getGForce();
+        }
+        return sum/BASE_REFERENCE_CUT_OFF;
     }
 
     private ArrayList<Signal> removeAroundMax(ArrayList<Signal> signals,
@@ -127,7 +144,7 @@ public class WordFeatureExtractor {
             BigInteger diff = signals.get(i).getTimeStamp().subtract(
                     peak_time_stamp).abs();
             start_cut_off_index = i;
-            if (diff.compareTo(before_thresh) > 0) {
+            if (diff.compareTo(BEFORE_THRESH) > 0) {
                 break;
             }
         }
@@ -138,7 +155,7 @@ public class WordFeatureExtractor {
             BigInteger diff = signals.get(i).getTimeStamp().subtract(
                     peak_time_stamp).abs(); 
             end_cut_off_index = i;
-            if (diff.compareTo(after_thresh) > 0) {
+            if (diff.compareTo(AFTER_THRESH) > 0) {
                 break;
             }
         }
