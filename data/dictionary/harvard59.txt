@@ -46,8 +46,8 @@ gets
 cartridge
 a
 into
-true
 back
+true
 the
 speaks
 gun

@@ -48,8 +48,8 @@ fur
 gold
 trim
 sash
-profit
 silk
+profit
 is
 with
 it
