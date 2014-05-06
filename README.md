@@ -29,5 +29,25 @@ Here *g* = 9.81 m/s<sup>2</sup> is the acceleration due to gravity.
 
 ### Triads assignment
 
-- q a w --> 1
-- w z s --> 2
+- q a w: 1
+- z s x: 2
+- e d r: 3
+- f c v: 4
+- t g y: 5
+- h b n: 6
+- u j i: 7
+- o l p: 8
+- k m: 9
+
+
+
+
+
+
+
+
+
+
+
+
+
