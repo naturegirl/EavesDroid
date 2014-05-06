@@ -1,6 +1,5 @@
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -9,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 
 
 public class WordFeatureExtractor {
@@ -23,8 +21,9 @@ public class WordFeatureExtractor {
     // # indices into the signal
     private static final int BASE_REFERENCE_CUT_OFF = 10;
     
-    private static HashMap<String, ArrayList<Features>> featuresMap;
-
+    private HashMap<String, ArrayList<Features>> featuresMap;
+    private File gForceFile;
+    
     public static void main(String[] args) throws IOException {
         if (args.length < 1) {
             System.out.println("Usage: java WordFeatureExtractor " +
@@ -41,22 +40,30 @@ public class WordFeatureExtractor {
         File directory = new File(path);
 
         WordFeatureExtractor ob = new WordFeatureExtractor();
-        featuresMap = new HashMap<String, ArrayList<Features>>();
+        ob.featuresMap = new HashMap<String, ArrayList<Features>>();
+        ob.gForceFile = new File(path + ".letters");
+        if (!ob.gForceFile.exists()) {
+            ob.gForceFile.mkdir();
+        }
         ob.processWordCSV(directory);
         
         String features_dir = "../../data/" + args[0] + ".feature";
         ob.writeToFile(features_dir);
     }
 
-    private void writeToFile(String features_dir) throws IOException {
+    private void writeToFile(String dir_name) throws IOException {
+        File file = new File(dir_name);
+        if (!file.exists()) {
+            file.mkdir();
+        }
         for (String name : featuresMap.keySet()) {
-            String filepath = features_dir + "/" + name + ".features.csv";
+            String filepath = dir_name + "/" + name + ".features.csv";
             PrintWriter pw = new PrintWriter(
                     new BufferedWriter(new FileWriter(filepath)));
             String heading = Features.getFeaturesName();
             // remove the ", label" from the features heading
             heading = heading.substring(0, heading.lastIndexOf(','));
-            pw.println(Features.getFeaturesName());
+            pw.println(heading);
             
             for (Features feature : featuresMap.get(name)) {
                 String fstr = feature.toString();
@@ -80,7 +87,6 @@ public class WordFeatureExtractor {
     private ArrayList<Signal> processWordCSV(File directory)
             throws IOException {
         File[] files = directory.listFiles();
-        String dirName = directory.getName();
 
         FeatureExtractor fe = new FeatureExtractor();
         for (File file: files) {
@@ -90,11 +96,11 @@ public class WordFeatureExtractor {
                 ArrayList<ArrayList<Signal>> letter_signals =
                         this.breakSignal(signals);
                 this.orderLetterSignals(letter_signals);
-                System.out.println("# letters = " + letter_signals.size());
-                this.writeWordLettersGForce(
-                        letter_signals,
-                        filepath.substring(0, filepath.length()-4)
-                        );
+                letter_signals = this.shiftRelativeToOrigin(letter_signals);
+                System.out.println(file.getName() +
+                        ": # letters = " + letter_signals.size());
+                this.writeWordLettersGForce(letter_signals, file);
+                this.addFeatures(file, letter_signals);
             } else if (file.isDirectory()) {
                 this.processWordCSV(file);
             }
@@ -102,10 +108,44 @@ public class WordFeatureExtractor {
         return null;
     }
 
+    private ArrayList<ArrayList<Signal>> shiftRelativeToOrigin(
+            ArrayList<ArrayList<Signal>> letter_signals) {
+        ArrayList<ArrayList<Signal>> new_letter_signals =
+                new ArrayList<ArrayList<Signal>>();
+        for(ArrayList<Signal> signals : letter_signals) {
+            BigInteger start_time = signals.get(0).getTimeStamp();
+            ArrayList<Signal> new_signals = new ArrayList<Signal>();
+            for(Signal signal : signals) {
+                BigInteger new_timestamp =
+                        signal.getTimeStamp().subtract(start_time);
+                Signal new_signal = new Signal(new_timestamp,
+                        signal.getX(), signal.getY(), signal.getZ());
+                new_signals.add(new_signal);
+            }
+            new_letter_signals.add(new_signals);
+        }
+        return new_letter_signals;
+    }
+
+    private void addFeatures(File file,
+            ArrayList<ArrayList<Signal>> letter_signals) {
+        ArrayList<Features> features = new ArrayList<Features>();
+        FeatureExtractor fe = new FeatureExtractor();
+        
+        for(ArrayList<Signal> signals : letter_signals) {
+            Features feat = fe.getFeatures(signals);
+            features.add(feat);
+        }
+        String key = file.getName().split("\\.")[0];
+        this.featuresMap.put(key, features);
+    }
+
     private void writeWordLettersGForce(
-            ArrayList<ArrayList<Signal>> letter_signals, String path)
+            ArrayList<ArrayList<Signal>> letter_signals, File csv_file)
                     throws IOException {
-        File file = new File(path);
+        String output_dir = this.gForceFile.getAbsolutePath() + "/" +
+                    csv_file.getName().split("\\.")[0];
+        File file = new File(output_dir);
         if (!file.exists()) {
             file.mkdir();
         }
@@ -153,11 +193,9 @@ public class WordFeatureExtractor {
                 break;
             }
             int max_index = signals.indexOf(sorted_signals.get(0));
-            System.out.println("max_index = " + max_index);
             ArrayList<Signal> letter =
                     this.removeAroundMax(signals, max_index);
             letter_signals.add(letter);
-            System.out.println("sorted_signals.size() before: = " + sorted_signals.size());
             sorted_signals.removeAll(letter);
         }
         return letter_signals;
@@ -202,7 +240,6 @@ public class WordFeatureExtractor {
             letter_signal.add(signals.get(i));
         }
 
-        System.out.println("letter_signal.size() = " + letter_signal.size());
         return letter_signal;
     }
 }

@@ -21,7 +21,7 @@ public class Signal {
     public BigInteger getTimeStamp() {
         return this.timestamp;
     }
-    
+
     public double getX() {
         return this.x;
     }
