@@ -42,7 +42,7 @@ def compute_gforce(xs, ys, zs):
 	gf = map(lambda (x, y, z): math.sqrt(x*x+y*y+z*z)-9.81, zipped)
 	return gf
 
-def process_dir(path, outdir, smooth=True):
+def process_dir(path, outdir, smooth=False):
 	proc_path = outdir
 	if not os.path.exists(proc_path):
 		try:

@@ -41,7 +41,7 @@ public class WordFeatureExtractor {
 
         WordFeatureExtractor ob = new WordFeatureExtractor();
         ob.featuresMap = new HashMap<String, ArrayList<Features>>();
-        ob.gForceFile = new File(path + ".letters");
+        ob.gForceFile = new File(path + ".letters.gforces");
         if (!ob.gForceFile.exists()) {
             ob.gForceFile.mkdir();
         }
@@ -57,7 +57,7 @@ public class WordFeatureExtractor {
             file.mkdir();
         }
         for (String name : featuresMap.keySet()) {
-            String filepath = dir_name + "/" + name + ".features.csv";
+            String filepath = dir_name + "/" + name + ".csv";
             PrintWriter pw = new PrintWriter(
                     new BufferedWriter(new FileWriter(filepath)));
             String heading = Features.getFeaturesName();
@@ -152,8 +152,9 @@ public class WordFeatureExtractor {
         String filepath = file.getAbsolutePath() + "/letter_";
         FeatureExtractor fe = new FeatureExtractor();
         for (int i = 0; i < letter_signals.size(); i++) {
-            fe.writeGForceToFile(letter_signals.get(i),
-                    filepath + i + ".gforce.csv");
+            String path = filepath + i + ".gforce.csv";
+            fe.writeGForceToFile(letter_signals.get(i), path);
+            System.out.println("writing " + path);
         }
     }
 
