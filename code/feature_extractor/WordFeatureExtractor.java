@@ -1,10 +1,15 @@
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Iterator;
 
 
 public class WordFeatureExtractor {
@@ -18,7 +23,7 @@ public class WordFeatureExtractor {
     // # indices into the signal
     private static final int BASE_REFERENCE_CUT_OFF = 10;
     
-    private static ArrayList<Features> featuresList;
+    private static HashMap<String, ArrayList<Features>> featuresMap;
 
     public static void main(String[] args) throws IOException {
         if (args.length < 1) {
@@ -36,8 +41,31 @@ public class WordFeatureExtractor {
         File directory = new File(path);
 
         WordFeatureExtractor ob = new WordFeatureExtractor();
-        featuresList = new ArrayList<Features>();
+        featuresMap = new HashMap<String, ArrayList<Features>>();
         ob.processWordCSV(directory);
+        
+        String features_dir = "../../data/" + args[0] + ".feature";
+        ob.writeToFile(features_dir);
+    }
+
+    private void writeToFile(String features_dir) throws IOException {
+        for (String name : featuresMap.keySet()) {
+            String filepath = features_dir + "/" + name + ".features.csv";
+            PrintWriter pw = new PrintWriter(
+                    new BufferedWriter(new FileWriter(filepath)));
+            String heading = Features.getFeaturesName();
+            // remove the ", label" from the features heading
+            heading = heading.substring(0, heading.lastIndexOf(','));
+            pw.println(Features.getFeaturesName());
+            
+            for (Features feature : featuresMap.get(name)) {
+                String fstr = feature.toString();
+                fstr = fstr.substring(0, fstr.lastIndexOf(','));
+                pw.println(fstr);
+            }
+            pw.close();
+            System.out.println("writing " + filepath);
+        }
     }
 
     /**
@@ -77,13 +105,22 @@ public class WordFeatureExtractor {
     private void writeWordLettersGForce(
             ArrayList<ArrayList<Signal>> letter_signals, String path)
                     throws IOException {
+        File file = new File(path);
+        if (!file.exists()) {
+            file.mkdir();
+        }
+        String filepath = file.getAbsolutePath() + "/letter_";
         FeatureExtractor fe = new FeatureExtractor();
         for (int i = 0; i < letter_signals.size(); i++) {
             fe.writeGForceToFile(letter_signals.get(i),
-                    path + "_" + i + ".gforce.csv");
+                    filepath + i + ".gforce.csv");
         }
     }
 
+    /**
+     * Orders the letter signals according as they appear in the word typed
+     * @param letter_signals
+     */
     private void orderLetterSignals(
             ArrayList<ArrayList<Signal>> letter_signals) {
         Collections.sort(letter_signals, new Comparator<ArrayList<Signal>>(){
