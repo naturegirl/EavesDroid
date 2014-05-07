@@ -18,11 +18,12 @@ public class FeatureExtractor {
     
     public static final double G = 9.81;
     public static final BigInteger FACTOR = new BigInteger("1000");
-    public static boolean WANT_GFORCE_DATA = false;
+    public static boolean WANT_GFORCE_DATA = true;
     public static final boolean WANT_LR_LABEL = false;
     public static final boolean WANT_UP_LABEL = false;
     public static final boolean WANT_PAIRED_LABEL = false;
     public static final boolean WANT_TRIAD_LABEL = false;
+    public static final boolean WANT_SEPTET_LABEL = false;
 
     private static ArrayList<Features> featuresList;
 
@@ -68,7 +69,7 @@ public class FeatureExtractor {
             if (file.getAbsolutePath().endsWith(".csv")) {
                 ArrayList<Signal> signals = this.readCSV(file);
                 //this.smoothGForce(signals);
-                this.stripSignalHead(signals);
+                //this.stripSignalHead(signals);
                 //this.stripSignalTail(signals);
                 // write g-force's to file
                 if (WANT_GFORCE_DATA) {
@@ -157,6 +158,12 @@ public class FeatureExtractor {
             }
             return this.getTriadLabel(dirName.charAt(0));
         }
+        if (WANT_SEPTET_LABEL) {
+            if (dirName.equals("enter") || dirName.equals("space")) {
+                return 0;
+            }
+            return this.getSeptetLabel(dirName.charAt(0));
+        }
         if (dirName.equals("enter")) {
             return 27;
         } else if (dirName.equals("space")) {
@@ -166,6 +173,38 @@ public class FeatureExtractor {
         return (letter - 'a' + 1);
     }
     
+    private int getSeptetLabel(char ch) {
+        switch(ch) {
+        case 'q':
+        case 'w':
+        case 'e':
+        case 'a':
+        case 's':
+        case 'z':
+        case 'x': return 1;
+        case 'r':
+        case 't':
+        case 'd':
+        case 'f':
+        case 'g':
+        case 'c':
+        case 'v': return 2;
+        case 'y':
+        case 'u':
+        case 'h':
+        case 'j':
+        case 'b':
+        case 'n': return 3;
+        case 'i':
+        case 'o':
+        case 'p':
+        case 'k':
+        case 'l':
+        case 'm': return 4;
+        }
+        return 0;
+    }
+
     private int getTriadLabel(char ch) {
         switch(ch) {
         case 'q':

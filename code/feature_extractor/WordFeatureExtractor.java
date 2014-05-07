@@ -17,7 +17,7 @@ public class WordFeatureExtractor {
     public static boolean WANT_GFORCE_DATA = false;
     public static BigInteger BEFORE_THRESH = new BigInteger("250000"); // 250ms
     public static BigInteger AFTER_THRESH = new BigInteger("1000000"); // 1000ms
-    public static double G_FORCE_THRESH = 0.25;
+    public static double G_FORCE_THRESH = 0.15;
     // # indices into the signal
     private static final int BASE_REFERENCE_CUT_OFF = 10;
     
