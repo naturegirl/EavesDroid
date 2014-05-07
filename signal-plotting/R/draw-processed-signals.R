@@ -1,4 +1,4 @@
-path <- "./../../data/smoothed-cut-letters"
+path <- "./../../data/test-akshay-letters"
 files <- list.files(path, full.names = TRUE)
 files
 
@@ -27,5 +27,6 @@ for (j in 1:num_dirs) {
     plot(as.vector(data$V1), as.vector(data$V2), xlab="time (us)",
          ylab="g-force", main="", type="l")
     dev.off()
+    print(filename)
   }
 }

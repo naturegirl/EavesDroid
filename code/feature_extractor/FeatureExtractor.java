@@ -22,7 +22,7 @@ public class FeatureExtractor {
     public static final boolean WANT_LR_LABEL = false;
     public static final boolean WANT_UP_LABEL = false;
     public static final boolean WANT_PAIRED_LABEL = false;
-    public static final boolean WANT_TRIAD_LABEL = true;
+    public static final boolean WANT_TRIAD_LABEL = false;
 
     private static ArrayList<Features> featuresList;
 
@@ -47,7 +47,7 @@ public class FeatureExtractor {
 
         FeatureExtractor ob = new FeatureExtractor();
         featuresList = new ArrayList<Features>();
-        ob.readKeyPresses(directory);
+        ob.processKeyPresses(directory);
         
         String featuresFile = "../../data/features/" + args[0] + ".csv";
         ob.writeToFile(featuresList, featuresFile);
@@ -60,13 +60,13 @@ public class FeatureExtractor {
      * @param directory
      * @throws IOException 
      */
-    private void readKeyPresses(File directory) throws IOException {
+    private void processKeyPresses(File directory) throws IOException {
         File[] files = directory.listFiles();
         int label = this.getLabel(directory.getName());
 
         for (File file: files) {
             if (file.getAbsolutePath().endsWith(".csv")) {
-                ArrayList<Signal> signals = this.processCSV(file);
+                ArrayList<Signal> signals = this.readCSV(file);
                 //this.smoothGForce(signals);
                 this.stripSignalHead(signals);
                 //this.stripSignalTail(signals);
@@ -83,7 +83,7 @@ public class FeatureExtractor {
                 features.setLabel(label);
                 featuresList.add(features);
             } else if (file.isDirectory()) {
-                this.readKeyPresses(file);
+                this.processKeyPresses(file);
             }
         }
     }
@@ -270,7 +270,7 @@ public class FeatureExtractor {
      * @param filename
      * @throws IOException
      */
-    private void writeGForceToFile(ArrayList<Signal> signals,
+    public void writeGForceToFile(ArrayList<Signal> signals,
             String filename) throws IOException {
         
         PrintWriter pw = new PrintWriter(
@@ -303,7 +303,7 @@ public class FeatureExtractor {
         System.out.println("writing "+datafile);
     }
 
-    private Features getFeatures(ArrayList<Signal> signals) {
+    public Features getFeatures(ArrayList<Signal> signals) {
         Features features = new Features();
         features.setMin(this.feature_min(signals));
         features.setMax(this.feature_max(signals));
@@ -325,7 +325,7 @@ public class FeatureExtractor {
      * @return ArrayList of Signals from the file
      * @throws FileNotFoundException 
      */
-    private ArrayList<Signal> processCSV(File file)
+    public ArrayList<Signal> readCSV(File file)
             throws FileNotFoundException {
         Scanner ob = new Scanner(file);
         BigInteger start_time = null;
