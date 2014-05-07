@@ -77,5 +77,5 @@ printf "draw: signals for the individual letters\n\n"
 
 # clean the files
 #rm -rf $path/__data
-#rm -f *.class
-#echo "cleaning files"
+rm -f *.class
+echo "cleaning files"
