@@ -16,7 +16,7 @@ rm -rf $path/$2
 rm -rf $path/$2-gforce
 
 # run the smoothing script on the dataset
-python ../preprocessor/exp_filter.py $path/$1 $path/$2
+python ../preprocessor/ends_clipper.py $path/$1 $path/$2
 
 # run the feature extractor to extract the gforce values
 java -cp . FeatureExtractor $2 gforce
