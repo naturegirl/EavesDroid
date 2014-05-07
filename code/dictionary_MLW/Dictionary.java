@@ -118,31 +118,77 @@ public class Dictionary {
 	
 	int l = triads.length;
 	int n = (int) Math.pow(3, triads.length);
-	char combinations[][] = new char[n][l+1];
+	char combinations[][] = new char[n][l];
 	
 	for (int i = 0; i < triads.length; ++i) {	// iterate through number of letters
 	    int triad_num = triads[i]-1;
 	    for (int j = 0; j < n; ++j) {	// iterate through number of words
 		int offset = (j / (int) Math.pow(3, i)) % 3;
-		combinations[j][l-1-i] = triad_map[triad_num][offset];
+		combinations[j][i] = triad_map[triad_num][offset];
 	    }
 	}
-	for (int j = 0; j < n; ++j)
-	    combinations[j][l] = '\0';
-	
 	HashSet<String> set = new HashSet<String>();
 	for (int j = 0; j < n; ++j) {
 	    set.add(new String(combinations[j]));
 	}
-	for (String s : set)
-	    System.out.println(s);
 	return set;
     }
     
+    // returns the distance between the two words
+    // measure is just number of matching letters
+    private int get_distance(String x, String y) {
+	if (x.length() != y.length())
+	    return Integer.MAX_VALUE;
+	if (x.equals(y))
+	    return 0;	
+	int dist = 0;
+	for (int i = 0; i < x.length(); ++i) {
+	    if (x.charAt(i) != y.charAt(i))
+		dist++;
+	}
+	return dist;
+    }
+    
+    // returns the top k closest words in the dictionary specified by dict_num
+    // as measured by their distance to word
+    // @word: the word we measure the distance to
+    // @dict_num: between 1~72
+    // @k: how many words we want to return
+    private ArrayList<String> getClosestWords(String word, int dict_num, int k) {
+	if (dict_num < 1 || dict_num > 72)
+	    throw new RuntimeException("dict_num is out of range!");
+	
+	HashSet<String> dict = dictionaries.get(dict_num-1);
+	ArrayList<String> result = new ArrayList<String>(k);	// treat as circular array
+	int distance = Integer.MAX_VALUE;
+	int pos = 0;
+	for (String entry : dict) {
+	    if (get_distance(word, entry) < distance) {
+		result.add(pos,entry);
+		pos = (pos + 1) % k;
+		distance = get_distance(word, entry);
+	    }
+	}
+	return result;
+    }
     
     public static void main(String args[]) {
 	Dictionary dict = new Dictionary();
-	dict.generateCombinations(new int[]{1,1});
+	// tests: fish 4726, stockings 258497652, canoe 41683
+	int[] input_sequence = new int[] {4,1,6,8,3};	// modify here for testing!
+	HashSet<String> combinations = dict.generateCombinations(input_sequence);
+	ResultTable rt = new ResultTable();
+	for (String s : combinations) {
+	    ArrayList<String> result = dict.getClosestWords(s, 1, 3);
+	    for (String t : result) {
+		//System.out.println("inserting "+t+" "+s+" "+dict.get_distance(s,t));
+		rt.insert(t, dict.get_distance(s, t));
+	    }
+	}
+	ArrayList<String> finalSuggestions = rt.getTopKSuggestions(5);
+	System.out.println("final suggestions:");
+	for (String s : finalSuggestions)
+	    System.out.println(s);
     }
 
 }
