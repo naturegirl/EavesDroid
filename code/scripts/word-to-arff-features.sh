@@ -28,8 +28,8 @@ printf "clipper: start/stop ends clipped\n\n"
 
 # copy the class files to this directory
 javac ../feature_extractor/*.java
-cp ../feature_extractor/*.class .
-echo "classes: files copied to this directory"
+mv ../feature_extractor/*.class .
+echo "classes: files moved to this directory"
 
 # generate the partial feature files
 java -cp . WordFeatureExtractor __data
