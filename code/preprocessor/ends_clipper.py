@@ -91,7 +91,7 @@ def process_dir(path, outdir, smooth=False):
 
 if __name__ == "__main__":
 	if len(sys.argv) != 3:
-		print 'Usage: python exp_filter <input-dir> <output-dir>'
+		print 'Usage: python ends-clipper.py <input-dir> <output-dir>'
 		sys.exit(1)
 	for d in os.listdir(sys.argv[1]):
 		process_dir(

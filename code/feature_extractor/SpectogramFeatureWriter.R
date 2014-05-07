@@ -1,7 +1,14 @@
+args <- commandArgs(trailingOnly = TRUE)
 NUM_FEATURES = 15   # frequency range is divided into 15 parts
-inputdir <- "./../../data/timestamp-vs-gforce"
+inputdir <- "./../../data/test-gforces"
 diagram_outputdir <- "./../../data/spectograms/"
 feature_outputdir <- "./../../data/features/"
+if (length(args) >= 1) {
+   inputdir <- paste(args[1],"/",sep="")
+}
+if (length(args) >= 2) {
+   feature_outputdir <- paste(args[2],"/",sep="")
+}
 files <- list.files(inputdir, full.names = TRUE)
 files
 

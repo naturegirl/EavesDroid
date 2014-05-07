@@ -24,7 +24,7 @@ public class Dictionary {
 	    dictionaries.add(i, dict);
 	}
 	createDictionaries();
-	writeDictionaries();	// comment out if you don't want to write to file.
+	//writeDictionaries();	// comment out if you don't want to write to file.
     }
     
     // write the extracted dictionaries to 72 separate files
@@ -77,10 +77,6 @@ public class Dictionary {
 	    e.printStackTrace();
 	}
 	HashSet<String> dict = dictionaries.get(0);
-	
-	for (String w : dict) {
-	    System.out.println(w);
-	}
     }
 
     // Helper method
@@ -97,10 +93,56 @@ public class Dictionary {
 	return s.toLowerCase();
     }
     
+    
+    // generate all possible combinations given a list of the triads
+    // we assume the triad numbers passed in are from 1~9 (not zero)
+    private HashSet<String> generateCombinations(int[] triads) {
+	char triad_map[][] = new char[][] {
+		{'q','a','w'},	// triad 1
+		{'z','s','x'},	// triad 2
+		{'e','d','r'},	// triad 3
+		{'f','c','v'},	// triad 4
+		{'t','g','y'},	// triad 5
+		{'h','b','n'},	// triad 6
+		{'u','j','i'},	// triad 7
+		{'o','l','p'},	// triad 8
+		{'k','m','m'},	// triad 9	keep m twice for easier handling, then remove duplicates later
+	};
+	
+	if (triads.length > 15)
+	    throw new RuntimeException("Triads length too long");
+	for (int i = 0; i < triads.length; ++i) {
+	    if (triads[i] < 1 || triads[i] > 9)
+		throw new RuntimeException("Triad number value not between 1~9");
+	}
+	
+	int l = triads.length;
+	int n = (int) Math.pow(3, triads.length);
+	char combinations[][] = new char[n][l+1];
+	
+	for (int i = 0; i < triads.length; ++i) {	// iterate through number of letters
+	    int triad_num = triads[i]-1;
+	    for (int j = 0; j < n; ++j) {	// iterate through number of words
+		int offset = (j / (int) Math.pow(3, i)) % 3;
+		combinations[j][l-1-i] = triad_map[triad_num][offset];
+	    }
+	}
+	for (int j = 0; j < n; ++j)
+	    combinations[j][l] = '\0';
+	
+	HashSet<String> set = new HashSet<String>();
+	for (int j = 0; j < n; ++j) {
+	    set.add(new String(combinations[j]));
+	}
+	for (String s : set)
+	    System.out.println(s);
+	return set;
+    }
+    
+    
     public static void main(String args[]) {
 	Dictionary dict = new Dictionary();
-	dict.createDictionaries();
-	dict.writeDictionaries();
+	dict.generateCombinations(new int[]{1,1});
     }
 
 }
