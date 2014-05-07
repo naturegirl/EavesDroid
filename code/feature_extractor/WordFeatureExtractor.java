@@ -71,7 +71,7 @@ public class WordFeatureExtractor {
                 pw.println(fstr);
             }
             pw.close();
-            System.out.println("writing " + filepath);
+            //System.out.println("writing " + filepath);
         }
     }
 
@@ -154,7 +154,7 @@ public class WordFeatureExtractor {
         for (int i = 0; i < letter_signals.size(); i++) {
             String path = filepath + i + ".gforce.csv";
             fe.writeGForceToFile(letter_signals.get(i), path);
-            System.out.println("writing " + path);
+            //System.out.println("writing " + path);
         }
     }
 
