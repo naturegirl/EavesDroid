@@ -1,4 +1,8 @@
+args <- commandArgs(trailingOnly = TRUE)
 path <- "./../../data/test-akshay-letters"
+if (length(args) >= 1) {
+   path <- args[1]
+}
 files <- list.files(path, full.names = TRUE)
 files
 

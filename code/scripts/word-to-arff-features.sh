@@ -65,11 +65,17 @@ printf "arff: files generated from the feature files\n\n"
 
 # move the arff files outside
 cd ..
-mv $1.arff ./../
+rm -rf ../$1.arff
+mv $1.arff ../
 cd ../../code/scripts
 printf "features: files present in $path/$1.arff\n\n"
+
+# draw indiv letter signals for the words
+Rscript ../../signal-plotting/R/draw-processed-signals.R \
+$path/__data/__data.letters.gforces
+printf "draw: signals for the individual letters\n\n"
 
 # clean the files
 #rm -rf $path/__data
 #rm -f *.class
-echo "cleaning files"
+#echo "cleaning files"
