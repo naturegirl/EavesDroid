@@ -12,7 +12,7 @@ load(file="./adaboost.rf.ud.rda")
 
 input_file <- "./../../data/weka-data/akshay_simple.arff"
 if (length(args) >= 1) {
-  inputdir <- args[1]
+  input_file <- args[1]
 }
 
 data_input <- read.arff(input_file)
@@ -24,8 +24,8 @@ ud_labels <- predict(m_ud, newdata = data_input,
                      type = c("class", "probability"))
 ud_labels <- ifelse(ud_labels == 1, "u", "d")
 
-print(lr_labels)
-print(ud_labels)
+# print(lr_labels)
+# print(ud_labels)
 
 i <- 1
 len <- length(lr_labels)
