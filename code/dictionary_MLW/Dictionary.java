@@ -27,6 +27,33 @@ public class Dictionary {
 	//writeDictionaries();	// comment out if you don't want to write to file.
     }
     
+    /*
+     * returns the k'th dictionary, where k is a value between 1 and 72.
+     */
+    public HashSet<String> getDictionary (int k) {
+	if (k < 1 || k > 72)
+	    throw new RuntimeException("Dictionary number is out of range!");
+	return dictionaries.get(k-1);
+    }
+    
+    /*
+     * returns the distance between the two strings
+     * measure is just number of matching letters
+     */
+    private static int get_distance(String x, String y) {
+	if (x.length() != y.length())
+	    return Integer.MAX_VALUE;
+	if (x.equals(y))
+	    return 0;	
+	int dist = 0;
+	for (int i = 0; i < x.length(); ++i) {
+	    if (x.charAt(i) != y.charAt(i))
+		dist++;
+	}
+	return dist;
+    }
+    
+    
     // write the extracted dictionaries to 72 separate files
     // call constructor and createDictionaires() before that
     private void writeDictionaries() {
@@ -134,21 +161,6 @@ public class Dictionary {
 	return set;
     }
     
-    // returns the distance between the two words
-    // measure is just number of matching letters
-    private int get_distance(String x, String y) {
-	if (x.length() != y.length())
-	    return Integer.MAX_VALUE;
-	if (x.equals(y))
-	    return 0;	
-	int dist = 0;
-	for (int i = 0; i < x.length(); ++i) {
-	    if (x.charAt(i) != y.charAt(i))
-		dist++;
-	}
-	return dist;
-    }
-    
     // returns the top k closest words in the dictionary specified by dict_num
     // as measured by their distance to word
     // @word: the word we measure the distance to
@@ -182,7 +194,7 @@ public class Dictionary {
 	    ArrayList<String> result = dict.getClosestWords(s, 1, 3);
 	    for (String t : result) {
 		//System.out.println("inserting "+t+" "+s+" "+dict.get_distance(s,t));
-		rt.insert(t, dict.get_distance(s, t));
+		rt.insert(t, get_distance(s, t));
 	    }
 	}
 	ArrayList<String> finalSuggestions = rt.getTopKSuggestions(5);
