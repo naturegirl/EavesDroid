@@ -18,11 +18,11 @@ if (length(args) >= 1) {
 data_input <- read.arff(input_file)
 lr_labels <- predict(m_lr, newdata = data_input,
                      type = c("class", "probability"))
-lr_labels <- ifelse(lr_labels == 1, "L", "R")
+lr_labels <- ifelse(lr_labels == 1, "l", "r")
 
 ud_labels <- predict(m_ud, newdata = data_input,
                      type = c("class", "probability"))
-ud_labels <- ifelse(ud_labels == 1, "U", "D")
+ud_labels <- ifelse(ud_labels == 1, "u", "d")
 
 print(lr_labels)
 print(ud_labels)

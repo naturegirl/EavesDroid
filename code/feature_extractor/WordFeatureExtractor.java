@@ -18,8 +18,6 @@ public class WordFeatureExtractor {
     public static BigInteger BEFORE_THRESH = new BigInteger("250000"); // 250ms
     public static BigInteger AFTER_THRESH = new BigInteger("1000000"); // 1000ms
     public static double G_FORCE_THRESH = 0.15;
-    // # indices into the signal
-    private static final int BASE_REFERENCE_CUT_OFF = 10;
     
     private HashMap<String, ArrayList<Features>> featuresMap;
     private File gForceFile;
@@ -175,6 +173,8 @@ public class WordFeatureExtractor {
     }
 
     private ArrayList<ArrayList<Signal>> breakSignal(ArrayList<Signal> signals){
+        FeatureExtractor.moveToBaseReference(signals);
+
         @SuppressWarnings("unchecked")
         ArrayList<Signal> sorted_signals = (ArrayList<Signal>) signals.clone();
         // reverse sorted according to the absolute values of the g-force values
@@ -187,10 +187,8 @@ public class WordFeatureExtractor {
         });
         ArrayList<ArrayList<Signal>> letter_signals =
                 new ArrayList<ArrayList<Signal>>();
-        double base_ref = this.findBaseReference(signals);
         while (sorted_signals.size() > 0) {
-            if (Math.abs(sorted_signals.get(0).getGForce() - base_ref)
-                < G_FORCE_THRESH) {
+            if (Math.abs(sorted_signals.get(0).getGForce()) < G_FORCE_THRESH) {
                 break;
             }
             int max_index = signals.indexOf(sorted_signals.get(0));
@@ -200,14 +198,6 @@ public class WordFeatureExtractor {
             sorted_signals.removeAll(letter);
         }
         return letter_signals;
-    }
-
-    private double findBaseReference(ArrayList<Signal> signals) {
-        double sum = 0;
-        for (int i = 0; i < BASE_REFERENCE_CUT_OFF; i++) {
-            sum += signals.get(i).getGForce();
-        }
-        return sum/BASE_REFERENCE_CUT_OFF;
     }
 
     private ArrayList<Signal> removeAroundMax(ArrayList<Signal> signals,
