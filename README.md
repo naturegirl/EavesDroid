@@ -40,11 +40,12 @@ Here *g* = 9.81 m/s<sup>2</sup> is the acceleration due to gravity.
 - k m: 9
 
 
+### Left Right Up Down assignments:
 
-
-
-
-
+- left-up: q w e r t
+- right-up: y u i o p
+- left-down: a s d f  g z x c v
+- right-down: h j k l  b n m
 
 
 
