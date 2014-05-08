@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Scanner;
 import java.util.StringTokenizer;
@@ -19,12 +21,15 @@ public class FeatureExtractor {
     public static final double G = 9.81;
     public static final BigInteger FACTOR = new BigInteger("1000");
     public static boolean WANT_GFORCE_DATA = true;
-    public static final boolean WANT_LR_LABEL = false;
+    public static final boolean WANT_LR_LABEL = true;
     public static final boolean WANT_UP_LABEL = false;
     public static final boolean WANT_PAIRED_LABEL = false;
     public static final boolean WANT_TRIAD_LABEL = false;
     public static final boolean WANT_SEPTET_LABEL = false;
-
+    public static BigInteger BEFORE_THRESH = new BigInteger("40000"); // 40ms
+    public static BigInteger AFTER_THRESH = new BigInteger("85000"); // 85ms
+    public static final boolean WANT_WINDOW_SIGNAL = true;
+    
     private static ArrayList<Features> featuresList;
 
     public static void main(String[] args) throws IOException {
@@ -71,6 +76,9 @@ public class FeatureExtractor {
                 //this.smoothGForce(signals);
                 //this.stripSignalHead(signals);
                 //this.stripSignalTail(signals);
+                if (WANT_WINDOW_SIGNAL) {
+                    signals = this.getWindowSignal(signals);
+                }
                 // write g-force's to file
                 if (WANT_GFORCE_DATA) {
                     String filepath = file.getAbsolutePath();
@@ -89,6 +97,83 @@ public class FeatureExtractor {
         }
     }
     
+    private ArrayList<Signal> getWindowSignal(ArrayList<Signal> signals) {
+        this.moveToBaseReference(signals);
+        
+        @SuppressWarnings("unchecked")
+        ArrayList<Signal> sorted_signals = (ArrayList<Signal>) signals.clone();
+        // reverse sorted according to the absolute values of the g-force values
+        Collections.sort(sorted_signals, new Comparator<Signal>() {
+            public int compare(Signal signal1, Signal signal2) {
+                double force1 = Math.abs(signal1.getGForce());
+                double force2 = Math.abs(signal2.getGForce());
+                double diff = force1 - force2;
+                return -(int)Math.signum(diff);
+            }
+        });
+        int max_index = signals.indexOf(sorted_signals.get(0));
+        ArrayList<Signal> letter = this.removeAroundMax(signals, max_index);
+        return letter;
+    }
+    
+    private ArrayList<Signal> shiftRelativeToOrigin(ArrayList<Signal> signals) {
+        BigInteger start_time = signals.get(0).getTimeStamp();
+        ArrayList<Signal> new_signals = new ArrayList<Signal>();
+        for(Signal signal : signals) {
+            BigInteger new_timestamp =
+                    signal.getTimeStamp().subtract(start_time);
+            Signal new_signal = new Signal(new_timestamp,
+                    signal.getX(), signal.getY(), signal.getZ());
+            new_signals.add(new_signal);
+        }
+        return new_signals;
+    }
+    
+    private void moveToBaseReference(ArrayList<Signal> signals) {
+        double sum = 0;
+        for (int i = 0; i < signals.size(); i++) {
+            sum += signals.get(i).getGForce();
+        }
+        double mean = sum/signals.size();
+        for (Signal signal : signals) {
+            signal.setGForce(signal.getGForce() - mean);
+        }
+    }
+
+    private ArrayList<Signal> removeAroundMax(ArrayList<Signal> signals,
+            int max_index){
+        BigInteger peak_time_stamp = signals.get(max_index).getTimeStamp();
+        
+        // letter start index
+        int start_cut_off_index = 0;
+        for (int i = max_index; i >= 0; i--) {
+            BigInteger diff = signals.get(i).getTimeStamp().subtract(
+                    peak_time_stamp).abs();
+            start_cut_off_index = i;
+            if (diff.compareTo(BEFORE_THRESH) > 0) {
+                break;
+            }
+        }
+        
+        // letter end index
+        int end_cut_off_index = 0;
+        for (int i = max_index; i < signals.size(); i++) {
+            BigInteger diff = signals.get(i).getTimeStamp().subtract(
+                    peak_time_stamp).abs(); 
+            end_cut_off_index = i;
+            if (diff.compareTo(AFTER_THRESH) > 0) {
+                break;
+            }
+        }
+        
+        ArrayList<Signal> letter_signal = new ArrayList<Signal>();
+        for (int i = start_cut_off_index; i <= end_cut_off_index; i++) {
+            letter_signal.add(signals.get(i));
+        }
+
+        return letter_signal;
+    }
+
     private void stripSignalHead(ArrayList<Signal> signals) {
         int max_index = 0;
         int min_index = 0;
