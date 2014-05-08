@@ -1,6 +1,6 @@
 args <- commandArgs(trailingOnly = TRUE)
-NUM_FEATURES = 15   # frequency range is divided into 15 parts
-inputdir <- "./../../data/test-gforces"
+NUM_FEATURES = 30   # frequency range is divided into 15 parts
+inputdir <- "./../../data/window-signals-lr-gforce"
 diagram_outputdir <- "./../../data/spectograms/"
 feature_outputdir <- "./../../data/features/"
 if (length(args) >= 1) {
@@ -66,7 +66,7 @@ write.spectogram <- function(data, current_letter, filename) {
   
   # write the plot to the jpeg
   jpeg(filename)
-  spec.ar(y);
+  spec.ar(y, n.freq=NUM_FEATURES);
   dev.off() 
   print(paste('writing', filename))
 
