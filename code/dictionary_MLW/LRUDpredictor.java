@@ -55,6 +55,35 @@ public class LRUDpredictor {
 	return result;
     }
     
+    /**
+     * returns the top k closest words in the dictionary specified by dict_num
+     * as measured by the distance of their LRUD sequences
+     * @param input sequence: same as in getMatchingWords
+     * @param dict_num: between 1 ~ 72
+     * @param k: how many words we want to return, is upper bound
+     * @return: top k closest words measured by LRUD sequence distance
+     */
+    private ArrayList<String> getClosestWords(String sequence, int dict_num, int k) {
+	if (dict_num < 1 || dict_num > 72)
+	    throw new RuntimeException("dict_num is out of range!");
+	if (!isValid(sequence))
+	    throw new RuntimeException("invalid input sequence!");	
+	
+	HashSet<String> dict = dictionary.getDictionary(dict_num);
+	ArrayList<String> result = new ArrayList<String>(k);	// treat as circular array
+	int distance = Integer.MAX_VALUE;
+	int pos = 0;
+	for (String entry : dict) {
+	    String entry_seq = generateSequence(entry);
+	    if (get_distance(sequence, entry_seq) < distance) {
+		result.add(pos,entry);
+		pos = (pos + 1) % k;
+		distance = get_distance(sequence, entry_seq);
+	    }
+	}
+	return result;	
+    }
+    
     /*
      * check if sequence is valid. Returns
      */
@@ -136,6 +165,13 @@ public class LRUDpredictor {
 	System.out.println("Found "+result.size()+" exact match(es):");
 	for (String s : result)
 	    System.out.println(s);
+	
+	ArrayList<String> result2 = pred.getClosestWords(seq, 1, 5);
+	System.out.println("Found "+result2.size()+" match(es):");
+	for (String s : result2) {
+	    int dist = get_distance(seq, pred.generateSequence(s));
+	    System.out.println(s+" "+dist);
+	}
     }
 
 }
