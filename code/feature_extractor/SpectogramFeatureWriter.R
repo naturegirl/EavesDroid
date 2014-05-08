@@ -1,6 +1,6 @@
 args <- commandArgs(trailingOnly = TRUE)
-NUM_FEATURES = 15   # frequency range is divided into 15 parts
-inputdir <- "./../../data/test-gforces"
+NUM_FEATURES = 30   # frequency range is divided into 15 parts
+inputdir <- "./../../data/better-recordings-gforce"
 diagram_outputdir <- "./../../data/spectograms/"
 feature_outputdir <- "./../../data/features/"
 if (length(args) >= 1) {
@@ -37,7 +37,7 @@ for (j in 1:num_dirs) {
     filename <- basename(filename)
     
     # uncomment if you want to write the spectogram
-    #write.spectogram(data, current_letter, filename);
+    write.spectogram(data, current_letter, filename);
     
     # compute and append feature
     y <- as.vector(data$V2);
@@ -47,7 +47,6 @@ for (j in 1:num_dirs) {
     #print(output)
   }
   # write csv file
-  
   csv_filename <- paste(feature_outputdir, 'fft_', current_letter, '.csv', sep="");
   write.csv(output, csv_filename, row.names=F)
   print(paste('writing', csv_filename))
@@ -66,7 +65,7 @@ write.spectogram <- function(data, current_letter, filename) {
   
   # write the plot to the jpeg
   jpeg(filename)
-  spec.ar(y);
+  spec.ar(y, n.freq=NUM_FEATURES);
   dev.off() 
   print(paste('writing', filename))
 
