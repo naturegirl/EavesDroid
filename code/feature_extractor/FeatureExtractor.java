@@ -98,7 +98,7 @@ public class FeatureExtractor {
     }
     
     private ArrayList<Signal> getWindowSignal(ArrayList<Signal> signals) {
-        this.moveToBaseReference(signals);
+        moveToBaseReference(signals);
         
         @SuppressWarnings("unchecked")
         ArrayList<Signal> sorted_signals = (ArrayList<Signal>) signals.clone();
@@ -129,7 +129,7 @@ public class FeatureExtractor {
         return new_signals;
     }
     
-    private void moveToBaseReference(ArrayList<Signal> signals) {
+    public static void moveToBaseReference(ArrayList<Signal> signals) {
         double sum = 0;
         for (int i = 0; i < signals.size(); i++) {
             sum += signals.get(i).getGForce();

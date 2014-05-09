@@ -21,5 +21,20 @@
 @attribute fft13 NUMERIC
 @attribute fft14 NUMERIC
 @attribute fft15 NUMERIC
+@attribute fft16 NUMERIC
+@attribute fft17 NUMERIC
+@attribute fft18 NUMERIC
+@attribute fft19 NUMERIC
+@attribute fft20 NUMERIC
+@attribute fft21 NUMERIC
+@attribute fft22 NUMERIC
+@attribute fft23 NUMERIC
+@attribute fft24 NUMERIC
+@attribute fft25 NUMERIC
+@attribute fft26 NUMERIC
+@attribute fft27 NUMERIC
+@attribute fft28 NUMERIC
+@attribute fft29 NUMERIC
+@attribute fft30 NUMERIC
 
 @data
