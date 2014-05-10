@@ -24,8 +24,8 @@ ud_labels <- predict(m_ud, newdata = data_input,
                      type = c("class", "probability"))
 ud_labels <- ifelse(ud_labels == 1, "u", "d")
 
-print(lr_labels)
-print(ud_labels)
+# print(lr_labels)
+# print(ud_labels)
 
 i <- 1
 len <- length(lr_labels)
