@@ -90,18 +90,80 @@ Akshay Mittal\\
 
 \maketitle
 \begin{abstract}
-This paper provides a sample of a \LaTeX\ document which conforms to
-the formatting guidelines for ACM SIG Proceedings.
-It complements the document \textit{Author's Guide to Preparing
-ACM SIG Proceedings Using \LaTeX$2_\epsilon$\ and Bib\TeX}. This
-source file has been written with the intention of being
-compiled under \LaTeX$2_\epsilon$\ and BibTeX.
-
+[to - fill]
 \end{abstract}
 
 \section{Introduction}
+\label{sec:introduction}
+\noindent Mobile phones~\cite{spiphone} are becoming increasingly powerful
+devices. In addition to being able to run applications ranging from email
+clients to web browsers, a progressively sophisticated set of sensors are
+enabling these devices to more actively interface with the world
+around them. From gestures captured by accelerometers for games
+to augmented reality applications displaying metadata tags on video
+from the camera in real-time, mobile phones are becoming adept
+at capturing and harnessing rich features and data from their surroundings.
+Unfortunately, the array of sensors in these devices can also be
+used in unintended ways. As many have suggested, malware could
+potentially gain access to a mobile phone's camera to take photos or
+video of the owner and their surroundings~\cite{cheng2007mobile}. In cases where
+the camera may not be pointed at an interesting target, a malicious
+application could instead attempt to activate the device's microphone
+and record ambient sounds or syphon GPS data to track the
+target's location
+\cite{dagon2004mobile, cai2009defending, enck2010taintdroid, egele2011pios}.
+Recognizing the potential for the leakage of sensitive information, many
+modern mobile phone operating systems provide mechanisms by which access to
+such sensors is protected by explicit permission from the user. For instance,
+the manifest files included with every Android application provide an
+unambiguous list of all of permissions an application may ever request
+at installation time. Should an application not request access
+to these resources or the user deny the application such rights, the
+application will not be able to potentially abuse these resources.
+However, access to all of the sensors contained in these devices are
+not so tightly controlled.
 
-Lorem ipsum dolor sit amet, et alienum salutatus cotidieque has, per an fugit dictas saperet. Cu nec odio denique, qui at assum omnium. Nihil maluisset vituperatoribus eu ius, insolens facilisis te eos. Enim elit appetere ne has, cu eos delectus inciderint. Nam ea lucilius efficiendi. An sumo diam dicta pri, partem animal aliquip eu vel. Mei et integre gloriatur delicatissimi, cu error denique duo. In mea utroque explicari contentiones, qui errem viris et. Mea epicuri periculis consequuntur eu. Cibo doctus est ne, ius dicta integre cu.
+In this paper, we demonstrate that unfettered access to the
+accelerometers available on many mobile phones can allow for significant
+unintended leakage of information from a user's environment.
+We show that a malicious application with access to the accelerometer
+feed can record and reconstruct the keypresses made
+on a nearby keyboard based solely on the observed vibrations. We
+develop profiles for keypress events using boosted Random Forests,
+which creates an abstract representation of the relationship between
+the keystroke signal and the alphabet typed. We then recover the typed content
+by translating from our intermediary form to English words using a number
+of different dictionaries. Such tasks are not a trivial application of
+standard techniques, especially when compared to previous efforts
+in this space. Specifically, we must overcome much lower sensor
+sampling rates than has been experienced in the related acoustic
+and electromagnetic-based eavesdropping attacks, which makes
+deciphering individual keypresses extremely difficult.
+
+Through this, we make the following contributions in this paper:
+\begin{enumerate}
+\item {\bf Develop an infrastructure for characterizing keypress vibrations}: We
+capture, analyze and develop profiles of keypress events on a nearby
+keyboard based on the vibrations created when they are pressed. Our inputs are
+then processed using a set boosted Random Forests to create an intermediary
+representation, which is combined with candidate dictionaries
+to successfully recover words at rates as high as \_\_ %.
+\item {\bf Dataset made publicly available}: To the best of our knowledge,
+there does not exists a dataset with
+the keystrokes for the vibrations recorded using an accelerometer. In this
+paper, we demonstrate we construct the dataset of keystroke vibrations,
+recorded using the accelerometer, present in a smartphone and make
+the dataset publicly available to enhance further research on this topic. Given
+the widespread about security breaches and email leaks, we perceive this to be
+of great importance in motivating the mobile operating system manufacturers
+to restrict the usage of accelerometers to permitted applications only.\\
+\end{enumerate}
+\noindent Note that our approach is greatly influenced by the work of
+Marquardt \emph{et. al}~\cite{spiphone} and we present key differences with our
+approach.
+
+
+
 
 
 \section{Related Work}
@@ -140,7 +202,7 @@ and the \textbf{.cls} and \textbf{.tex} files that it describes.
 % The following two commands are all you need in the
 % initial runs of your .tex file to
 % produce the bibliography for the citations in your paper.
-\bibliographystyle{abbrv}
+\bibliographystyle{unsrt}
 \bibliography{sigproc}  % sigproc.bib is the name of the Bibliography in this case
 % You must have a proper ".bib" file
 %  and remember to run:
