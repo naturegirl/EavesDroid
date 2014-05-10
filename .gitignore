@@ -21,3 +21,11 @@
 .classpath
 .project
 .buildpath
+
+# LaTeX extra binary files #
+############################
+*.aux
+*.bbl
+*.log
+*.blg
+*.out
