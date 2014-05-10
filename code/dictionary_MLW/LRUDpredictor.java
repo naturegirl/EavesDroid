@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Comparator;
+import java.util.PriorityQueue;
 
 
 public class LRUDpredictor {
@@ -36,8 +38,8 @@ public class LRUDpredictor {
     /**
      * return all the matching words, that match according to the LRUD sequence
      * @sequence: input sequence, i.e. "lrud"
-     * @dict_num: which dictionary, between 1 ~ 72
-     * @return: all words in the dictionary with the same LRUD sequence 
+     * @dict_num: which dictionaries, between 1 ~ 72
+     * @return: all words in 1-dict_num dictionaries with the same LRUD sequence 
      */
     private ArrayList<String> getMatchingWords(String sequence, int dict_num) {
 	if (dict_num < 1 || dict_num > 72)
@@ -46,7 +48,7 @@ public class LRUDpredictor {
 	    throw new RuntimeException("invalid input sequence!");
 	
 	ArrayList<String> result = new ArrayList<String>();
-	HashSet<String> dict = dictionary.getDictionary(dict_num);
+	HashSet<String> dict = this.dictionary.getKDictionaries(dict_num);
 	for (String entry : dict) {
 	    String entry_seq = generateSequence(entry);
 	    if (get_distance(sequence, entry_seq) == 0)
@@ -59,9 +61,10 @@ public class LRUDpredictor {
      * returns the top k closest words in the dictionary specified by dict_num
      * as measured by the distance of their LRUD sequences
      * @param input sequence: same as in getMatchingWords
-     * @param dict_num: between 1 ~ 72
+     * @dict_num: which dictionaries, between 1 ~ 72
      * @param k: how many words we want to return, is upper bound
      * @return: top k closest words measured by LRUD sequence distance
+     * in the 1-dict_num dictionaries 
      */
     private ArrayList<String> getClosestWords(String sequence, int dict_num, int k) {
 	if (dict_num < 1 || dict_num > 72)
@@ -69,19 +72,50 @@ public class LRUDpredictor {
 	if (!isValid(sequence))
 	    throw new RuntimeException("invalid input sequence!");	
 	
-	HashSet<String> dict = dictionary.getDictionary(dict_num);
-	ArrayList<String> result = new ArrayList<String>(k);	// treat as circular array
-	int distance = Integer.MAX_VALUE;
-	int pos = 0;
+	HashSet<String> dict = this.dictionary.getKDictionaries(dict_num);
+	PriorityQueue<Pair> que = new PriorityQueue<Pair>(k, new Comparator<Pair>(){
+	    @Override
+	    public int compare(Pair p1, Pair p2) {
+	        return (int)Math.signum(p2.getDistance() - p1.getDistance());
+	    }
+	});
+	int distance = 0;
 	for (String entry : dict) {
 	    String entry_seq = generateSequence(entry);
-	    if (get_distance(sequence, entry_seq) < distance) {
-		result.add(pos,entry);
-		pos = (pos + 1) % k;
-		distance = get_distance(sequence, entry_seq);
+	    distance = get_distance(sequence, entry_seq);
+	    if (distance == Integer.MAX_VALUE) {
+	        continue;
 	    }
+	    que.offer(new Pair(entry, distance));
+        if (que.size() == (k + 1)) {
+            que.poll();
+        }
 	}
-	return result;	
+	
+	String[] arr = new String[que.size()];
+	for (int i = que.size() - 1; i >= 0; i--) {
+	    arr[i] = que.poll().getWord();
+	}
+	ArrayList<String> result = new ArrayList<String>(Arrays.asList(arr));
+	return result;
+    }
+    
+    class Pair {
+        String word;
+        int distance;
+        
+        Pair(String word, int distance) {
+            this.word = word;
+            this.distance = distance;
+        }
+        
+        String getWord() {
+            return this.word;
+        }
+        
+        int getDistance() {
+            return this.distance;
+        }
     }
     
     /*
@@ -151,23 +185,27 @@ public class LRUDpredictor {
      * @param args
      */
     public static void main(String[] args) {
-	
-	if (args.length == 0) {
-	    System.out.println("Usage: LRUDpredictor <filename>  \n" +
-	    		"Pass in the filename of the sequence file. Looks in the data/input-words/ directory.");
-	    return;
-	}
-	
+
+        if (args.length < 3) {
+            System.out.println("Usage: LRUDpredictor <filename> <num-dicts-to-search> <num-matches>\n" +
+                    "Pass in the filename of the sequence file, number of dictionaries" +
+                    "to search for the word in and top-K matches");
+            System.out.println("Example: LRUDpredictor ../../data/input-words.arff/akshay.arff 3 5");
+            return;
+        }
+    
 	LRUDpredictor pred = new LRUDpredictor();
 	String seq = pred.readSequenceFromFile(args[0]);
+	    int num_dicts = Integer.parseInt(args[1]);
+	    int k = Integer.parseInt(args[2]);
 	System.out.println("input sequence: "+seq);
-	ArrayList<String> result = pred.getMatchingWords(seq, 1);
+	ArrayList<String> result = pred.getMatchingWords(seq, num_dicts);
 	System.out.println("Found "+result.size()+" exact match(es):");
 	for (String s : result)
 	    System.out.println(s);
 	
-	ArrayList<String> result2 = pred.getClosestWords(seq, 1, 5);
-	System.out.println("Found "+result2.size()+" match(es):");
+	ArrayList<String> result2 = pred.getClosestWords(seq, num_dicts, k);
+	System.out.println("Found "+result2.size()+" close match(es):");
 	for (String s : result2) {
 	    int dist = get_distance(seq, pred.generateSequence(s));
 	    System.out.println(s+" "+dist);
