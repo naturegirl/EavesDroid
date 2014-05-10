@@ -10,9 +10,9 @@ data_ud <- read.arff(file_ud)
 load(file="./adaboost.rf.lr.rda")
 load(file="./adaboost.rf.ud.rda")
 
-input_file <- "./../../data/weka-data/akshay_simple.arff"
+input_file <- "./../../data/weka-data/aks_1399412025.csv.arff"
 if (length(args) >= 1) {
-  inputdir <- args[1]
+  input_file <- args[1]
 }
 
 data_input <- read.arff(input_file)
