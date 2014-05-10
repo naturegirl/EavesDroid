@@ -37,6 +37,19 @@ public class Dictionary {
     }
     
     /*
+     * returns the k'th dictionary, where k is a value between 1 and 72.
+     */
+    public HashSet<String> getKDictionaries (int k) {
+    if (k < 1 || k > 72)
+        throw new RuntimeException("Dictionary number is out of range!");
+    HashSet<String> combined_dictionaries = new HashSet<String>();
+    for (int i = 0; i < k; i++) {
+        combined_dictionaries.addAll(this.dictionaries.get(i));
+    }
+    return combined_dictionaries;
+    }
+
+    /*
      * returns the distance between the two strings
      * measure is just number of matching letters
      */
