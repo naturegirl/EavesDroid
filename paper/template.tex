@@ -162,11 +162,29 @@ to restrict the usage of accelerometers to permitted applications only.\\
 Marquardt \emph{et. al}~\cite{spiphone} and we present key differences with our
 approach.
 
-
-
-
-
 \section{Related Work}
+Researchers have studied malicious code on mobile devices that
+learn information about the device owner using other embedded sensors.
+In the most closely related work to our paper, Marquardt \emph{et. al}
+\cite{spiphone} propose \emph{(sp)iPhone} which uses motion sensors in the
+iPhone 4
+to infer keystrokes of nearby laptop users. \emph{(sp)iPhone} uses 3 labels for
+each pair of keystrokes in order to determine the correct identification for
+the letters of the word. The location of the key is modelled using a neural
+network trained on 150 keystrokes for each letter of the English alphabet.
+A profile is then constructed for each pair using the neural network and
+determines and models the distance between the two events. The predictions
+of the neural network are matched against a dictionary to determine the top
+matches. The accuracy achieved is roughly 80\% but this decreases to 40\%
+as the size of the dictionary increases.
+
+In a very similar, but orthogonal, use case, Owusu \emph{et. al}
+\cite{owusu2012accessory}
+present the threat of applications which extract the keystrokes of the
+user's typing on the smartphone screen itself. Again, due to no restrictions
+on the usage of the accelerometer, they are able to extract 6-character
+passwords in as few as 4.5 trials(median). TouchLogger~\cite{cai2011touchlogger}
+uses orientation of the smartphone device to infer the keystrokes.
 
 \section{Threat Model}
 
@@ -178,25 +196,10 @@ approach.
 
 
 \section{Conclusions}
-This paragraph will end the body of this sample document.
-Remember that you might still have Acknowledgments or
-Appendices; brief samples of these
-follow.  There is still the Bibliography to deal with; and
-we will make a disclaimer about that here: with the exception
-of the reference to the \LaTeX\ book, the citations in
-this paper are to articles which have nothing to
-do with the present subject and are used as
-examples only.
-%\end{document}  % This is where a 'short' article might terminate
 
 %ACKNOWLEDGMENTS are optional
 \section{Acknowledgments}
-This section is optional; it is a location for you
-to acknowledge grants, funding, editing assistance and
-what have you.  In the present case, for example, the
-authors would like to thank Gerald Murray of ACM for
-his help in codifying this \textit{Author's Guide}
-and the \textbf{.cls} and \textbf{.tex} files that it describes.
+
 
 %
 % The following two commands are all you need in the
@@ -218,13 +221,7 @@ and the \textbf{.cls} and \textbf{.tex} files that it describes.
 
 \section{Appendix Section}
 
-Lorem ipsum dolor sit amet, et alienum salutatus cotidieque has, per an fugit dictas saperet. Cu nec odio denique, qui at assum omnium. Nihil maluisset vituperatoribus eu ius, insolens facilisis te eos. Enim elit appetere ne has, cu eos delectus inciderint. Nam ea lucilius efficiendi.
-
-
 \subsection{Appendix Subsection}
-
-Lorem ipsum dolor sit amet, et alienum salutatus cotidieque has, per an fugit dictas saperet. Cu nec odio denique, qui at assum omnium. Nihil maluisset vituperatoribus eu ius, insolens facilisis te eos. Enim elit appetere ne has, cu eos delectus inciderint. Nam ea lucilius efficiendi.
-
 
 \balancecolumns
 % That's all folks!
