@@ -14,30 +14,33 @@ public class WordFeatureExtractor {
 
     public static final double G = 9.81;
     public static final BigInteger FACTOR = new BigInteger("1000");
-    public static boolean WANT_GFORCE_DATA = false;
     public static BigInteger BEFORE_THRESH = new BigInteger("250000"); // 250ms
     public static BigInteger AFTER_THRESH = new BigInteger("1000000"); // 1000ms
     public static double G_FORCE_THRESH = 0.15;
+    public static boolean TIME_X_Y_Z_ONLY = false;
     
     private HashMap<String, ArrayList<Features>> featuresMap;
     private File gForceFile;
+    private String indivLettersFile;
     
     public static void main(String[] args) throws IOException {
         if (args.length < 1) {
             System.out.println("Usage: java WordFeatureExtractor " +
-                    "<data-folder> <<gforce>>");
-            System.out.println("Example: java Word FeatureExtractor akshay");
+                    "<data-folder> <<timexyz>>");
+            System.out.println("Example: java WordFeatureExtractor akshay");
             System.exit(0);
         }
         if (args.length == 2) {
-            if (args[1].equals("gforce")) {
-                WANT_GFORCE_DATA = true;
+            if (args[1].equals("timexyz")) {
+                TIME_X_Y_Z_ONLY = true;
             }
         }
+        WordFeatureExtractor ob = new WordFeatureExtractor();
+        
         String path = "../../data/" + args[0];
+        ob.indivLettersFile = "../../data/" + args[0] + ".indivletters";
         File directory = new File(path);
 
-        WordFeatureExtractor ob = new WordFeatureExtractor();
         ob.featuresMap = new HashMap<String, ArrayList<Features>>();
         ob.gForceFile = new File(path + ".letters.gforces");
         if (!ob.gForceFile.exists()) {
@@ -45,8 +48,10 @@ public class WordFeatureExtractor {
         }
         ob.processWordCSV(directory);
         
-        String features_dir = "../../data/" + args[0] + ".feature";
-        ob.writeToFile(features_dir);
+        if (!TIME_X_Y_Z_ONLY) {
+            String features_dir = "../../data/" + args[0] + ".feature";
+            ob.writeToFile(features_dir);
+        }
     }
 
     private void writeToFile(String dir_name) throws IOException {
@@ -98,12 +103,46 @@ public class WordFeatureExtractor {
                 System.out.println(file.getName() +
                         ": # letters = " + letter_signals.size());
                 this.writeWordLettersGForce(letter_signals, file);
-                this.addFeatures(file, letter_signals);
+                if (TIME_X_Y_Z_ONLY) {
+                    this.writeTimeXYZ(letter_signals, file);
+                } else {
+                    this.addFeatures(file, letter_signals);
+                }
             } else if (file.isDirectory()) {
                 this.processWordCSV(file);
             }
         }
         return null;
+    }
+
+    private void writeTimeXYZ(ArrayList<ArrayList<Signal>> letter_signals,
+            File csv_file) throws IOException {
+        File indiv = new File(this.indivLettersFile);
+        if (!indiv.exists()) {
+            indiv.mkdir();
+        }
+        String output_dir = this.indivLettersFile + "/" +
+                csv_file.getName().split("\\.")[0];
+        File file = new File(output_dir);
+        if (!file.exists()) {
+            file.mkdir();
+        }
+        String filepath = file.getAbsolutePath() + "/";
+        for (int i = 0; i < letter_signals.size(); i++) {
+            String path = filepath + i + ".letter.csv";
+            ArrayList<Signal> signals = letter_signals.get(i);
+            PrintWriter pw = new PrintWriter(
+                    new BufferedWriter(new FileWriter(path)));
+            for (Signal signal : signals) {
+                String data = signal.getTimeStamp().toString() + "," +
+                              String.valueOf(signal.getX()) + "," +
+                              String.valueOf(signal.getY()) + "," +
+                              String.valueOf(signal.getZ());
+                pw.println(data);
+            }
+            pw.close();
+            //System.out.println("writing " + path);
+        }
     }
 
     private ArrayList<ArrayList<Signal>> shiftRelativeToOrigin(

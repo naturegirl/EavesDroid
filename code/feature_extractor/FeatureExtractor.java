@@ -28,7 +28,7 @@ public class FeatureExtractor {
     public static final boolean WANT_SEPTET_LABEL = false;
     public static BigInteger BEFORE_THRESH = new BigInteger("40000"); // 40ms
     public static BigInteger AFTER_THRESH = new BigInteger("85000"); // 85ms
-    public static final boolean WANT_WINDOW_SIGNAL = true;
+    public static final boolean WANT_WINDOW_SIGNAL = false;
     
     private static ArrayList<Features> featuresList;
 
