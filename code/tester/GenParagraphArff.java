@@ -104,7 +104,7 @@ public class GenParagraphArff {
      */
     public static void main(String[] args) throws IOException {
         String features_file =
-                "../../data/features/all-letters-labeled.csv";
+                "../../data/dataset/testing.csv";
         String template_file = "../scripts/template.arff";
         String outdir_path = "../../data/paragraph_arff";
         GenParagraphArff ob = new GenParagraphArff();

@@ -1,0 +1,41 @@
+@relation signals
+@attribute mean NUMERIC
+@attribute skewness NUMERIC
+@attribute kurtosis NUMERIC
+@attribute variance NUMERIC
+@attribute min NUMERIC
+@attribute max NUMERIC
+@attribute rms NUMERIC
+@attribute fft1 NUMERIC
+@attribute fft2 NUMERIC
+@attribute fft3 NUMERIC
+@attribute fft4 NUMERIC
+@attribute fft5 NUMERIC
+@attribute fft6 NUMERIC
+@attribute fft7 NUMERIC
+@attribute fft8 NUMERIC
+@attribute fft9 NUMERIC
+@attribute fft10 NUMERIC
+@attribute fft11 NUMERIC
+@attribute fft12 NUMERIC
+@attribute fft13 NUMERIC
+@attribute fft14 NUMERIC
+@attribute fft15 NUMERIC
+@attribute fft16 NUMERIC
+@attribute fft17 NUMERIC
+@attribute fft18 NUMERIC
+@attribute fft19 NUMERIC
+@attribute fft20 NUMERIC
+@attribute fft21 NUMERIC
+@attribute fft22 NUMERIC
+@attribute fft23 NUMERIC
+@attribute fft24 NUMERIC
+@attribute fft25 NUMERIC
+@attribute fft26 NUMERIC
+@attribute fft27 NUMERIC
+@attribute fft28 NUMERIC
+@attribute fft29 NUMERIC
+@attribute fft30 NUMERIC
+@attribute class {1,2}
+
+@data

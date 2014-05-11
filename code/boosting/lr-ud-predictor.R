@@ -1,9 +1,9 @@
 library(RWeka)
 library(rJava)
 args <- commandArgs(trailingOnly = TRUE)
-file_lr <- "./../../data/weka-data/all-lr-40.arff"
+file_lr <- "./../../data/dataset/training.lr.arff"
 data_lr <- read.arff(file_lr)
-file_ud <- "./../../data/weka-data/all-ud-40.arff"
+file_ud <- "./../../data/dataset/training.ud.arff"
 data_ud <- read.arff(file_ud)
 
 # load the saved models for LR and UD predictors

@@ -1,5 +1,5 @@
 args <- commandArgs(trailingOnly = TRUE)
-path <- "./../../data/test-akshay-letters"
+path <- "./../../data/all-letters-images"
 if (length(args) >= 1) {
    path <- args[1]
 }
