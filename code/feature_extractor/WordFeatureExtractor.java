@@ -134,7 +134,13 @@ public class WordFeatureExtractor {
             PrintWriter pw = new PrintWriter(
                     new BufferedWriter(new FileWriter(path)));
             for (Signal signal : signals) {
-                String data = signal.getTimeStamp().toString() + "," +
+                String time = "";
+                if (TIME_X_Y_Z_ONLY) {
+                    time = signal.getTimeStamp().multiply(FACTOR).toString();
+                } else {
+                    time = signal.getTimeStamp().toString();
+                }
+                String data = time + "," +
                               String.valueOf(signal.getX()) + "," +
                               String.valueOf(signal.getY()) + "," +
                               String.valueOf(signal.getZ());
