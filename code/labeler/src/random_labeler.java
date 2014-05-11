@@ -1,5 +1,6 @@
 import java.util.*;
 import java.io.*;
+import java.lang.*;
 public class random_labeler {
 
 	/**
@@ -17,7 +18,7 @@ public class random_labeler {
 		int max;
 		int num;
 		String name;
-		Scanner scanner = new Scanner(System.in);
+		//Scanner scanner = new Scanner(System.in);
 		Random rand = new Random();
 		name = args[1];
 		try{
@@ -29,14 +30,26 @@ public class random_labeler {
 			BufferedWriter bw = new BufferedWriter(fw);
 			max = Integer.parseInt(args[0]);
 			System.out.println("*****************");
+			try{
+				Thread.sleep(2000);
+			}
+			catch(InterruptedException e){
+				e.printStackTrace();
+			}
 			while(count<max){
-				scanner.nextLine();
+				//scanner.nextLine();
 				num = rand.nextInt(26)+65;
 				System.out.print((char)num+"    --------   count: ");
 				bw.write((char)(num + 32));
 				bw.write("\n");
 				count++;
 				System.out.println(count);
+				try{
+					Thread.sleep(3000);
+				}
+				catch(InterruptedException e){
+					e.printStackTrace();
+				}
 			}
 			bw.close();
 		}
