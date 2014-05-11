@@ -13,6 +13,8 @@
 .Rhistory
 .Rapp.history
 
+# generated spectogram files
+data/spectograms/
 
 # Java
 *.class
