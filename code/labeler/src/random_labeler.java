@@ -21,7 +21,7 @@ public class random_labeler {
 		Random rand = new Random();
 		name = args[1];
 		try{
-			File file = new File("../data/"+name+".csv");
+			File file = new File("../data/"+name+".txt");
 			if (!file.exists()) {
 				file.createNewFile();
 			}
