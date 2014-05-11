@@ -30,7 +30,7 @@
 
 \begin{document}
 
-\title{Keystroke recovery using mobile phone accelerometers}
+\title{EavesDroid: Keystroke recovery using mobile phone accelerometers}
 
 %
 % You need the command \numberofauthors to handle the 'placement
@@ -193,7 +193,7 @@ Our attack is based upon two observations:
 
 Many users like to place their smartphone close to their laptop while working, so that it is easily accessible and notifications are not missed.
 
-Furthermore we note that while smartphones offer a broad range of sensers such as microphone, GPS, gyroscope and accelerometer, the accelerometer is the only sensor to which access is not protected in any current mobile phone operating system.
+Furthermore we note that while smartphones offer a broad range of sensors such as microphone, GPS, gyroscope and accelerometer, the accelerometer is the only sensor to which access is not protected in any current mobile phone operating system. That is mainly due to the frequent usage needs of the accelerometer to determine window orientation and update screen orientation, a feature any app can make use of.
 
 \section{Framework Description}
 
@@ -220,13 +220,33 @@ We recorded 1000 datapoints in 40 sessions with 25 letters in each sessions. For
 
 The original recording will contain a large spike at the beginning and end due to the pressing of "Start" and "Stop" on the recording app. We cut off these noise signals and further segment the data into 25 individual data points. An example of a plot of one such signal is shown in fig.\ref{fig:signal}.
 
+\subsection{Feature Extraction}
+
+We use a combination of time-domain and frequency-domain features to construct our feature vector. 
+
 
 \section{Implementation}
+
+[table with all combinations of accuracies]
+
+LR predictor and Up down predictor .
+
+Adaboost with Random Forest 
+
+Mention triads did not give too good accuracies
+
 
 \section{Experimental Results}
 
 
+[Box sentence: exact matches and possible choices for non-exact matches]
+
+[Negative analysis, word watch, many potential matches  when dictionary size increases]
+
+
 \section{Conclusions}
+
+
 
 \subsection{Future Work}
 
