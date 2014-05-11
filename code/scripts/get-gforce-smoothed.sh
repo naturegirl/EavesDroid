@@ -9,7 +9,8 @@ fi
 path=../../data
 
 # copy the class files to this directory
-cp ../bin/*.class .
+cp ../feature_extractor/*.java .
+javac *.java
 
 # clean the directories if they already exist
 rm -rf $path/$2
@@ -23,7 +24,7 @@ java -cp . FeatureExtractor $2 gforce
 echo "features file written at ... $path/features/$2.csv"
 
 # clean the class files
-rm -f *.class
+rm -f *.class *.java
 echo "cleaning .class files"
 
 # copy the gforce files to a separate folder

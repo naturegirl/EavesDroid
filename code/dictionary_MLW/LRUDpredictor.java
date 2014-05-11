@@ -12,6 +12,7 @@ public class LRUDpredictor {
     
     // the input sequence that we read is in this directory
     private static final String sequence_dir = "../../data/input-words/";
+    private static final boolean WANT_SEQUENCE_FOR_TESTING = false;
     
     HashSet<Character> LeftUp;
     HashSet<Character> LeftDown;
@@ -186,6 +187,15 @@ public class LRUDpredictor {
      */
     public static void main(String[] args) {
 
+        if (WANT_SEQUENCE_FOR_TESTING) {
+            LRUDpredictor seq = new LRUDpredictor();
+            if (args.length < 1) {
+                System.out.println("Usage: LRUDpredictor word");
+                System.exit(1);
+            }
+            System.out.println(seq.generateSequence(word));
+            System.exit(0);
+        }
         if (args.length < 3) {
             System.out.println("Usage: LRUDpredictor <filename> <num-dicts-to-search> <num-matches>\n" +
                     "Pass in the filename of the sequence file, number of dictionaries" +
