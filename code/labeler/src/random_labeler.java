@@ -33,7 +33,7 @@ public class random_labeler {
 				scanner.nextLine();
 				num = rand.nextInt(26)+65;
 				System.out.print((char)num+"    --------   count: ");
-				bw.write(new Integer(num-64).toString());
+				bw.write((char)(num + 32));
 				bw.write("\n");
 				count++;
 				System.out.println(count);
