@@ -45,14 +45,16 @@ numdirs=$(ls -l -d */ | wc -l)
 dir=1
 rm -rf ../__para.labeled.letters
 mkdir ../__para.labeled.letters
+name=0
 while [[ $dir -le $numdirs ]]
 do
     mkdir ../__para.labeled.letters/$dir
     i=0
     while read line; do
-	cp $dir\_*/$i.letter.csv ../__para.labeled.letters/$dir/$line\_$dir.csv
-	echo "copied $dir\_*/$i.letter.csv to ../__para.labeled.letters/$dir/$line\_$dir.csv"
+	cp $dir\_*/$i.letter.csv ../__para.labeled.letters/$dir/$line\_$name.csv
+	echo "copied $dir\_*/$i.letter.csv to ../__para.labeled.letters/$dir/$line\_$name.csv"
 	((i = i + 1))
+	((name = name + 1))
 	#sleep .1
     done < ../labels/$dir.txt
     ((dir = dir + 1))

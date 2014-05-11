@@ -193,7 +193,7 @@ public class LRUDpredictor {
                 System.out.println("Usage: LRUDpredictor word");
                 System.exit(1);
             }
-            System.out.println(seq.generateSequence(word));
+            System.out.println(seq.generateSequence(args[0]));
             System.exit(0);
         }
         if (args.length < 3) {
