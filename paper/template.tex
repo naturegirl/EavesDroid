@@ -103,6 +103,7 @@ around them. From gestures captured by accelerometers for games
 to augmented reality applications displaying metadata tags on video
 from the camera in real-time, mobile phones are becoming adept
 at capturing and harnessing rich features and data from their surroundings.
+
 Unfortunately, the array of sensors in these devices can also be
 used in unintended ways. As many have suggested, malware could
 potentially gain access to a mobile phone's camera to take photos or
@@ -188,7 +189,37 @@ uses orientation of the smartphone device to infer the keystrokes.
 
 \section{Threat Model}
 
+Our attack is based upon two observations:
+
+Many users like to place their smartphone close to their laptop while working, so that it is easily accessible and notifications are not missed.
+
+Furthermore we note that while smartphones offer a broad range of sensers such as microphone, GPS, gyroscope and accelerometer, the accelerometer is the only sensor to which access is not protected in any current mobile phone operating system.
+
 \section{Framework Description}
+
+\subsection{Dataset Capturing}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.5\textwidth]{img/setup}
+\caption{Threat model of a smartphone placed next to a keyboard. Used in our experimental setup to capture the dataset.
+}
+\label{fig:setup}
+\end{figure}
+
+Our experimental setup is shown in fig.\ref{fig:setup}. We placed a Dell USB keyboard and a LG Nexus smartphone on a wooden table. No other items were placed on or were touching the table. All keys were pressed with the index finger of the right hand. The hands do not touch the keyboard or table, and the fingers do not pause on the keyboard but only touch it during the brief duration of the key press.
+
+We recorded 1000 datapoints in 40 sessions with 25 letters in each sessions. For each session we generate a sequence of 25 random letters and display the letters in 3 second intervals to ensure an even recording of the letters and to ensure that there is no bias towards a specific letter. For the data capturing we developed an Android app that reads from the hardware accelerometer and syncs with our laptops, where we further process the data. The raw accelerometer data as returned by Android contains the $x$, $y$ and $z$-direction components of the acceleration of the vibration received. We calculate the G-force magnitude as $\sqrt{x^2+y^2+z^2}-g$ where $g = 9.81$ is the acceleration due to gravity.
+
+\begin{figure}
+\centering
+\includegraphics[width=0.5\textwidth]{img/signal2}
+\caption{Sample Recording for letter 'a'}
+\label{fig:signal}
+\end{figure}
+
+The original recording will contain a large spike at the beginning and end due to the pressing of "Start" and "Stop" on the recording app. We cut off these noise signals and further segment the data into 25 individual data points. An example of a plot of one such signal is shown in fig.\ref{fig:signal}.
+
 
 \section{Implementation}
 
@@ -196,6 +227,16 @@ uses orientation of the smartphone device to infer the keystrokes.
 
 
 \section{Conclusions}
+
+\subsection{Future Work}
+
+Mobile browsers having allowing access to accelerometer data,
+
+http://blogs.adobe.com/cantrell/archives/2012/03/accessing-the-accelerometer-and-gyroscope-in-javascript.html
+
+http://isthisanearthquake.com/
+
+http://isthisanearthquake.com/seismograph.html
 
 %ACKNOWLEDGMENTS are optional
 \section{Acknowledgments}
