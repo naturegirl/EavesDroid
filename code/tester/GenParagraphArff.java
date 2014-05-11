@@ -112,12 +112,7 @@ public class GenParagraphArff {
         ob.deleteDirectory(outdir);
         outdir.mkdir();
         ob.fetchAllFeatures(new File(features_file));
-        for (Character ch : ob.lettersFeatures.keySet()) {
-            System.out.println(ch + ": " + ob.lettersFeatures.get(ch).size());
-            //System.out.println("features: " + ob.lettersFeatures.get(ch).get(0));
-        }
         ob.readTemplate(new File(template_file));
-        System.out.println("template: " + ob.template);
         ob.processInputParagraph(outdir_path);
     }
 

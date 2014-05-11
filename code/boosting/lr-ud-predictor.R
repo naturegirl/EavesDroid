@@ -1,16 +1,16 @@
 library(RWeka)
 library(rJava)
 args <- commandArgs(trailingOnly = TRUE)
-file_lr <- "./../../data/weka-data/data-a-z-LR_combined.arff"
+file_lr <- "./../../data/weka-data/all-lr-40.arff"
 data_lr <- read.arff(file_lr)
-file_ud <- "./../../data/weka-data/data-a-z-UD_combined.arff"
+file_ud <- "./../../data/weka-data/all-ud-40.arff"
 data_ud <- read.arff(file_ud)
 
 # load the saved models for LR and UD predictors
 load(file="./adaboost.rf.lr.rda")
 load(file="./adaboost.rf.ud.rda")
 
-input_file <- "./../../data/weka-data/aks_1399412025.csv.arff"
+input_file <- "./../../data/weka-data/new/garbage_1399740519.csv.arff"
 if (length(args) >= 1) {
   input_file <- args[1]
 }
@@ -38,3 +38,4 @@ while ( i <= len ) {
 print(str_label)
 output_label_filename <- paste(input_file, "pred", sep=".")
 write(str_label, file = output_label_filename)
+

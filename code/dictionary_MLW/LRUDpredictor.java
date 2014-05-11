@@ -1,8 +1,13 @@
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Comparator;
 import java.util.PriorityQueue;
@@ -13,6 +18,7 @@ public class LRUDpredictor {
     // the input sequence that we read is in this directory
     private static final String sequence_dir = "../../data/input-words/";
     private static final boolean WANT_SEQUENCE_FOR_TESTING = false;
+    private static boolean WANT_WORDS_IN_FILE = false;
     
     HashSet<Character> LeftUp;
     HashSet<Character> LeftDown;
@@ -101,6 +107,57 @@ public class LRUDpredictor {
 	return result;
     }
     
+    /**
+     * returns the closest (upto k distance) words in the
+     * dictionary specified by dict_num
+     * as measured by the distance of their LRUD sequences
+     * 
+     * In case of tie, all the tied words are returned.
+     * @param input sequence: same as in getMatchingWords
+     * @dict_num: which dictionaries, between 1 ~ 72
+     * @param k: how many words we want to return, is upper bound
+     * @return: top k closest words measured by LRUD sequence distance
+     * in the 1-dict_num dictionaries 
+     */
+    private ArrayList<String> getClosestDistanceWords(String sequence,
+            int dict_num, int k) {
+    if (dict_num < 1 || dict_num > 72)
+        throw new RuntimeException("dict_num is out of range!");
+    if (!isValid(sequence))
+        throw new RuntimeException("invalid input sequence!");  
+    
+    HashSet<String> dict = this.dictionary.getKDictionaries(dict_num);
+    HashMap<Integer, ArrayList<String>> list =
+            new HashMap<Integer, ArrayList<String>>(); 
+    
+    int distance = 0;
+    for (String entry : dict) {
+        String entry_seq = generateSequence(entry);
+        distance = get_distance(sequence, entry_seq);
+        if (distance == Integer.MAX_VALUE) {
+            continue;
+        }
+        ArrayList<String> word_list = null;
+        if (list.containsKey(distance)) {
+            word_list = list.get(distance);
+        } else {
+            word_list = new ArrayList<String>();
+            list.put(distance, word_list);
+        }
+        word_list.add(entry);
+    }
+    
+    ArrayList<String> result = new ArrayList<String>();
+    for (int i = 1; i <= k; i++) {
+        if (!list.containsKey(i)) {
+            continue;
+        }
+        result.addAll(list.get(i));
+    }
+    return result;
+    }
+
+    
     class Pair {
         String word;
         int distance;
@@ -182,10 +239,17 @@ public class LRUDpredictor {
 	}
 	return sequence;
     }
+
+    public String getNameFromPath(String str) {
+        String tmp = str.substring(str.lastIndexOf('/') + 1);
+        String name = tmp.substring(0, tmp.lastIndexOf('.'));
+        return name;
+    }
     /**
      * @param args
+     * @throws IOException 
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
 
         if (WANT_SEQUENCE_FOR_TESTING) {
             LRUDpredictor seq = new LRUDpredictor();
@@ -203,23 +267,51 @@ public class LRUDpredictor {
             System.out.println("Example: LRUDpredictor ../../data/input-words.arff/akshay.arff 3 5");
             return;
         }
+        if (args.length >= 4) {
+            if (args[3].equals("true")) {
+                WANT_WORDS_IN_FILE = true;
+            }
+        }
     
 	LRUDpredictor pred = new LRUDpredictor();
 	String seq = pred.readSequenceFromFile(args[0]);
 	    int num_dicts = Integer.parseInt(args[1]);
 	    int k = Integer.parseInt(args[2]);
+	    System.out.println("file: " + args[0]);
 	System.out.println("input sequence: "+seq);
 	ArrayList<String> result = pred.getMatchingWords(seq, num_dicts);
-	System.out.println("Found "+result.size()+" exact match(es):");
-	for (String s : result)
-	    System.out.println(s);
-	
-	ArrayList<String> result2 = pred.getClosestWords(seq, num_dicts, k);
-	System.out.println("Found "+result2.size()+" close match(es):");
-	for (String s : result2) {
-	    int dist = get_distance(seq, pred.generateSequence(s));
-	    System.out.println(s+" "+dist);
+    ArrayList<String> result2 = pred.getClosestDistanceWords(seq, num_dicts, k);
+	if (!WANT_WORDS_IN_FILE) {
+	    System.out.println("Found "+result.size()+" exact match(es):");
+    	for (String s : result)
+    	    System.out.println(s);
+    	
+    	System.out.println("Found "+result2.size()+" close match(es):");
+    	for (String s : result2) {
+    	    int dist = get_distance(seq, pred.generateSequence(s));
+    	    System.out.println(s+" "+dist);
+    	}
 	}
+    if (WANT_WORDS_IN_FILE) {
+        String path = "../../data/possible-words";
+        File outdir = new File(path);
+        if (!outdir.exists()) {
+            outdir.mkdir();
+        }
+        String word_label = pred.getNameFromPath(args[0]);
+        String outfilename = path + "/" + word_label + ".words";
+        PrintWriter pw = new PrintWriter(new BufferedWriter(
+                new FileWriter(outfilename)));
+        // exact matches to file
+        for (String s : result)
+            pw.println(s + " 0");
+        
+        // close matches to file
+        for (String s : result2) {
+            int dist = get_distance(seq, pred.generateSequence(s));
+            pw.println(s + " " + dist);
+        }
+        pw.close();
     }
-
+    }
 }
