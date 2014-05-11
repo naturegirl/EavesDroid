@@ -6,15 +6,20 @@ public class random_labeler {
 	 * @param args
 	 */
 	public static void main(String[] args) {
+	    if (args.length < 2) {
+            System.out.println("Usage: java random_labeler num-letters filename"
+                    );
+            System.out.println("Example: java random_labeler 10 test");
+            System.exit(0);
+        }
+    
 		int count = 0;
 		int max;
 		int num;
 		String name;
-		Random rand = new Random();
 		Scanner scanner = new Scanner(System.in);
-		System.out.println("please enter the file name:");
-		name = scanner.next();
-		System.out.println("please enter how many letters you would like to record:");
+		Random rand = new Random();
+		name = args[1];
 		try{
 			File file = new File("../data/"+name+".csv");
 			if (!file.exists()) {
@@ -22,7 +27,7 @@ public class random_labeler {
 			}
 			FileWriter fw = new FileWriter(file.getAbsoluteFile());
 			BufferedWriter bw = new BufferedWriter(fw);
-			max = scanner.nextInt();
+			max = Integer.parseInt(args[0]);
 			System.out.println("*****************");
 			while(count<max){
 				scanner.nextLine();
