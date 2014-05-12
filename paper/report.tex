@@ -365,7 +365,7 @@
 %Atlanta, Georgia 30332--0250\\
 %Email: http://www.michaelshell.org/contact.html}
 \and
-\IEEEauthorblockN{Yi-Hsien}
+\IEEEauthorblockN{Yi-Hsien Lin}
 \IEEEauthorblockA{Princeton University}
 \and
 \IEEEauthorblockN{Akshay Mittal}
@@ -441,55 +441,28 @@
 \section{Introduction}
 % no \IEEEPARstart
 \label{sec:introduction}
-\noindent Mobile phones~\cite{spiphone} are becoming increasingly powerful
-devices. In addition to being able to run applications ranging from email
-clients to web browsers, a progressively sophisticated set of sensors are
-enabling these devices to more actively interface with the world
-around them.
+\noindent Mobile phones are becoming increasingly powerful
+devices. In addition to being able to run simple applications such as email clients and web browsers; by equipping a wide variety of sophisticated sensors, these smartphones can actively interface with the world aound them.
 
 Unfortunately, the array of sensors in these devices can also be
-used in unintended ways. As many have suggested, malware could
+used in malicious ways. For example, malware could
 potentially gain access to a mobile phone's camera to take photos or
-video of the owner and their surroundings~\cite{cheng2007mobile}. In cases where
-the camera may not be pointed at an interesting target, a malicious
-application could instead attempt to activate the device's microphone
-and record ambient sounds or syphon GPS data to track the
-target's location
+video without the notice of the owner \cite{cheng2007mobile}. Other possible attempts are activating the device's microphone to record converstaions or turn on the GPS to track the target's position
 \cite{dagon2004mobile, cai2009defending, enck2010taintdroid, egele2011pios}.
-Recognizing the potential for the leakage of sensitive information, many
-modern mobile phone operating systems provide mechanisms by which access to
-such sensors is protected by explicit permission from the user. For instance,
-the manifest files included with every Android application provide an
-unambiguous list of all of permissions an application may ever request
-at installation time. Should an application not request access
-to these resources or the user deny the application such rights, the
-application will not be able to potentially abuse these resources.
-However, access to all of the sensors contained in these devices are
-not so tightly controlled.
+In light of the possible privacy threats mentioned above, operating systems that are implemented in modern mobile phones usually provide mechanisms so that applications must acquire the user's explicit permission before it can access the device's sensors.
 
-In this paper, we demonstrate that unfettered access to the
-accelerometers available on many mobile phones can allow for significant
-unintended leakage of information from a user's environment.
-We show that a malicious application with access to the accelerometer
-feed can record and reconstruct the keypresses made
-on a nearby keyboard based solely on the observed vibrations. We
-develop profiles for keypress events using boosted Random Forests,
-which creates an abstract representation of the relationship between
-the keystroke signal and the alphabet typed. We then recover the typed content
+For instance, an Android application would have a manifest file that includes a list of all permissions an application can request during installation time. Under this design, the application is either granted a particular permission when installed, and can use that feature as desired, or the permission is not granted and any attempt to use the feature fails without prompting the user. However, not all sensors' accesses are tightly regulated by this mechanism, which leads to several potential sensors abuse.
+
+
+One such example is the accelerometer. Access to acceleromters are usually un-restricted on most of the current mobile phone operating systems. In this paper, we developed \textbf{EavesDroid}, which is a malicious application with access to the accelerometer's data. We demonstrate that \textbf{EavesDroid} is able to record and reconstruct the keypresses made on a nearby keyboard with decent accuracy, based solely on the observed vibrations. We develop profiles for keypress by extracing features from the keypress signals and classifies them using boosted Random Forests. This allows us to establish an abstract representation of the relationship between a keystroke signal and its corresponding key. We then recover the typed content
 by translating from our intermediary form to English words using a number
-of different dictionaries. Such tasks are not a trivial application of
-standard techniques, especially when compared to previous efforts
-in this space. Specifically, we must overcome much lower sensor
-sampling rates than has been experienced in the related acoustic
-and electromagnetic-based eavesdropping attacks, which makes
-deciphering individual keypresses extremely difficult.
+of different dictionaries. As mentioned in \cite{spiphone}, reconstructing keystrokes from vibration signals is very different and much more difficult from previous efforts in this space since they are mostly based on acoustic or electromagnetic eavesdropping and enjoys a higher sampling rate. 
 
-Through this, we make the following contributions in this paper:
+Bt developing \textbf{EavesDroid} we have made the following contributions to the smarphone security domain:
 \begin{enumerate}
 \item {\bf Develop an infrastructure for characterizing keypress vibrations}: We
 capture, analyze and develop profiles of keypress events on a nearby
-keyboard based on the vibrations created when they are pressed. Our inputs are
-then processed using a set boosted Random Forests to create an intermediary
+keyboard based on the vibrations created when they are pressed. Features such as mean, skewness and FFT are first extracted from our input signals. We then use a set boosted Random Forests to create an intermediary
 representation, which is combined with candidate dictionaries
 to successfully recover words at rates as high as \_\_ %.
 \item {\bf Dataset made publicly available}: To the best of our knowledge,
