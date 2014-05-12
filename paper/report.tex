@@ -1,4 +1,3 @@
-
 %% bare_conf.tex
 %% V1.3
 %% 2007/01/11
@@ -284,65 +283,7 @@
 
 
 
-
-% *** FLOAT PACKAGES ***
-%
-%\usepackage{fixltx2e}
-% fixltx2e, the successor to the earlier fix2col.sty, was written by
-% Frank Mittelbach and David Carlisle. This package corrects a few problems
-% in the LaTeX2e kernel, the most notable of which is that in current
-% LaTeX2e releases, the ordering of single and double column floats is not
-% guaranteed to be preserved. Thus, an unpatched LaTeX2e can allow a
-% single column figure to be placed prior to an earlier double column
-% figure. The latest version and documentation can be found at:
-% http://www.ctan.org/tex-archive/macros/latex/base/
-
-
-
-%\usepackage{stfloats}
-% stfloats.sty was written by Sigitas Tolusis. This package gives LaTeX2e
-% the ability to do double column floats at the bottom of the page as well
-% as the top. (e.g., "\begin{figure*}[!b]" is not normally possible in
-% LaTeX2e). It also provides a command:
-%\fnbelowfloat
-% to enable the placement of footnotes below bottom floats (the standard
-% LaTeX2e kernel puts them above bottom floats). This is an invasive package
-% which rewrites many portions of the LaTeX2e float routines. It may not work
-% with other packages that modify the LaTeX2e float routines. The latest
-% version and documentation can be obtained at:
-% http://www.ctan.org/tex-archive/macros/latex/contrib/sttools/
-% Documentation is contained in the stfloats.sty comments as well as in the
-% presfull.pdf file. Do not use the stfloats baselinefloat ability as IEEE
-% does not allow \baselineskip to stretch. Authors submitting work to the
-% IEEE should note that IEEE rarely uses double column equations and
-% that authors should try to avoid such use. Do not be tempted to use the
-% cuted.sty or midfloat.sty packages (also by Sigitas Tolusis) as IEEE does
-% not format its papers in such ways.
-
-
-
-
-
-% *** PDF, URL AND HYPERLINK PACKAGES ***
-%
-%\usepackage{url}
-% url.sty was written by Donald Arseneau. It provides better support for
-% handling and breaking URLs. url.sty is already installed on most LaTeX
-% systems. The latest version can be obtained at:
-% http://www.ctan.org/tex-archive/macros/latex/contrib/misc/
-% Read the url.sty source comments for usage information. Basically,
-% \url{my_url_here}.
-
-
-
-
-
-% *** Do not adjust lengths that control margins, column widths, etc. ***
-% *** Do not use packages that alter fonts (such as pslatex).         ***
-% There should be no need to do such things with IEEEtran.cls V1.6 and later.
-% (Unless specifically asked to do so by the journal or conference you plan
-% to submit to, of course. )
-
+\usepackage{url}
 
 % correct bad hyphenation here
 \hyphenation{key-strokes}
@@ -352,51 +293,29 @@
 
 \begin{document}
 %
+%
 % paper title
 % can use linebreaks \\ within to get better formatting as desired
-\title{EavesDroid: Keystroke Recovery using Mobile Phone Accelerometers}
+\title{EavesDroid: Keystroke Recovery using Smartphone Accelerometers}
 
 % author names and affiliations
 % use a multiple column layout for up to three different
 % affiliations
-\author{\IEEEauthorblockN{Jennifer Guo}
-\IEEEauthorblockA{Princeton University}
+\author{\IEEEauthorblockN{Jennifer Guo, Yi-Hsien Lin, Akshay Mittal and Wathsala Vithanage}
+\IEEEauthorblockA{
+\texttt{\{jjguo,yihsien,akshay,wathsala\}@princeton.edu}\\\\
+Computer Science Department,\\Princeton University
+}
 %Georgia Institute of Technology\\
 %Atlanta, Georgia 30332--0250\\
 %Email: http://www.michaelshell.org/contact.html}
-\and
-\IEEEauthorblockN{Yi-Hsien Lin}
-\IEEEauthorblockA{Princeton University}
-\and
-\IEEEauthorblockN{Akshay Mittal}
-\IEEEauthorblockA{Princeton University}
-\and
-\IEEEauthorblockN{Wathsala Vithanage}
-\IEEEauthorblockA{Princeton University}
 }
+
 
 % conference papers do not typically use \thanks and this command
 % is locked out in conference mode. If really needed, such as for
 % the acknowledgment of grants, issue a \IEEEoverridecommandlockouts
 % after \documentclass
-
-% for over three affiliations, or if they all won't fit within the width
-% of the page, use this alternative format:
-% 
-%\author{\IEEEauthorblockN{Michael Shell\IEEEauthorrefmark{1},
-%Homer Simpson\IEEEauthorrefmark{2},
-%James Kirk\IEEEauthorrefmark{3}, 
-%Montgomery Scott\IEEEauthorrefmark{3} and
-%Eldon Tyrell\IEEEauthorrefmark{4}}
-%\IEEEauthorblockA{\IEEEauthorrefmark{1}School of Electrical and Computer Engineering\\
-%Georgia Institute of Technology,
-%Atlanta, Georgia 30332--0250\\ Email: see http://www.michaelshell.org/contact.html}
-%\IEEEauthorblockA{\IEEEauthorrefmark{2}Twentieth Century Fox, Springfield, USA\\
-%Email: homer@thesimpsons.com}
-%\IEEEauthorblockA{\IEEEauthorrefmark{3}Starfleet Academy, San Francisco, California 96678-2391\\
-%Telephone: (800) 555--1212, Fax: (888) 555--1212}
-%\IEEEauthorblockA{\IEEEauthorrefmark{4}Tyrell Inc., 123 Replicant Street, Los Angeles, California 90210--4321}}
-
 
 
 
@@ -413,6 +332,14 @@
 \begin{abstract}
 %\boldmath
 [to - fill]
+- smartphones, sensors blabla
+
+In this paper, we demonstrate accelerometer recording eavesdropping blabla
+
+- make dataset available public, of own recordings
+
+- Results: 70\% accuracy, with distance 3 or less
+
 \end{abstract}
 % IEEEtran.cls defaults to using nonbold math in the Abstract.
 % This preserves the distinction between vectors and scalars. However,
@@ -451,33 +378,34 @@ video without the notice of the owner \cite{cheng2007mobile}. Other possible att
 \cite{dagon2004mobile, cai2009defending, enck2010taintdroid, egele2011pios}.
 In light of the possible privacy threats mentioned above, operating systems that are implemented in modern mobile phones usually provide mechanisms so that applications must acquire the user's explicit permission before it can access the device's sensors.
 
-For instance, an Android application would have a manifest file that includes a list of all permissions an application can request during installation time. Under this design, the application is either granted a particular permission when installed, and can use that feature as desired, or the permission is not granted and any attempt to use the feature fails without prompting the user. However, not all sensors' accesses are tightly regulated by this mechanism, which leads to several potential sensors abuse.
+However, not all sensors' accesses are tightly regulated by this mechanism, which leads to potential sensor abuse for eavesdropping purposes by malicious apps.
+One such example is the accelerometer. Access to accelerometers is usually unrestricted on most of the current mobile phone operating systems, due to the frequent use of accelerometer data to determine and adjust window orientation. Furthermore, the accelerometer is very energy efficient and uses about 10 times less power than other motion sensors \cite{android}. [\textbf{citation}]
+% \url{http://developer.android.com/guide/topics/sensors/sensors_motion.html#sensors-motion-accel}
 
-
-One such example is the accelerometer. Access to accelerometers are usually un-restricted on most of the current mobile phone operating systems. In this paper, we developed \textbf{EavesDroid}, which is a malicious application with access to the accelerometer's data. We demonstrate that \textbf{EavesDroid} is able to record and reconstruct the keypresses made on a nearby keyboard with decent accuracy, based solely on the observed vibrations. We develop profiles for keypress by extracing features from the keypress signals and classifies them using boosted Random Forests. This allows us to establish an abstract representation of the relationship between a keystroke signal and its corresponding key. We then recover the typed content
+In this paper, we present \textbf{EavesDroid}, an application to recover keystrokes using 
+accelerometer data. We demonstrate that \textbf{EavesDroid} is able to record and reconstruct the keypresses made on a nearby keyboard with decent accuracy, based solely on the observed vibrations. We develop profiles for different keys by extracing features from the keypress signals and classify them using boosted Random Forests. This allows us to establish an abstract representation of the relationship between a keystroke signal and its corresponding key. We then recover the typed content
 by translating from our intermediary form to English words using a number
-of different dictionaries. As mentioned in \cite{spiphone}, reconstructing keystrokes from vibration signals is very different and much more difficult from previous efforts in this space since they are mostly based on acoustic or electromagnetic eavesdropping and enjoys a higher sampling rate. 
+of different dictionaries.
+While there have been similar effors to reconstruct keystrokes from recorded audio signals with high accuracy [\textbf{cite}],
+%http://www.cs.berkeley.edu/~tygar/papers/Keyboard_Acoustic_Emanations_Revisited/ccs.pdf
+ reconstruction from accelerator data has not seen that much exploration. It is more challenging because of the lower sampling rate and because the data points are recorded at uneven time intervals.
 
-By developing \textbf{EavesDroid} we have made the following contributions to the smarphone security domain:
+By developing \textbf{EavesDroid} we have made the following contributions to the smartphone security domain:
 \begin{enumerate}
-\item {\bf Develop an infrastructure for characterizing keypress vibrations}: We
+\item {\bf Develop an infrastructure for characterizing keystroke vibrations}: We
 capture, analyze and develop profiles of keypress events on a nearby
 keyboard based on the vibrations created when they are pressed. Features such as mean, skewness and FFT are first extracted from our input signals. We then use a set boosted Random Forests to create an intermediary
 representation, which is combined with candidate dictionaries
-to successfully recover words at rates as high as \_\_ %.
+to successfully recover words at rates as high as 70 \%.
 \item {\bf Dataset made publicly available}: To the best of our knowledge,
-there does not exists a dataset with
-the keystrokes for the vibrations recorded using an accelerometer. In this
-paper, we demonstrate we construct the dataset of keystroke vibrations,
-recorded using the accelerometer, present in a smartphone and make
-the dataset publicly available to enhance further research on this topic. Given
-the widespread about security breaches and email leaks, we perceive this to be
-of great importance in motivating the mobile operating system manufacturers
+no public dataset is available that provides signals of individual keypresses as recorded by the smartphone accelerometer placed next to the keyboard. In this paper, we present our pipeline for recording datapoints for keystroke vibrations and we make the dataset of 1000 recorded datapoints publicly available to enhance further research in this area. Given
+the widespread attention to privacy concerns and security breaches caused by eavesdropping on device emanations, we perceive this to be
+of great importance in motivating smartphone vendors
 to restrict the usage of accelerometers to permitted applications only.\\
 \end{enumerate}
-\noindent Note that our approach is greatly influenced by the work of
-Marquardt \emph{et. al}~\cite{spiphone} and we present key differences with our
-approach.
+
+The remainder of the paper is structured as follows: 
+We present related work in recovering keystrokes from keyboard vibrations. We then describe our threat model and our constructed framework. Section V and VI include analysis and implementation, and the framework work flow. We show experimental results in section VII and conclude in section~\ref{sec:conclusion}.
 
 \section{Related Work}
 \noindent Researchers have studied malicious code on mobile devices that
@@ -649,6 +577,7 @@ from victim's typing patterns.
 
 
 \section{Conclusions}
+\label{sec:conclusion}
 
 \subsection{Future Work}
 
