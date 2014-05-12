@@ -348,6 +348,7 @@
 \hyphenation{key-strokes}
 
 \usepackage{graphicx}
+\usepackage{multirow}
 
 \begin{document}
 %
@@ -568,7 +569,73 @@ The original recording will contain a large spike at the beginning and end due t
 We use a combination of time-domain and frequency-domain features to construct our feature vector. 
 
 
-\section{Implementation}
+\section{Analysis \& Implementation}
+\label{sec:implementation}
+\noindent In~\cite{spiphone}, Marquardt \emph{et. al} use a neural network to build the signal profiles of the letters typed by the user. We present the implementation details of the algorithms used in order to best generate a prediction model on the training. The given dataset is broken into training (66\%) and testing (33\%) sets. We then generate the prediction model by 10-fold cross-validation on the training set. We use AdaBoost with Random Forests as the weak learner, AdaBoost with Decision Stumps as the weak learner, and Neural networks to determine the accuracies of the respective models on the testing set (shown in Table~\ref{tab:algos-compare}). The results corresponding to Random Forests are using 10 decision trees. The accuracy of using Decision Stump is better than that of Random Forests because of overfitting happening taking place in the Random Forests. When the number of the number of trees in the Random Forests was increased, the training error decreases and the test error increases. Since Random Forests represent a multitude of decision trees, the higher number of trees increases the testing error. On the other hand, Decision Stumps are one node trees and are less prone to overfitting on the training data and provide the similar accuracies as Random Forests with less complex hypotheses/model. Neural Networks achieves almost similar accuracies as the AdaBoost implementations, but we do not use this as our choice of algorithm for the experimentations (Section~\ref{sec:experimentation}). This is because firstly we do not have the MFCCs features extracted from the keystroke signal and these which provides better representation of cepstral information about the signal and capture by the neural network. Secondly, Marquardt \emph{et. al} have presented a solution to the threat model using neural networks and in order to benefit the research community, we attempt to provide an orthogonal analysis with less features and using a different machine learning approach.
+
+The cepstral features corresponding to the FFTs have significant impact on the predictions of the model. Table~\ref{tab:ffts-non-ffts} shows the test accuracies using AdaBoost with Decision Stumps. FFTs alone provide 10\% higher correct predictions compared to the rest of the features in the case of LR dataset. The combined prediction accuracy when using all the features is better than when using just the FFTs and this demonstrates that the frequency of the vibration signal received from the different keystrokes has significant impact in making correct alphabet predictions.
+
+In addition to LR and UD datasets, we compute the predictions of the algorithms on the Triads dataset. Table~\ref{tab:algos-compare} shows that the models generated make poor predictions about the triad to which a keystroke belongs. This is, firstly, due to the assumption that the alphabets grouped into the same triad do not necessarily have similar keystroke vibrations. Careful triads construction is expected to give better predictions but this is analysis is beyond the scope of this project study and we leave it as future work in the interest of limited time for this project. Therefore, for the purpose of experimentation, we use LR and UD label predictions only for determining the keystrokes of the user. Section~\ref{sec:experimentation} will demonstrate that good triad predictions, in addition to LR and UD predictions, will increase the accuracy with which the words typed by the user are identified. 
+
+\begin{table}[h]
+\centering
+{%\small
+\resizebox{8cm}{!}{
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{Dataset} & \textbf{Algorithm} & \textbf{Test Accuracy(\%)}\\
+\hline
+\multirow{3}{*}{LR} & AdaBoost (RandomForests) & 68.67\\
+\cline{2-3}
+& AdaBoost (DecisionStumps) & 69.82\\
+\cline{2-3}
+& Neural Networks & 68.10\\
+\hline
+\multirow{3}{*}{UD} & AdaBoost (RandomForests) & 56.60\\
+\cline{2-3}
+& AdaBoost (DecisionStumps) & 58.68\\
+\cline{2-3}
+& Neural Networks & 58.62\\
+\hline
+\multirow{3}{*}{Triads} & AdaBoost (RandomForests) & 16.37\\
+\cline{2-3}
+& AdaBoost (DecisionStumps) & 13.21\\
+\cline{2-3}
+& Neural Networks & 14.65\\
+\hline
+\end{tabular}
+}
+}
+\caption{Test accuracies on $1/3^{rd}$ of dataset}
+\label{tab:algos-compare}
+\end{table}
+
+\begin{table}[h]
+\centering
+{%\small
+\resizebox{8cm}{!}{
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{Dataset} & \textbf{Features Picked} & \textbf{Test Accuracy(\%)}\\
+\hline
+\multirow{2}{*}{LR} & FFTs & 69.54\\
+\cline{2-3}
+& non-FFTs & 59.48\\
+\hline
+\multirow{2}{*}{UD} & FFTs & 56.89\\
+\cline{2-3}
+& non-FFTs & 59.48\\
+\hline
+\multirow{2}{*}{Triads} & FFTs & 19.54\\
+\cline{2-3}
+& non-FFTs & 15.22\\
+\hline
+\end{tabular}
+}
+}
+\caption{Test accuracies with and without FFT features using AdaBoost with RandomForests.}
+\label{tab:ffts-non-ffts}
+\end{table}
 
 [table with all combinations of accuracies]
 
@@ -580,7 +647,7 @@ Mention triads did not give too good accuracies
 
 
 \section{Experimental Results}
-
+\label{sec:experimentation}
 
 [Box sentence: exact matches and possible choices for non-exact matches]
 
