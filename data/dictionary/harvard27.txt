@@ -12,7 +12,8 @@ are
 dark
 empty
 train
-hot-cross
+hot
+cross
 jug
 stretched
 carry

@@ -459,7 +459,7 @@ One such example is the accelerometer. Access to acceleromters are usually un-re
 by translating from our intermediary form to English words using a number
 of different dictionaries. As mentioned in \cite{spiphone}, reconstructing keystrokes from vibration signals is very different and much more difficult from previous efforts in this space since they are mostly based on acoustic or electromagnetic eavesdropping and enjoys a higher sampling rate. 
 
-Bt developing \textbf{EavesDroid} we have made the following contributions to the smarphone security domain:
+By developing \textbf{EavesDroid} we have made the following contributions to the smarphone security domain:
 \begin{enumerate}
 \item {\bf Develop an infrastructure for characterizing keypress vibrations}: We
 capture, analyze and develop profiles of keypress events on a nearby
@@ -517,7 +517,6 @@ Our second observation is that smartphones are often placed very closely to a la
 
 \subsection{Dataset Capturing}
 \label{sec:dataset-capturing}
-
 \begin{figure}
 \centering
 \includegraphics[width=0.5\textwidth]{img/setup}
@@ -526,18 +525,37 @@ Our second observation is that smartphones are often placed very closely to a la
 \label{fig:setup}
 \end{figure}
 
-Our experimental setup is shown in fig.\ref{fig:setup}. We placed a Dell USB keyboard and a LG Nexus smartphone on a wooden table. No other items were placed on or were touching the table. All keys were pressed with the index finger of the right hand. The hands do not touch the keyboard or table, and the fingers do not pause on the keyboard but only touch it during the brief duration of the key press.
+\noindent Our experimental setup is shown in Figure~\ref{fig:setup}. We placed a Dell USB keyboard and a LG Nexus 5 smartphone on a wooden table. No other items were placed on or were touching the table. All keys were pressed with the index finger of the right hand. The hands do not touch the keyboard or table, and the fingers do not pause on the keyboard but only touch it during the brief duration of the key press.
 
-We recorded 1000 datapoints in 40 sessions with 25 letters in each sessions. For each session we generate a sequence of 25 random letters and display the letters in 3 second intervals to ensure an even recording of the letters and to ensure that there is no bias towards a specific letter. For the data capturing we developed an Android app that reads from the hardware accelerometer and syncs with our laptops, where we further process the data. The raw accelerometer data as returned by Android contains the $x$, $y$ and $z$-direction components of the acceleration of the vibration received. We calculate the G-force magnitude as $\sqrt{x^2+y^2+z^2}-g$ where $g = 9.81$ is the acceleration due to gravity.
+We recorded 1000 data points in 40 sessions with 25 letters in each sessions. For each session we generate a sequence of 25 random letters and display the letters in 3 second intervals to ensure an even recording of the letters and to ensure that there is no bias toward a specific letter. For the data capturing we developed an Android app that reads from the hardware accelerometer and syncs with our laptops, where we further process the data. The raw accelerometer data as returned by Android contains the $x$, $y$ and $z$-direction components of the acceleration of the vibration received. We calculate the G-force magnitude as $\sqrt{x^2+y^2+z^2}-g$ where $g = 9.81 m/s^2$ is the acceleration due to gravity. The accelerometer records at the granularity of microseconds.
 
 \begin{figure}
 \centering
-\includegraphics[width=0.5\textwidth]{img/signal2}
+\includegraphics[width=0.5\textwidth]{img/a_162}
 \caption{Sample Recording for letter 'a'}
-\label{fig:signal}
+\label{fig:signal-a}
 \end{figure}
 
-The original recording will contain a large spike at the beginning and end due to the pressing of "Start" and "Stop" on the recording app. We cut off these noise signals and further segment the data into 25 individual data points. An example of a plot of one such signal is shown in fig.\ref{fig:signal}.
+\begin{figure}
+\centering
+\includegraphics[width=0.5\textwidth]{img/b_147}
+\caption{Sample Recording for letter 'b'}
+\label{fig:signal-b}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.5\textwidth]{img/p_566}
+\caption{Sample Recording for letter 'p'}
+\label{fig:signal-p}
+\end{figure}
+
+\noindent Figure~\ref{fig:signal-a},~\ref{fig:signal-b} and~\ref{fig:signal-p} show the G-Force values varying with time for the
+letters `a', `b' and `p' respectively. It is clear from the plots that there is significant different between the features
+of the signal for the different letters and we aim to exploit this difference to recover the typed letters by a user.
+Note that the original recordings (not shown in the interest of space) contain a large spike at the beginning and end
+due to the pressing of ``Start" and ``Stop" buttons on the recording app.
+Therefore, we wrote a script, Clipper, to cut off these noise signals and further segment the data into 25 individual data points.
 
 \subsection{Feature Extraction}
 
