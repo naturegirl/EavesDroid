@@ -508,9 +508,10 @@ uses orientation of the smartphone device to infer the keystrokes.
 
 Our attack is based upon two observations:
 
-Many users like to place their smartphone close to their laptop while working, so that it is easily accessible and notifications are not missed.
+Different from most of the sensors on a smartphone such as microphone, camera and GPS, the access of the accelerometer is not protected by the permission mechanism mentioned earlier. That is to say, any application is able to access the accelerometer feed if they wish to. However, due to the frequent usage needs of the accelerometer to determine window orientation and update screen orientation, we envision that this problem will not be fixed in the near future. Therefore, the number of smartphone that are vulnerable to this threat will only increase in the near future.
 
-Furthermore we note that while smartphones offer a broad range of sensors such as microphone, GPS, gyroscope and accelerometer, the accelerometer is the only sensor to which access is not protected in any current mobile phone operating system. That is mainly due to the frequent usage needs of the accelerometer to determine window orientation and update screen orientation, a feature any app can make use of.
+Our second observation is that smartphones are often placed very closely to a laptop or the keyboard of a computer. This is mainly because smartphone users tends to put their phone within their reaching area while working so they can monitor the phone should any text or notifications pops up. Therefore, this behaviour enables the accelerometer within the smartphone to record clear keystroke signals before they diminish and get corrupted. This clearly exacerbates the threat that accelerometer data is not protected since malicious applications such as \textbf{EavesDroid} would have access to more distinguishable signals
+
 
 \section{Framework Description}
 
