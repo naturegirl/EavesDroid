@@ -541,9 +541,13 @@ The original recording will contain a large spike at the beginning and end due t
 
 \subsection{Feature Extraction}
 
-We use a combination of time-domain and frequency-domain features to construct our feature vector. 
+Before actually classifying the signals, we first need to extract the features that can best represent the attributes of the signal.  We used a combination of time-domain and frequency-domain features that was mentioned in \cite{spiphone} to construct our feature vector. The time-domain features we calculated includes mean, root mean square (rms), skewness, variance, and kurtosis. As for the frequency-domain feature, we calculated 30 FFT feature in order to represent the frequency attribute of a signal. At the end of this step, we have acqured 40 feature vectors, for each corresponding english letters.
 
 \subsection{L/R, U/D and Triads}
+For each english letters, we assign it with two different labels which are \emph{Left/Right} (L/R) and \emph{Up/Down} (U/D) respectively. The \emph{Left/Right} label indicates whether the received signal belongs to a key that is on the left or right hemisphere of the keyboard. Keys that are at the left of key (including) \emph{T, G, H} are labeled as \emph{Left} and \emph{Right} otherwise. As for \emph{Up/Down} labels, it indicates whether a signal is associated with a key that belongs to the upper region of the keyboard or the lower region. Keys that belongs to the row of Q-P are labeled as \emph{Up} and \emph{Down} otherwise.\\
+
+In addition to L/R, U/D labels, we also tried to group different keys together in order to lower the classification space. We made the assumption that keys that are close to each other generates similar vibration signals. Therefore, keys were grouped into triads (with one in pairs) based on their location and labeled with their corresponding group number. Following is the group that each keys belongs to:
+\{qwa\}-1, \{szx\}-2, \{erd\}-3, \{fcv\}-4, \{tyg\}-5, \{hbn\}-6, \{uij\}-7, \{pol\}-8, \{km\}-9.
 
 \section{Analysis \& Implementation}
 \label{sec:implementation}
