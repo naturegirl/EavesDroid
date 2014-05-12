@@ -1,13 +1,13 @@
-all:	template.pdf clean
+all:	report.pdf clean
 
-template.pdf: template.tex sigproc.bib
-	pdflatex template
-	-bibtex template
-	pdflatex template
-	pdflatex template
+report.pdf: report.tex sigproc.bib IEEEtran.cls
+	pdflatex report
+	-bibtex report
+	pdflatex report
+	pdflatex report
 
 quick:
-	pdflatex template
+	pdflatex report
 
 clean:
 	rm -f *.aux *.bbl *.blg *.log *.dvi *.bak *~ *.out
