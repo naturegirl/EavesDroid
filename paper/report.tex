@@ -356,7 +356,6 @@
 % can use linebreaks \\ within to get better formatting as desired
 \title{EavesDroid: Keystroke recovery using mobile phone accelerometers}
 
-
 % author names and affiliations
 % use a multiple column layout for up to three different
 % affiliations
@@ -443,7 +442,7 @@
 % no \IEEEPARstart
 \label{sec:introduction}
 \noindent Mobile phones are becoming increasingly powerful
-devices. In addition to being able to run simple applications such as email clients and web browsers; by equipping a wide variety of sophisticated sensors, these smartphones can actively interface with the world aound them.
+devices. In addition to being able to run simple applications such as email clients and web browsers; by equipping a wide variety of sophisticated sensors, these smartphones can actively interface with the world around them.
 
 Unfortunately, the array of sensors in these devices can also be
 used in malicious ways. For example, malware could
@@ -455,7 +454,7 @@ In light of the possible privacy threats mentioned above, operating systems that
 For instance, an Android application would have a manifest file that includes a list of all permissions an application can request during installation time. Under this design, the application is either granted a particular permission when installed, and can use that feature as desired, or the permission is not granted and any attempt to use the feature fails without prompting the user. However, not all sensors' accesses are tightly regulated by this mechanism, which leads to several potential sensors abuse.
 
 
-One such example is the accelerometer. Access to acceleromters are usually un-restricted on most of the current mobile phone operating systems. In this paper, we developed \textbf{EavesDroid}, which is a malicious application with access to the accelerometer's data. We demonstrate that \textbf{EavesDroid} is able to record and reconstruct the keypresses made on a nearby keyboard with decent accuracy, based solely on the observed vibrations. We develop profiles for keypress by extracing features from the keypress signals and classifies them using boosted Random Forests. This allows us to establish an abstract representation of the relationship between a keystroke signal and its corresponding key. We then recover the typed content
+One such example is the accelerometer. Access to accelerometers are usually un-restricted on most of the current mobile phone operating systems. In this paper, we developed \textbf{EavesDroid}, which is a malicious application with access to the accelerometer's data. We demonstrate that \textbf{EavesDroid} is able to record and reconstruct the keypresses made on a nearby keyboard with decent accuracy, based solely on the observed vibrations. We develop profiles for keypress by extracing features from the keypress signals and classifies them using boosted Random Forests. This allows us to establish an abstract representation of the relationship between a keystroke signal and its corresponding key. We then recover the typed content
 by translating from our intermediary form to English words using a number
 of different dictionaries. As mentioned in \cite{spiphone}, reconstructing keystrokes from vibration signals is very different and much more difficult from previous efforts in this space since they are mostly based on acoustic or electromagnetic eavesdropping and enjoys a higher sampling rate. 
 
@@ -481,7 +480,7 @@ Marquardt \emph{et. al}~\cite{spiphone} and we present key differences with our
 approach.
 
 \section{Related Work}
-Researchers have studied malicious code on mobile devices that
+\noindent Researchers have studied malicious code on mobile devices that
 learn information about the device owner using other embedded sensors.
 In the most closely related work to our paper, Marquardt \emph{et. al}
 \cite{spiphone} propose \emph{(sp)iPhone} which uses motion sensors in the
@@ -505,8 +504,7 @@ passwords in as few as 4.5 trials(median). TouchLogger~\cite{cai2011touchlogger}
 uses orientation of the smartphone device to infer the keystrokes.
 
 \section{Threat Model}
-
-Our attack is based upon two observations:
+\noindent Our attack is based upon two observations:
 
 Different from most of the sensors on a smartphone such as microphone, camera and GPS, the access of the accelerometer is not protected by the permission mechanism mentioned earlier. That is to say, any application is able to access the accelerometer feed if they wish to. However, due to the frequent usage needs of the accelerometer to determine window orientation and update screen orientation, we envision that this problem will not be fixed in the near future. Therefore, the number of smartphone that are vulnerable to this threat will only increase in the near future.
 
@@ -517,6 +515,127 @@ Our second observation is that smartphones are often placed very closely to a la
 
 \subsection{Dataset Capturing}
 \label{sec:dataset-capturing}
+\noindent Our experimental setup is shown in Figure~\ref{fig:setup}. We placed a Dell USB keyboard and a LG Nexus 5 smartphone on a wooden table. No other items were placed on or were touching the table. All keys were pressed with the index finger of the right hand. The hands do not touch the keyboard or table, and the fingers do not pause on the keyboard but only touch it during the brief duration of the key press.
+
+We recorded 1000 data points in 40 sessions with 25 letters in each sessions. For each session we generate a sequence of 25 random letters and display the letters in 3 second intervals to ensure an even recording of the letters and to ensure that there is no bias toward a specific letter. For the data capturing we developed an Android app that reads from the hardware accelerometer and syncs with our laptops, where we further process the data. The raw accelerometer data as returned by Android contains the $x$, $y$ and $z$-direction components of the acceleration of the vibration received. We calculate the G-force magnitude as $\sqrt{x^2+y^2+z^2}-g$ where $g = 9.81 m/s^2$ is the acceleration due to gravity. The accelerometer records at the granularity of microseconds.
+
+\noindent Figure~\ref{fig:signal-a},~\ref{fig:signal-b} and~\ref{fig:signal-p} show the G-Force values varying with time for the
+letters `a', `b' and `p' respectively. It is clear from the plots that there is significant different between the features
+of the signal for the different letters and we aim to exploit this difference to recover the typed letters by a user.
+Note that the original recordings (not shown in the interest of space) contain a large spike at the beginning and end
+due to the pressing of ``Start" and ``Stop" buttons on the recording app.
+Therefore, we wrote a module, Clipper, to cut off these noise signals and further segment the data into 25 individual data points.
+We will elaborate on this in Section~\ref{sec:learning}.
+
+\subsection{Feature Extraction}
+\label{sec:feature-extractor}
+Before actually classifying the signals, we first need to extract the features that can best represent the attributes of the signal.  We used a combination of time-domain and frequency-domain features that was mentioned in \cite{spiphone} to construct our feature vector. The time-domain features we calculated includes mean, root mean square (rms), skewness, variance, and kurtosis. As for the frequency-domain feature, we calculated 30 FFT feature in order to represent the frequency attribute of a signal. At the end of this step, we have acqured 40 feature vectors, for each corresponding english letters.
+
+\subsection{L/R, U/D and Triads}
+\label{sec:labeler}
+For each english letters, we assign it with two different labels which are \emph{Left/Right} (L/R) and \emph{Up/Down} (U/D) respectively. The \emph{Left/Right} label indicates whether the received signal belongs to a key that is on the left or right hemisphere of the keyboard. Keys that are at the left of key (including) \emph{T, G, H} are labeled as \emph{Left} and \emph{Right} otherwise. As for \emph{Up/Down} labels, it indicates whether a signal is associated with a key that belongs to the upper region of the keyboard or the lower region. Keys that belongs to the row of Q-P are labeled as \emph{Up} and \emph{Down} otherwise.\\
+
+In addition to L/R, U/D labels, we also tried to group different keys together in order to lower the classification space. We made the assumption that keys that are close to each other generates similar vibration signals. Therefore, keys were grouped into triads (with one in pairs) based on their location and labeled with their corresponding group number. Following is the group that each keys belongs to:
+\{qwa\}-1, \{szx\}-2, \{erd\}-3, \{fcv\}-4, \{tyg\}-5, \{hbn\}-6, \{uij\}-7, \{pol\}-8, \{km\}-9.
+
+\section{Analysis \& Implementation}
+\label{sec:implementation}
+\noindent In~\cite{spiphone}, Marquardt \emph{et. al} use a neural network to build the signal profiles of the letters typed by the user. We present the implementation details of the algorithms used in order to best generate a prediction model on the training. The given dataset is broken into training (66\%) and testing (33\%) sets. We then generate the prediction model by 10-fold cross-validation on the training set. We use AdaBoost with Random Forests as the weak learner, AdaBoost with Decision Stumps as the weak learner, and Neural networks to determine the accuracies of the respective models on the testing set (shown in Table~\ref{tab:algos-compare}). The results corresponding to Random Forests are using 10 decision trees. The accuracy of using Decision Stump is better than that of Random Forests because of overfitting happening taking place in the Random Forests. When the number of the number of trees in the Random Forests was increased, the training error decreases and the test error increases. Since Random Forests represent a multitude of decision trees, the higher number of trees increases the testing error. On the other hand, Decision Stumps are one node trees and are less prone to overfitting on the training data and provide the similar accuracies as Random Forests with less complex hypotheses/model. Neural Networks achieves almost similar accuracies as the AdaBoost implementations, but we do not use this as our choice of algorithm for the experimentations (Section~\ref{sec:experimentation}). This is because firstly we do not have the MFCCs features extracted from the keystroke signal and these which provides better representation of cepstral information about the signal and capture by the neural network. Secondly, Marquardt \emph{et. al} have presented a solution to the threat model using neural networks and in order to benefit the research community, we attempt to provide an orthogonal analysis with less features and using a different machine learning approach.
+
+The cepstral features corresponding to the FFTs have significant impact on the predictions of the model. Table~\ref{tab:ffts-non-ffts} shows the test accuracies using AdaBoost with Decision Stumps. FFTs alone provide 10\% higher correct predictions compared to the rest of the features in the case of LR dataset. The combined prediction accuracy when using all the features is better than when using just the FFTs and this demonstrates that the frequency of the vibration signal received from the different keystrokes has significant impact in making correct alphabet predictions.
+
+In addition to LR and UD datasets, we compute the predictions of the algorithms on the Triads dataset. Table~\ref{tab:algos-compare} shows that the models generated make poor predictions about the triad to which a keystroke belongs. This is, firstly, due to the assumption that the alphabets grouped into the same triad do not necessarily have similar keystroke vibrations. Careful triads construction is expected to give better predictions but this is analysis is beyond the scope of this project study and we leave it as future work in the interest of limited time for this project. Therefore, for the purpose of experimentation, we use LR and UD label predictions only for determining the keystrokes of the user. Section~\ref{sec:experimentation} will demonstrate that good triad predictions, in addition to LR and UD predictions, will increase the accuracy with which the words typed by the user are identified. 
+
+\section{Framework Work Flow}
+\label{sec:framework}
+\noindent In this section, we aim to elaborate the flow of data and features leading to the
+predictions made by the model.
+\subsection{Learning Phase}
+\label{sec:learning}
+\noindent In the learning phase (Figure-REF), we use the 1000 data points collected (Section~\ref{sec:dataset-capturing})
+for training the model. Each session of the collected data results in one raw accelerometer readings' file.
+Since the readings have noise peaks at the start and end of the signal, it is passed through the Clipper
+which strips out the ends. The clipped file is then processed by the SignalBreaker to
+get the raw accelerometer data for the letters that constitute the session. The segregated letter files are used
+to generate two labeled datasets - L/R labels and U/D labels - for the letters. This allows for generating two
+trained models in the learning. The labeled letters are passed through the Feature Extractor module
+(Section~\ref{sec:feature-extractor}) to the get the labeled
+feature vectors. This is followed by the supervised learning of the AdaBoost classifier which Decision Stumps
+as the weak learners on the labeled feature vectors and giving the two models for L/R classifier and
+the UD classifier.
+
+\subsection{Attack Phase}
+\label{sec:attacking}
+\noindent In the attack phase (Figure-REF), EavesDroid receives the raw accelerometer data for a word
+typed in by the user on a nearby keyboard. The clipping of the signal and signal breaking
+works in the same manner as in the learning phase except there is no labeling in the attack
+phase. The unlabeled features obtained from the Feature Extractor module are passed
+to the classifiers (obtained from the learning phase) and the L/R and UD label predictions
+are obtained. The attack module also takes in LR and UD labeled dictionary words from the
+72 Harvard sentences. The feature matching module, in the attack module, gives the top
+$k$ closest matching words corresponding to the raw accelerometer data received by EavesDroid.
+
+\section{Experimentation}
+\label{sec:experimentation}
+\noindent We extensively use the R Project~\cite{r-project} tool for collecting the
+cepstral features from the data and building the prediction models. R Project
+provides access to the RWeka~\cite{rweka} library which has implementations
+of most machine learning algorithms. The AdaBoost and Neural Networks implementations
+are leveraged from the RWeka package for the purpose of the experiments.
+
+We demonstrate the accuracies of our prediction model on the Harvard
+sentences~\cite{harvard-sentences}. We chose this list of sentences because
+it is phonetically-balanced, \emph{i.e.} it uses specific English phonemes
+with a uniform distribution. For testing the accuracy of text recovery when
+a user types on the near-by keyboard, we wrote a module, SignalBreaker, to break the vibration
+signal received corresponding to each word into corresponding set of letters for
+the particular word. There is a distinct peak corresponding to each key press and
+the duration of a keypress is approximately 100ms~\cite{spiphone}. SignalBreaker
+uses this information to create segments. It achieves an accuracy of 100\% in
+determining the peaks and constructing the letter signals from the corresponding word
+signal. To test the accuracies of the L/R and U/D classifiers, the letter signals
+for an unknown word signal are fed to the classifiers. The L/R and U/D predictions
+from the classifiers are matched against the dictionary and the closest matching
+words are predicted as possibilities. The automation of this process, from typing
+of a word (from a sentence) and matching the occurrence of the typed word in the
+predicted words, is a non-trivial task and requires an extensive time beyond the scope
+of this project study.
+
+We provide a hack around this by exploiting the results that
+the SignalBreaker works with 100\% accuracy and that $1/3^{rd}$ of the recorded
+alphabet signals (Section~\ref{sec:dataset-capturing}) are unseen by the classifiers.
+For any sequence of words, we wrote a module, SignalGen, which generates the possible
+signal for that word from the remaining $1/3^{rd}$ of the recorded alphabet signals.
+This is done by randomly picking a signal corresponding to each letter of the word
+and concatenating them together to form the word signal. For example, for the word
+``juice", the signals corresponding to `j', `u', `i', `c', `e' are chosen randomly
+from the corresponding unseen signals for those letters. Thus we can now automate
+the process of testing the classifiers by feeding large articles to SignalGen
+and generating predictions for the corresponding words.
+
+Using the SignalGen module, we 
+ 
+
+
+[Box sentence: exact matches and possible choices for non-exact matches]
+
+[Negative analysis, word watch, many potential matches  when dictionary size increases]
+
+
+\section{Conclusions}
+
+\subsection{Future Work}
+
+Mobile browsers having allowing access to accelerometer data,
+
+http://blogs.adobe.com/cantrell/archives/2012/03/accessing-the-accelerometer-and-gyroscope-in-javascript.html
+
+http://isthisanearthquake.com/
+
+http://isthisanearthquake.com/seismograph.html
+
+
+%%%%%%%%%%%%% Figures and Tables %%%%%%%%%%%%%%%%%%%%
 \begin{figure}
 \centering
 \includegraphics[width=0.5\textwidth]{img/setup}
@@ -524,10 +643,6 @@ Our second observation is that smartphones are often placed very closely to a la
 }
 \label{fig:setup}
 \end{figure}
-
-\noindent Our experimental setup is shown in Figure~\ref{fig:setup}. We placed a Dell USB keyboard and a LG Nexus 5 smartphone on a wooden table. No other items were placed on or were touching the table. All keys were pressed with the index finger of the right hand. The hands do not touch the keyboard or table, and the fingers do not pause on the keyboard but only touch it during the brief duration of the key press.
-
-We recorded 1000 data points in 40 sessions with 25 letters in each sessions. For each session we generate a sequence of 25 random letters and display the letters in 3 second intervals to ensure an even recording of the letters and to ensure that there is no bias toward a specific letter. For the data capturing we developed an Android app that reads from the hardware accelerometer and syncs with our laptops, where we further process the data. The raw accelerometer data as returned by Android contains the $x$, $y$ and $z$-direction components of the acceleration of the vibration received. We calculate the G-force magnitude as $\sqrt{x^2+y^2+z^2}-g$ where $g = 9.81 m/s^2$ is the acceleration due to gravity. The accelerometer records at the granularity of microseconds.
 
 \begin{figure}
 \centering
@@ -549,31 +664,6 @@ We recorded 1000 data points in 40 sessions with 25 letters in each sessions. Fo
 \caption{Sample Recording for letter 'p'}
 \label{fig:signal-p}
 \end{figure}
-
-\noindent Figure~\ref{fig:signal-a},~\ref{fig:signal-b} and~\ref{fig:signal-p} show the G-Force values varying with time for the
-letters `a', `b' and `p' respectively. It is clear from the plots that there is significant different between the features
-of the signal for the different letters and we aim to exploit this difference to recover the typed letters by a user.
-Note that the original recordings (not shown in the interest of space) contain a large spike at the beginning and end
-due to the pressing of ``Start" and ``Stop" buttons on the recording app.
-Therefore, we wrote a script, Clipper, to cut off these noise signals and further segment the data into 25 individual data points.
-
-\subsection{Feature Extraction}
-
-Before actually classifying the signals, we first need to extract the features that can best represent the attributes of the signal.  We used a combination of time-domain and frequency-domain features that was mentioned in \cite{spiphone} to construct our feature vector. The time-domain features we calculated includes mean, root mean square (rms), skewness, variance, and kurtosis. As for the frequency-domain feature, we calculated 30 FFT feature in order to represent the frequency attribute of a signal. At the end of this step, we have acqured 40 feature vectors, for each corresponding english letters.
-
-\subsection{L/R, U/D and Triads}
-For each english letters, we assign it with two different labels which are \emph{Left/Right} (L/R) and \emph{Up/Down} (U/D) respectively. The \emph{Left/Right} label indicates whether the received signal belongs to a key that is on the left or right hemisphere of the keyboard. Keys that are at the left of key (including) \emph{T, G, H} are labeled as \emph{Left} and \emph{Right} otherwise. As for \emph{Up/Down} labels, it indicates whether a signal is associated with a key that belongs to the upper region of the keyboard or the lower region. Keys that belongs to the row of Q-P are labeled as \emph{Up} and \emph{Down} otherwise.\\
-
-In addition to L/R, U/D labels, we also tried to group different keys together in order to lower the classification space. We made the assumption that keys that are close to each other generates similar vibration signals. Therefore, keys were grouped into triads (with one in pairs) based on their location and labeled with their corresponding group number. Following is the group that each keys belongs to:
-\{qwa\}-1, \{szx\}-2, \{erd\}-3, \{fcv\}-4, \{tyg\}-5, \{hbn\}-6, \{uij\}-7, \{pol\}-8, \{km\}-9.
-
-\section{Analysis \& Implementation}
-\label{sec:implementation}
-\noindent In~\cite{spiphone}, Marquardt \emph{et. al} use a neural network to build the signal profiles of the letters typed by the user. We present the implementation details of the algorithms used in order to best generate a prediction model on the training. The given dataset is broken into training (66\%) and testing (33\%) sets. We then generate the prediction model by 10-fold cross-validation on the training set. We use AdaBoost with Random Forests as the weak learner, AdaBoost with Decision Stumps as the weak learner, and Neural networks to determine the accuracies of the respective models on the testing set (shown in Table~\ref{tab:algos-compare}). The results corresponding to Random Forests are using 10 decision trees. The accuracy of using Decision Stump is better than that of Random Forests because of overfitting happening taking place in the Random Forests. When the number of the number of trees in the Random Forests was increased, the training error decreases and the test error increases. Since Random Forests represent a multitude of decision trees, the higher number of trees increases the testing error. On the other hand, Decision Stumps are one node trees and are less prone to overfitting on the training data and provide the similar accuracies as Random Forests with less complex hypotheses/model. Neural Networks achieves almost similar accuracies as the AdaBoost implementations, but we do not use this as our choice of algorithm for the experimentations (Section~\ref{sec:experimentation}). This is because firstly we do not have the MFCCs features extracted from the keystroke signal and these which provides better representation of cepstral information about the signal and capture by the neural network. Secondly, Marquardt \emph{et. al} have presented a solution to the threat model using neural networks and in order to benefit the research community, we attempt to provide an orthogonal analysis with less features and using a different machine learning approach.
-
-The cepstral features corresponding to the FFTs have significant impact on the predictions of the model. Table~\ref{tab:ffts-non-ffts} shows the test accuracies using AdaBoost with Decision Stumps. FFTs alone provide 10\% higher correct predictions compared to the rest of the features in the case of LR dataset. The combined prediction accuracy when using all the features is better than when using just the FFTs and this demonstrates that the frequency of the vibration signal received from the different keystrokes has significant impact in making correct alphabet predictions.
-
-In addition to LR and UD datasets, we compute the predictions of the algorithms on the Triads dataset. Table~\ref{tab:algos-compare} shows that the models generated make poor predictions about the triad to which a keystroke belongs. This is, firstly, due to the assumption that the alphabets grouped into the same triad do not necessarily have similar keystroke vibrations. Careful triads construction is expected to give better predictions but this is analysis is beyond the scope of this project study and we leave it as future work in the interest of limited time for this project. Therefore, for the purpose of experimentation, we use LR and UD label predictions only for determining the keystrokes of the user. Section~\ref{sec:experimentation} will demonstrate that good triad predictions, in addition to LR and UD predictions, will increase the accuracy with which the words typed by the user are identified. 
 
 \begin{table}[h]
 \centering
@@ -635,71 +725,8 @@ In addition to LR and UD datasets, we compute the predictions of the algorithms 
 \label{tab:ffts-non-ffts}
 \end{table}
 
-\section{Framework Overview}
-\subsection{Learning Phase}
-\subsection{Attack Phase}
-
-\section{Experimentation}
-\label{sec:experimentation}
-\noindent We extensively use the R Project~\cite{r-project} tool for collecting the
-cepstral features from the data and building the prediction models. R Project
-provides access to the RWeka~\cite{rweka} library which has implementations
-of most machine learning algorithms. The AdaBoost and Neural Networks implementations
-are leveraged from the RWeka package for the purpose of the experiments.
-
-We demonstrate the accuracies of our prediction model on the Harvard
-sentences~\cite{harvard-sentences}. We chose this list of sentences because
-it is phonetically-balanced, \emph{i.e.} it uses specific English phonemes
-with a uniform distribution. For testing the accuracy of text recovery when
-a user types on the near-by keyboard, we wrote a script, SignalBreaker, to break the vibration
-signal received corresponding to each word into corresponding set of letters for
-the particular word. There is a distinct peak corresponding to each key press and
-the duration of a keypress is approximately 100ms~\cite{spiphone}. SignalBreaker
-uses this information to create segments. It achieves an accuracy of 100\% in
-determining the peaks and constructing the letter signals from the corresponding word
-signal. To test the accuracies of the L/R and U/D classifiers, the letter signals
-for an unknown word signal are fed to the classifiers. The L/R and U/D predictions
-from the classifiers are matched against the dictionary and the closest matching
-words are predicted as possibilities. The automation of this process, from typing
-of a word (from a sentence) and matching the occurrence of the typed word in the
-predicted words, is a non-trivial task and requires an extensive time beyond the scope
-of this project study.
-
-We provide a hack around this by exploiting the results that
-the SignalBreaker works with 100\% accuracy and that $1/3^{rd}$ of the recorded
-alphabet signals (Section~\ref{sec:dataset-capturing}) are unseen by the classifiers.
-For any sequence of words, we wrote a script, SignalGen, which generates the possible
-signal for that word from the remaining $1/3^{rd}$ of the recorded alphabet signals.
-This is done by randomly picking a signal corresponding to each letter of the word
-and concatenating them together to form the word signal. For example, for the word
-``juice", the signals corresponding to `j', `u', `i', `c', `e' are chosen randomly
-from the corresponding unseen signals for those letters. Thus we can now automate
-the process of testing the classifiers by feeding large articles to SignalGen
-and generating predictions for the corresponding words.
-
-
- 
-
-
-[Box sentence: exact matches and possible choices for non-exact matches]
-
-[Negative analysis, word watch, many potential matches  when dictionary size increases]
-
-
-\section{Conclusions}
-
-\subsection{Future Work}
-
-Mobile browsers having allowing access to accelerometer data,
-
-http://blogs.adobe.com/cantrell/archives/2012/03/accessing-the-accelerometer-and-gyroscope-in-javascript.html
-
-http://isthisanearthquake.com/
-
-http://isthisanearthquake.com/seismograph.html
-
 %ACKNOWLEDGMENTS are optional
-\section{Acknowledgments}
+\section*{Acknowledgments}
 
 % An example of a floating figure using the graphicx package.
 % Note that \label must occur AFTER (or within) \caption.
