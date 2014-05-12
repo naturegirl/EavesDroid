@@ -533,7 +533,7 @@ Before actually classifying the signals, we first need to extract the features t
 
 \subsection{L/R, U/D and Triads}
 \label{sec:labeler}
-For each english letters, we assign it with two different labels which are \emph{Left/Right} (L/R) and \emph{Up/Down} (U/D) respectively. The \emph{Left/Right} label indicates whether the received signal belongs to a key that is on the left or right hemisphere of the keyboard. Keys that are at the left of key (including) \emph{T, G, H} are labeled as \emph{Left} and \emph{Right} otherwise. As for \emph{Up/Down} labels, it indicates whether a signal is associated with a key that belongs to the upper region of the keyboard or the lower region. Keys that belongs to the row of Q-P are labeled as \emph{Up} and \emph{Down} otherwise.\\
+For each english letters, we assign it with two different labels which are \emph{Left/Right} (L/R) and \emph{Up/Down} (U/D) respectively. The \emph{Left/Right} label indicates whether the received signal belongs to a key that is on the left or right hemisphere of the keyboard. Keys that are at the left of key (including) \emph{T, G, B} are labeled as \emph{Left} and \emph{Right} otherwise. As for \emph{Up/Down} labels, it indicates whether a signal is associated with a key that belongs to the upper region of the keyboard or the lower region. Keys that belongs to the row of Q-P are labeled as \emph{Up} and \emph{Down} otherwise.\\
 
 In addition to L/R, U/D labels, we also tried to group different keys together in order to lower the classification space. We made the assumption that keys that are close to each other generates similar vibration signals. Therefore, keys were grouped into triads (with one in pairs) based on their location and labeled with their corresponding group number. Following is the group that each keys belongs to:
 \{qwa\}-1, \{szx\}-2, \{erd\}-3, \{fcv\}-4, \{tyg\}-5, \{hbn\}-6, \{uij\}-7, \{pol\}-8, \{km\}-9.
@@ -626,7 +626,15 @@ the EavesDroid's classifiers. 6 mis-predictions does not mean that all the label
 on a 6 letter word are incorrect. Instead for a 6 letter word, 12 labels are predicted and out of
 those at most 6 are incorrect. If we list the top word predictions for a given candidate word,
 using English context information, a reader can very well guess the word from the available
-choices. For example, Figure~\ref{fig:words-options}
+choices. For example, Figure~\ref{fig:words-options} shows the possible word choices
+for most of the words of the sentence, but using the context information, a human reader
+can reconstruct the sentence.
+
+In the second experiment, we fed a New York Times article~\cite{bats-nytimes} with 766 words
+to EavesDroid. The module is able to successful recover 54.18\% of the words with at most
+5 labeling errors. This accuracy is low compared to 94.54\% in the case of Harvard sentences
+because there are 257 words in the article not present in the dictionary.
+This demonstrates the practical utility 
  
 
 
