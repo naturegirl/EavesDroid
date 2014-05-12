@@ -542,6 +542,7 @@ Furthermore we note that while smartphones offer a broad range of sensors such a
 \section{Framework Description}
 
 \subsection{Dataset Capturing}
+\label{sec:dataset-capturing}
 
 \begin{figure}
 \centering
@@ -637,17 +638,51 @@ In addition to LR and UD datasets, we compute the predictions of the algorithms 
 \label{tab:ffts-non-ffts}
 \end{table}
 
-[table with all combinations of accuracies]
+\section{Framework Overview}
+\subsection{Learning Phase}
+\subsection{Attack Phase}
 
-LR predictor and Up down predictor .
-
-Adaboost with Random Forest 
-
-Mention triads did not give too good accuracies
-
-
-\section{Experimental Results}
+\section{Experimentation}
 \label{sec:experimentation}
+\noindent We extensively use the R Project~\cite{r-project} tool for collecting the
+cepstral features from the data and building the prediction models. R Project
+provides access to the RWeka~\cite{rweka} library which has implementations
+of most machine learning algorithms. The AdaBoost and Neural Networks implementations
+are leveraged from the RWeka package for the purpose of the experiments.
+
+We demonstrate the accuracies of our prediction model on the Harvard
+sentences~\cite{harvard-sentences}. We chose this list of sentences because
+it is phonetically-balanced, \emph{i.e.} it uses specific English phonemes
+with a uniform distribution. For testing the accuracy of text recovery when
+a user types on the near-by keyboard, we wrote a script, SignalBreaker, to break the vibration
+signal received corresponding to each word into corresponding set of letters for
+the particular word. There is a distinct peak corresponding to each key press and
+the duration of a keypress is approximately 100ms~\cite{spiphone}. SignalBreaker
+uses this information to create segments. It achieves an accuracy of 100\% in
+determining the peaks and constructing the letter signals from the corresponding word
+signal. To test the accuracies of the L/R and U/D classifiers, the letter signals
+for an unknown word signal are fed to the classifiers. The L/R and U/D predictions
+from the classifiers are matched against the dictionary and the closest matching
+words are predicted as possibilities. The automation of this process, from typing
+of a word (from a sentence) and matching the occurrence of the typed word in the
+predicted words, is a non-trivial task and requires an extensive time beyond the scope
+of this project study.
+
+We provide a hack around this by exploiting the results that
+the SignalBreaker works with 100\% accuracy and that $1/3^{rd}$ of the recorded
+alphabet signals (Section~\ref{sec:dataset-capturing}) are unseen by the classifiers.
+For any sequence of words, we wrote a script, SignalGen, which generates the possible
+signal for that word from the remaining $1/3^{rd}$ of the recorded alphabet signals.
+This is done by randomly picking a signal corresponding to each letter of the word
+and concatenating them together to form the word signal. For example, for the word
+``juice", the signals corresponding to `j', `u', `i', `c', `e' are chosen randomly
+from the corresponding unseen signals for those letters. Thus we can now automate
+the process of testing the classifiers by feeding large articles to SignalGen
+and generating predictions for the corresponding words.
+
+
+ 
+
 
 [Box sentence: exact matches and possible choices for non-exact matches]
 
