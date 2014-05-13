@@ -15,13 +15,8 @@
 %% reduces the font of the captions in tables and figures
 \usepackage[font=scriptsize]{caption}
 
-%% reduces the space before and after the section titles
-\newcommand{\subparagraph}{}
-\usepackage[compact]{titlesec}
-%\titlespacing{\section}{0pt}{\parskip}{-\parskip}
-%\titlespacing{\subsection}{0pt}{\parskip}{-\parskip}
-%\titlespacing*{\section} {0pt}{3.5ex plus 1ex minus .2ex}{2.3ex plus .2ex}
-%\titlespacing{\section}{0pt}{.2\baselineskip}{.1\baselineskip}
+%% reduces the space before and after the paragraphs
+\parskip 0pt
 
 \usepackage{subfig}
 
@@ -50,28 +45,28 @@ We also make our dataset of accelerometer recordings available to the public, th
 
 \section{Introduction}
 \label{sec:introduction}
-\noindent Mobile phones are becoming increasingly powerful
+Mobile phones are becoming increasingly powerful
 devices. In addition to being able to run applications such as email clients and web browsers, by equipping a wide variety of sophisticated sensors, these smartphones can actively interface with the world around them.
 
-\noindent Unfortunately, the array of sensors in today's smartphones can also be
+Unfortunately, the array of sensors in today's smartphones can also be
 used in malicious ways. For example, malware could
 potentially gain access to a mobile phone's camera to take photos or
 video without the notice of the owner \cite{cheng2007mobile}. Other possible attempts are activating the device's microphone to record conversations or turn on the GPS to track the target's position
 \cite{dagon2004mobile, cai2009defending, enck2010taintdroid, egele2011pios}.
 In light of the possible privacy threats mentioned above, operating systems that are implemented in modern mobile phones usually provide mechanisms so that applications must acquire the user's explicit permission before it can access the device's sensors.
 
-\noindent However, not all sensors' accesses are tightly regulated by this mechanism, which leads to potential sensor abuse for eavesdropping purposes by malicious apps.
+However, not all sensors' accesses are tightly regulated by this mechanism, which leads to potential sensor abuse for eavesdropping purposes by malicious apps.
 One such example is the accelerometer, a sensor that uses about 10 times less power compared to other motion sensors~\cite{accelerometer-energy}.
 Access to accelerometers is usually unrestricted on most of the current mobile phone operating systems, due to the frequent use of accelerometer data to determine and adjust window orientation.
 
-\noindent In this paper, we present \textbf{EavesDroid}, a proof-of-concept application to recover keystrokes using 
+In this paper, we present \textbf{EavesDroid}, a proof-of-concept application to recover keystrokes using 
 accelerometer data. We demonstrate that EavesDroid is able to record and reconstruct the key presses made on a nearby keyboard with decent accuracy, based solely on the observed vibrations. We develop profiles for different keys by extracting features from the key press signals and classify them using boosted Decision Stumps. This allows us to establish an abstract representation of the relationship between a keystroke signal and its corresponding key. We then recover the typed content
 by translating from our intermediary form to English words using a number
 of different dictionaries.
 While there have been similar effors to reconstruct keystrokes from recorded audio signals with high accuracy~\cite{zhuang2005keyboard},
  reconstruction from accelerator data has not seen that much exploration. It is more challenging because of the lower sampling rate and because the data points are recorded at uneven time intervals.
 
-\noindent By developing \textbf{EavesDroid}, we have made the following contributions to the smartphone security domain:
+By developing \textbf{EavesDroid}, we have made the following contributions to the smartphone security domain:
 \begin{enumerate}
 \item {\bf Develop an infrastructure for characterizing keystroke vibrations}: We
 capture, analyze and develop profiles of keypress events on a nearby
@@ -85,12 +80,12 @@ of great importance in motivating smartphone vendors
 to restrict the usage of accelerometers to permitted applications only.\\
 \end{enumerate}
 
-\noindent The remainder of the paper is structured as follows: 
+The remainder of the paper is structured as follows: 
 We present related work in recovering keystrokes from keyboard vibrations in Section~\ref{sec:related}. We then describe our threat model and our constructed framework. Section~\ref{sec:implementation} include analysis and implementation, and the framework work flow. We show experimental results in Section~\ref{sec:experimentation} and conclude in Section~\ref{sec:conclusion}.
 
 \section{Related Work}
 \label{sec:related}
-\noindent Researchers have studied malicious code on mobile devices that
+Researchers have studied malicious code on mobile devices that
 learn information about the device owner using other embedded sensors.
 In the most closely related work to our paper, Marquardt \emph{et. al}
 \cite{spiphone} propose \emph{(sp)iPhone} which uses motion sensors in the
@@ -115,7 +110,7 @@ uses orientation of the smartphone device to infer the keystrokes.
 
 \section{Threat Model}
 \label{sec:threatmodel}
-\noindent Our attack is based upon the following two observations.
+Our attack is based upon the following two observations.
 
 Different from most of the sensors on a smartphone such as microphone, camera and GPS, the access of the accelerometer is not protected by the permission mechanism mentioned earlier. That is to say, any application is able to access the accelerometer feed if they wish to. However, due to the frequent usage needs of the accelerometer to determine window orientation and update screen orientation, we envision that this problem will not be fixed in the near future. Therefore, the number of smartphones that are vulnerable to this threat will only increase in the near future.
 
@@ -126,7 +121,7 @@ Our second observation is that smartphones are often placed very closely to a la
 
 \subsection{Dataset Capturing}
 \label{sec:dataset-capturing}
-\noindent Our experimental setup is shown in Figure~\ref{fig:setup}. We placed a Dell USB keyboard and a LG Nexus 5 smartphone on a wooden table. No other items were placed on or were touching the table. All keys were pressed with the index finger of the right hand. The hands do not touch the keyboard or table, and the fingers do not pause on the keyboard but only touch it during the brief duration of the key press. While this method of typing might seem arbitrary, we strongly believe that a unified dataset should be created first before more advanced typing patters are explored.
+Our experimental setup is shown in Figure~\ref{fig:setup}. We placed a Dell USB keyboard and a LG Nexus 5 smartphone on a wooden table. No other items were placed on or were touching the table. All keys were pressed with the index finger of the right hand. The hands do not touch the keyboard or table, and the fingers do not pause on the keyboard but only touch it during the brief duration of the key press. While this method of typing might seem arbitrary, we strongly believe that a unified dataset should be created first before more advanced typing patters are explored.
 
 We recorded 1000 data points in 40 sessions with 25 letters in each sessions. For each session we generate a sequence of 25 random letters and display the letters in 3 second intervals to ensure an even recording of the letters and to ensure that there is no bias toward a specific letter. For the data capturing we developed an Android app that reads from the hardware accelerometer and syncs with our laptops, where we further process the data. The raw accelerometer data as returned by Android contains the $x$, $y$ and $z$-direction components of the acceleration of the vibration received. We calculate the G-force magnitude as $\sqrt{x^2+y^2+z^2}-g$ where $g = 9.81 m/s^2$ is the acceleration due to gravity. The accelerometer records at the granularity of microseconds.
 
@@ -154,7 +149,7 @@ Our triad assignment is as follows:
 
 \section{Analysis \& Implementation}
 \label{sec:implementation}
-\noindent We present the implementation details of the algorithms used to generate a prediction model on the training. The given dataset is broken into training (66\%) and testing (33\%) sets. We then generate the prediction model by 10-fold cross-validation on the training set. In~\cite{spiphone}, Marquardt \emph{et. al} use a neural network to build the signal profiles of the letters typed by the user. Our analysis builds upon their paper, but compares the accuracy of multiple algorithms. We use AdaBoost with Random Forests as the weak learner, AdaBoost with Decision Stumps as the weak learner, and Neural networks to determine the accuracies of the respective models on the testing set (shown in Table~\ref{tab:algos-compare}). The results corresponding to Random Forests are using 10 decision trees. The accuracy of using Decision Stump is better than that of Random Forests because of overfitting that takes place in the Random Forests. When the number of trees in the Random Forests was increased, the training error decreases and the test error increases. Since Random Forests represent a multitude of decision trees, the higher number of trees increases the testing error. On the other hand, Decision Stumps are one node trees and are less prone to overfitting on the training data and provide the similar accuracies as Random Forests with less complex hypotheses/model. 
+We present the implementation details of the algorithms used to generate a prediction model on the training. The given dataset is broken into training (66\%) and testing (33\%) sets. We then generate the prediction model by 10-fold cross-validation on the training set. In~\cite{spiphone}, Marquardt \emph{et. al} use a neural network to build the signal profiles of the letters typed by the user. Our analysis builds upon their paper, but compares the accuracy of multiple algorithms. We use AdaBoost with Random Forests as the weak learner, AdaBoost with Decision Stumps as the weak learner, and Neural networks to determine the accuracies of the respective models on the testing set (shown in Table~\ref{tab:algos-compare}). The results corresponding to Random Forests are using 10 decision trees. The accuracy of using Decision Stump is better than that of Random Forests because of overfitting that takes place in the Random Forests. When the number of trees in the Random Forests was increased, the training error decreases and the test error increases. Since Random Forests represent a multitude of decision trees, the higher number of trees increases the testing error. On the other hand, Decision Stumps are one node trees and are less prone to overfitting on the training data and provide the similar accuracies as Random Forests with less complex hypotheses/model. 
 
 Neural Networks achieves almost similar accuracies as the AdaBoost implementations, but we do not use this as our choice of algorithm for the experimentations (Section~\ref{sec:experimentation}). This is because firstly we do not have the MFCCs features extracted from the keystroke signal and these which provides better representation of cepstral information about the signal and capture by the neural network. Secondly, Marquardt \emph{et. al} have presented a solution to the threat model using neural networks and in order to benefit the research community, we attempt to provide an orthogonal analysis with less features and using a different machine learning approach. Thirdly, by the principle of Occam's razor, we prefer to use the classifier which uses a simple hypothesis and does not overfit the data.
 
@@ -164,11 +159,11 @@ In addition to L/R and U/D datasets, we compute the predictions of the algorithm
 
 \section{Framework Work Flow}
 \label{sec:framework}
-\noindent In this section, we elaborate the flow of data and features leading to the
+In this section, we elaborate the flow of data and features leading to the
 predictions made by the model.
 \subsection{Learning Phase}
 \label{sec:learning}
-\noindent In the learning phase, as shown in Figure~\ref{fig:flowchart1}, we use the 1000 data points collected (Section~\ref{sec:dataset-capturing})
+In the learning phase, as shown in Figure~\ref{fig:flowchart1}, we use the 1000 data points collected (Section~\ref{sec:dataset-capturing})
 for training the model. Each session of the collected data results in one raw accelerometer readings' file.
 Since the readings have noise peaks at the start and end of the signal, it is passed through the Clipper
 which strips out the ends. The clipped file is then processed by the SignalBreaker to
@@ -182,7 +177,7 @@ the U/D classifier.
 
 \subsection{Attack Phase}
 \label{sec:attacking}
-\noindent In the attack phase, as shown in Figure~\ref{fig:flowchart1}, EavesDroid receives the raw accelerometer data for a word
+In the attack phase, as shown in Figure~\ref{fig:flowchart1}, EavesDroid receives the raw accelerometer data for a word
 typed in by the user on a nearby keyboard. The clipping of the signal and signal breaking
 works in the same manner as in the learning phase except there is no labeling in the attack
 phase. The unlabeled features obtained from the Feature Extractor module are passed
@@ -198,7 +193,7 @@ the word typed word ``juice" from the signal in Figure~\ref{fig:juice}.
 
 \section{Experimentation}
 \label{sec:experimentation}
-\noindent We extensively use the R Project~\cite{r-project} tool for data processing and feature extraction and for building the prediction models. R Project
+We extensively use the R Project~\cite{r-project} tool for data processing and feature extraction and for building the prediction models. R Project
 provides access to the RWeka~\cite{rweka} library which has implementations
 of most machine learning algorithms. The AdaBoost and Neural Networks implementations
 are leveraged from the RWeka package for the purpose of the experiments.
@@ -257,7 +252,6 @@ The module is able to successful recover 121 out of the 138 dictionary words wit
 number of letter mispredictions. This demonstrates the practical utility of EavesDroid in recovering text a from victim's typing patterns.
 
 \section{Challenges and Future Work}
-\noindent 
 Despite achieving good text recovery accuracy for practical use, we faced many challenges in
 this project which we aim to resolve in the future. 
 
