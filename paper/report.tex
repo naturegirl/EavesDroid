@@ -33,7 +33,7 @@ Department of Computer Science\\Princeton University
 
 In this paper we demonstrate the usage of a smartphone accelerometer to eavesdrop on a nearby computer user and recover text based on recorded keyboard vibrations.
  We present EavesDroid, a proof-of-concept application that can be used to record and process accelerometer data and leverage it to reconstruct the original typed text. EavesDroid
-uses AdaBoost with Decision Stumps and achieves up to 85\% accuracy in recovering original words with an expected error rate of 2 letters per words.
+uses AdaBoost with Decision Stumps and achieves up to 85\% accuracy in recovering original words with an expected error rate of 2 letters per word.
 We also make our dataset of accelerometer recordings available to the public, the first such dataset to the best of our knowledge. 
 
 \end{abstract}
@@ -268,6 +268,15 @@ Another direction for future work is to use Hidden Markov Models (HMMs) to model
 
 \section{Conclusions}
 \label{sec:conclusion}
+
+Today's smartphones contain an array of powerful sensors which can be used to build increasingly interactive devices, but also to offer potential exploitation by malicious applications. The accelerometer is one such sensor with currently unrestricted access for developers, which we deem particularly problematic due to the security and privacy risks this poses. One particular threat involves using a smartphone accelerometer to eavesdrop on a nearby typing computer user by recording the vibrations of the keyboard and employing it to reconstruct the typed text.
+
+We present EavesDroid, a proof-of-concept application to recover keystrokes using accelerometer data. We demonstrate that EavesDroid is able to record and reconstruct words typed on a nearby keyboard with up to 85\% accuracy with an expected error rate of 2 letters per word. While previous approaches used only Neural Networks, we evaluated the performance of 3 different models (Neural Networks, AdaBoost with Random Forests and AdaBoost with Decision Stumps) and conclude that AdaBoost with Deciscion Stumps yields the highest accuracy.
+
+Our contributions in developing EavesDroid include an full pipeline for recording and processing keystroke vibrations. We believe that this framework will be helpful for future research, as the modular design allows parts to be easily exchanged and improved.
+Furthermore, we provide a dataset of 1000 recorded keystroke vibrations, the first such dataset to the best of our knowledge.
+
+The smartphone security domain is a continuously evolving area and we hope that this paper helped raise awareness of the potential misuses of accelerometer data and the need to carefully calibrate sensor access.
 
 
 %%%%%%%%%%%%% Figures and Tables %%%%%%%%%%%%%%%%%%%%
