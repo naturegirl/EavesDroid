@@ -14,6 +14,7 @@
 
 %\usepackage{titlesec}
 %\titlespacing*{\section}{0pt}{.4\baselineskip}{.2\baselineskip}
+\usepackage{subfig}
 
 \begin{document}
 
@@ -145,11 +146,11 @@ In addition to L/R, U/D labels, we also tried to group different keys together i
 
 \section{Analysis \& Implementation}
 \label{sec:implementation}
-\noindent In~\cite{spiphone}, Marquardt \emph{et. al} use a neural network to build the signal profiles of the letters typed by the user. We present the implementation details of the algorithms used in order to best generate a prediction model on the training. The given dataset is broken into training (66\%) and testing (33\%) sets. We then generate the prediction model by 10-fold cross-validation on the training set. We use AdaBoost with Random Forests as the weak learner, AdaBoost with Decision Stumps as the weak learner, and Neural networks to determine the accuracies of the respective models on the testing set (shown in Table~\ref{tab:algos-compare}). The results corresponding to Random Forests are using 10 decision trees. The accuracy of using Decision Stump is better than that of Random Forests because of overfitting that takes place in the Random Forests. When the number of the number of trees in the Random Forests was increased, the training error decreases and the test error increases. Since Random Forests represent a multitude of decision trees, the higher number of trees increases the testing error. On the other hand, Decision Stumps are one node trees and are less prone to overfitting on the training data and provide the similar accuracies as Random Forests with less complex hypotheses/model. Neural Networks achieves almost similar accuracies as the AdaBoost implementations, but we do not use this as our choice of algorithm for the experimentations (Section~\ref{sec:experimentation}). This is because firstly we do not have the MFCCs features extracted from the keystroke signal and these which provides better representation of cepstral information about the signal and capture by the neural network. Secondly, Marquardt \emph{et. al} have presented a solution to the threat model using neural networks and in order to benefit the research community, we attempt to provide an orthogonal analysis with less features and using a different machine learning approach.
+\noindent In~\cite{spiphone}, Marquardt \emph{et. al} use a neural network to build the signal profiles of the letters typed by the user. We present the implementation details of the algorithms used in order to best generate a prediction model on the training. The given dataset is broken into training (66\%) and testing (33\%) sets. We then generate the prediction model by 10-fold cross-validation on the training set. We use AdaBoost with Random Forests as the weak learner, AdaBoost with Decision Stumps as the weak learner, and Neural networks to determine the accuracies of the respective models on the testing set (shown in Table~\ref{tab:algos-compare}). The results corresponding to Random Forests are using 10 decision trees. The accuracy of using Decision Stump is better than that of Random Forests because of overfitting that takes place in the Random Forests. When the number of the number of trees in the Random Forests was increased, the training error decreases and the test error increases. Since Random Forests represent a multitude of decision trees, the higher number of trees increases the testing error. On the other hand, Decision Stumps are one node trees and are less prone to overfitting on the training data and provide the similar accuracies as Random Forests with less complex hypotheses/model. Neural Networks achieves almost similar accuracies as the AdaBoost implementations, but we do not use this as our choice of algorithm for the experimentations (Section~\ref{sec:experimentation}). This is because firstly we do not have the MFCCs features extracted from the keystroke signal and these which provides better representation of cepstral information about the signal and capture by the neural network. Secondly, Marquardt \emph{et. al} have presented a solution to the threat model using neural networks and in order to benefit the research community, we attempt to provide an orthogonal analysis with less features and using a different machine learning approach. Thirdly, by the principle of Occam's razor, we prefer to use the classifier which uses a simple hypothesis and does not overfit the data.
 
 The cepstral features corresponding to the FFTs have significant impact on the predictions of the model. Table~\ref{tab:ffts-non-ffts} shows the test accuracies using AdaBoost with Decision Stumps. FFTs alone provide 10\% higher correct predictions compared to the rest of the features in the case of L/R dataset. The combined prediction accuracy when using all the features is better than when using just the FFTs and this demonstrates that the frequency of the vibration signal received from the different keystrokes has significant impact in making correct alphabet predictions.
 
-In addition to L/R and U/D datasets, we compute the predictions of the algorithms on the Triads dataset. Table~\ref{tab:algos-compare} shows that the models generated make poor predictions about the triad to which a keystroke belongs. This is, firstly, due to the assumption that the alphabets grouped into the same triad do not necessarily have similar keystroke vibrations. Careful triads construction is expected to give better predictions but this analysis is beyond the scope of this project study and we leave it as future work in the interest of limited time for this project. Therefore, for the purpose of experimentation, we use L/R and U/D label predictions only for determining the keystrokes of the user. Section~\ref{sec:experimentation} will demonstrate that good triad predictions, in addition to L/R and U/D predictions, will increase the accuracy with which the words typed by the user are identified. 
+In addition to L/R and U/D datasets, we compute the predictions of the algorithms on the Triads dataset. Table~\ref{tab:algos-compare} shows that the models generated make poor predictions about the triad to which a keystroke belongs. This is, firstly, due to the assumption that the alphabets grouped into the same triad do not necessarily have similar keystroke vibrations. Careful triads construction is expected to give better predictions but this analysis is beyond the scope of this project study and we leave it as future work in the interest of limited time for this project. Therefore, for the purpose of experimentation, we use L/R and U/D label predictions only for determining the keystrokes of the user. Section~\ref{sec:experimentation} will demonstrate that good triad predictions, in addition to L/R and U/D predictions, will increase the accuracy with which the words typed by the user are identified. Additionally, we built a neural network on the alphabet labeled dataset and achieved 41.34\% accuracy for the 26 letter labels. This is significantly better thatn random classification but is not sufficient for word recovery from the typed key strokes.
 
 \section{Framework Work Flow}
 \label{sec:framework}
@@ -248,7 +249,7 @@ The module is able to successful recover 121 out of the 138 dictionary words wit
 number of letter mis-predictions. This demonstrates the practical utility of EavesDroid in recovering text
 from victim's typing patterns. 
 
-\section{Challenges/Future Work}
+\section{Challenges and Future Work}
 \noindent Besides achieving practically good text recovery accuracy, we faced many challenges in
 this project study which we aim to simplify in the future. When using the dictionary to generate
 candidate words for an input word signal, the number of candidate words increases with the dictionary
@@ -269,15 +270,6 @@ build an application to analyze real-time accelerometer signals received from ke
 
 \section{Conclusions}
 \label{sec:conclusion}
-
-\subsection{Future Work}
-
-
-http://blogs.adobe.com/cantrell/archives/2012/03/accessing-the-accelerometer-and-gyroscope-in-javascript.html
-
-http://isthisanearthquake.com/
-
-http://isthisanearthquake.com/seismograph.html
 
 
 %%%%%%%%%%%%% Figures and Tables %%%%%%%%%%%%%%%%%%%%
@@ -339,7 +331,7 @@ model and using the dictionary, the word is found.}
 \begin{table}[h]
 \centering
 {%\small
-\resizebox{8cm}{!}{
+\resizebox{9cm}{!}{
 \begin{tabular}{|c|c|c|}
 \hline
 \textbf{Dataset} & \textbf{Algorithm} & \textbf{Test Accuracy(\%)}\\
@@ -365,14 +357,14 @@ model and using the dictionary, the word is found.}
 \end{tabular}
 }
 }
-\caption{Test accuracies on $1/3^{rd}$ of dataset}
+\caption{Test accuracies of different machine learning algorithms on the test dataset.}
 \label{tab:algos-compare}
 \end{table}
 
 \begin{table}[h]
 \centering
 {%\small
-\resizebox{8cm}{!}{
+\resizebox{9cm}{!}{
 \begin{tabular}{|c|c|c|}
 \hline
 \textbf{Dataset} & \textbf{Features Picked} & \textbf{Test Accuracy(\%)}\\
@@ -399,10 +391,11 @@ model and using the dictionary, the word is found.}
 \begin{table}[h]
 \centering
 {%\small
-\resizebox{8cm}{!}{
+\resizebox{9cm}{!}{
 \begin{tabular}{|c|c|}
 \hline
-\textbf{Expected Letter Mis-predictions} & \textbf{Recovered Words Accuracy(\%)}\\
+\textbf{Expected \# of Letter} & \textbf{Percentage of}\\
+\textbf{Mis-predictions} & \textbf{Recovered Words(\%)}\\
 \hline
 0 & 5.46\\
 \hline
