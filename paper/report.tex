@@ -371,26 +371,24 @@ In this paper, we demonstrate accelerometer recording eavesdropping blabla
 \noindent Mobile phones are becoming increasingly powerful
 devices. In addition to being able to run simple applications such as email clients and web browsers; by equipping a wide variety of sophisticated sensors, these smartphones can actively interface with the world around them.
 
-Unfortunately, the array of sensors in these devices can also be
+\noindent Unfortunately, the array of sensors in these devices can also be
 used in malicious ways. For example, malware could
 potentially gain access to a mobile phone's camera to take photos or
-video without the notice of the owner \cite{cheng2007mobile}. Other possible attempts are activating the device's microphone to record converstaions or turn on the GPS to track the target's position
+video without the notice of the owner \cite{cheng2007mobile}. Other possible attempts are activating the device's microphone to record conversations or turn on the GPS to track the target's position
 \cite{dagon2004mobile, cai2009defending, enck2010taintdroid, egele2011pios}.
 In light of the possible privacy threats mentioned above, operating systems that are implemented in modern mobile phones usually provide mechanisms so that applications must acquire the user's explicit permission before it can access the device's sensors.
 
-However, not all sensors' accesses are tightly regulated by this mechanism, which leads to potential sensor abuse for eavesdropping purposes by malicious apps.
-One such example is the accelerometer. Access to accelerometers is usually unrestricted on most of the current mobile phone operating systems, due to the frequent use of accelerometer data to determine and adjust window orientation. Furthermore, the accelerometer is very energy efficient and uses about 10 times less power than other motion sensors \cite{android}. [\textbf{citation}]
-% \url{http://developer.android.com/guide/topics/sensors/sensors_motion.html#sensors-motion-accel}
+\noindent However, not all sensors' accesses are tightly regulated by this mechanism, which leads to potential sensor abuse for eavesdropping purposes by malicious apps.
+One such example is the accelerometer. Access to accelerometers is usually unrestricted on most of the current mobile phone operating systems, due to the frequent use of accelerometer data to determine and adjust window orientation. Furthermore, the accelerometer is very energy efficient and uses about 10 times less power than other motion sensors~\cite{accelerometer-energy}.
 
-In this paper, we present \textbf{EavesDroid}, an application to recover keystrokes using 
-accelerometer data. We demonstrate that \textbf{EavesDroid} is able to record and reconstruct the keypresses made on a nearby keyboard with decent accuracy, based solely on the observed vibrations. We develop profiles for different keys by extracing features from the keypress signals and classify them using boosted Random Forests. This allows us to establish an abstract representation of the relationship between a keystroke signal and its corresponding key. We then recover the typed content
+\noindent In this paper, we present \textbf{EavesDroid}, an application to recover keystrokes using 
+accelerometer data. We demonstrate that EavesDroid is able to record and reconstruct the key presses made on a nearby keyboard with decent accuracy, based solely on the observed vibrations. We develop profiles for different keys by extracting features from the key press signals and classify them using boosted Decision Stumps. This allows us to establish an abstract representation of the relationship between a keystroke signal and its corresponding key. We then recover the typed content
 by translating from our intermediary form to English words using a number
 of different dictionaries.
-While there have been similar effors to reconstruct keystrokes from recorded audio signals with high accuracy [\textbf{cite}],
-%http://www.cs.berkeley.edu/~tygar/papers/Keyboard_Acoustic_Emanations_Revisited/ccs.pdf
+While there have been similar effors to reconstruct keystrokes from recorded audio signals with high accuracy~\cite{zhuang2005keyboard},
  reconstruction from accelerator data has not seen that much exploration. It is more challenging because of the lower sampling rate and because the data points are recorded at uneven time intervals.
 
-By developing \textbf{EavesDroid} we have made the following contributions to the smartphone security domain:
+\noindent By developing \textbf{EavesDroid}, we have made the following contributions to the smartphone security domain:
 \begin{enumerate}
 \item {\bf Develop an infrastructure for characterizing keystroke vibrations}: We
 capture, analyze and develop profiles of keypress events on a nearby
@@ -530,10 +528,12 @@ predicted words, is a non-trivial task and requires an extensive time beyond the
 of this project study.
 
 We provide a hack around this by exploiting the results that
-the SignalBreaker works with 100\% accuracy and that $1/3^{rd}$ of the recorded
-alphabet signals (Section~\ref{sec:dataset-capturing}) are unseen by the classifiers.
+the SignalBreaker works with 100\% accuracy. We break the collected dataset of
+letters into 66\% training set TR and the remaining 33\% as the test set TS.
+The $1/3^{rd}$ of the recorded
+alphabet signals in TS (Section~\ref{sec:dataset-capturing}) are unseen by the classifiers.
 For any sequence of words, we wrote a module, SignalGen, which generates the possible
-signal for that word from the remaining $1/3^{rd}$ of the recorded alphabet signals.
+signal for that word from the set TS of the recorded alphabet signals.
 This is done by randomly picking a signal corresponding to each letter of the word
 and concatenating them together to form the word signal. For example, for the word
 ``juice", the signals corresponding to `j', `u', `i', `c', `e' are chosen randomly
@@ -544,14 +544,14 @@ and generating predictions for the corresponding words.
 We conduct two experiments in order to evaluate the performance of EavesDroid.
 In the first experiment, we use the 72 Harvard sentences (constituting 4490 words) as the user's typed data
 which we want to recover. Using the SignalGen module, we construct raw accelerometer
-data from the remaining $1/3^{rd}$ letters data for the 72 sentences. Using the work flow
+data from the TS letters data for the 72 sentences. Using the work flow
 of the attack phase (as explained in Section~\ref{sec:attacking}), we get the dictionary
 words with the least error for all candidate words in those sentences. We notice that
-EavesDroid is able to correctly recover 5.46\% of the 4490 words. Table~\ref{tab:harvard-labels}
-shows the percentage of words which at most the corresponding number of errors in the combined
-LR and UD label predictions. Note that 97.27\% of the words have at most 6 mis-predictions using
-the EavesDroid's classifiers. 6 mis-predictions does not mean that all the label predictions
-on a 6 letter word are incorrect. Instead for a 6 letter word, 12 labels are predicted and out of
+EavesDroid is able to correctly recover 85.67\% of the 4490 words by making at most 2 letter
+mispredictions. Table~\ref{tab:harvard-labels}
+shows the percentage of words recovered with at most the corresponding expected number of mis-predicted letters.
+Note that 97.27\% of the words have at most 3 mis-predicted letters using
+the EavesDroid's classifiers. 3 mis-predictions indicates that for a 6 letter word, 12 labels are predicted and out of
 those at most 6 are incorrect. If we list the top word predictions for a given candidate word,
 using English context information, a reader can very well guess the word from the available
 choices. For example, Figure~\ref{fig:words-options} shows the possible word choices
@@ -560,28 +560,34 @@ can reconstruct the sentence.
 
 In the second experiment, we fed a New York Times article~\cite{bats-nytimes} with 766 words
 to EavesDroid. The articles has 395 unique words with 257 words that do not occur in the dictionary.
-The module is able to successful recover 121 out of the 138 dictionary words with at most
-5 labeling errors. This demonstrates the practical utility of EavesDroid in recovering text
+The module is able to successful recover 121 out of the 138 dictionary words with at most 2.5 expected
+number of letter mis-predictions. This demonstrates the practical utility of EavesDroid in recovering text
 from victim's typing patterns. 
 
-%133/138 (96.38)
-%121/138 (87.68)
-%145/395 (36.71)
+\section{Challenges/Future Work}
+\noindent Besides achieving practically good text recovery accuracy, we faced many challenges in
+this project study which we aim to simplify in the future. When using the dictionary to generate
+candidate words for an input word signal, the number of candidate words increases with the dictionary
+size. This leads to additional work in contextual identification of the correct word. To mitigate the
+effect of increased dictionary size, we could group the similarly vibrating keys into triads. This serves
+to reduce the search space. Also, Hidden Markov Models can be used to gain natural language contextual
+information about the current word being predicted. We leave this for future studies.
 
- 
+The accelerometer is extremely sensitive to surrounding noises. Better understanding and usage of the signal
+filtering techniques is required. In addition, advanced signal filtering techniques can be used to
+profile consecutive key presses into the model. Clustering on the letters' signals and labeling them based on the frequency of
+each letter's average appearance might provide better accuracy. Also, building the model on a word's signal
+instead of the letter's signal might capture word signatures in a better way.
 
-
-[Box sentence: exact matches and possible choices for non-exact matches]
-
-[Negative analysis, word watch, many potential matches  when dictionary size increases]
-
+Mobile browsers can allow access
+to accelerometer data~\cite{acc-web-browsers} and one can
+build an application to analyze real-time accelerometer signals received from keystrokes.
 
 \section{Conclusions}
 \label{sec:conclusion}
 
 \subsection{Future Work}
 
-Mobile browsers having allowing access to accelerometer data,
 
 http://blogs.adobe.com/cantrell/archives/2012/03/accessing-the-accelerometer-and-gyroscope-in-javascript.html
 
@@ -591,6 +597,8 @@ http://isthisanearthquake.com/seismograph.html
 
 
 %%%%%%%%%%%%% Figures and Tables %%%%%%%%%%%%%%%%%%%%
+\pagebreak
+
 \begin{figure}
 \centering
 \includegraphics[width=0.5\textwidth]{img/setup}
@@ -709,21 +717,21 @@ classifiers and for analyzing keyboard input during an attack.}
 \resizebox{8cm}{!}{
 \begin{tabular}{|c|c|}
 \hline
-\textbf{\# errors (L/R, U/D)} & \textbf{Recovered Words Accuracy(\%)}\\
+\textbf{Expected Letter Mis-predictions} & \textbf{Recovered Words Accuracy(\%)}\\
 \hline
 0 & 5.46\\
 \hline
-1 & 23.41\\
+0.5 & 23.41\\
 \hline
-2 & 41.64\\
+1 & 41.64\\
 \hline
-3 & 70.31\\
+1.5 & 70.31\\
 \hline
-4 & 85.67\\
+2 & 85.67\\
 \hline
-5 & 94.54\\
+2.5 & 94.54\\
 \hline
-6 & 97.27\\
+3 & 97.27\\
 \hline
 \end{tabular}
 }
@@ -741,7 +749,7 @@ exactly matching word predictions.}
 \end{figure}
 
 %ACKNOWLEDGMENTS are optional
-\section*{Acknowledgments}
+%\section*{Acknowledgments}
 
 % An example of a floating figure using the graphicx package.
 % Note that \label must occur AFTER (or within) \caption.
