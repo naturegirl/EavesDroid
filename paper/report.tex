@@ -12,8 +12,17 @@
 \usepackage{graphicx}
 \usepackage{multirow}
 
-%\usepackage{titlesec}
-%\titlespacing*{\section}{0pt}{.4\baselineskip}{.2\baselineskip}
+%% reduces the font of the captions in tables and figures
+\usepackage[font=scriptsize]{caption}
+
+%% reduces the space before and after the section titles
+\newcommand{\subparagraph}{}
+\usepackage[compact]{titlesec}
+%\titlespacing{\section}{0pt}{\parskip}{-\parskip}
+%\titlespacing{\subsection}{0pt}{\parskip}{-\parskip}
+%\titlespacing*{\section} {0pt}{3.5ex plus 1ex minus .2ex}{2.3ex plus .2ex}
+%\titlespacing{\section}{0pt}{.2\baselineskip}{.1\baselineskip}
+
 \usepackage{subfig}
 
 \begin{document}
@@ -72,7 +81,7 @@ capture, analyze and develop profiles of keypress events on a nearby
 keyboard based on the vibrations created when they are pressed. Features such as mean, skewness and FFT are first extracted from our input signals. We then use a set boosted Decision Stumps to create an intermediary
 representation, which is combined with candidate dictionaries
 to successfully recover words at rates as high as 70\%.
-\item {\bf Dataset made publicly available}: To the best of our knowledge,
+\item {\bf Dataset made publicly available\footnote{\texttt{\url{https://github.com/naturegirl/EavesDroid}}}}: To the best of our knowledge,
 no public dataset is available that provides signals of individual keypresses as recorded by the smartphone accelerometer placed next to the keyboard. In this paper, we present our pipeline for recording datapoints for keystroke vibrations and we make the dataset of 1000 recorded datapoints publicly available to enhance further research in this area. Given
 the widespread attention to privacy concerns and security breaches caused by eavesdropping on device emanations, we perceive this to be
 of great importance in motivating smartphone vendors
@@ -330,6 +339,14 @@ model and using the dictionary, the word is found.}
 \label{fig:flowchart2}
 \end{figure*}
 
+\begin{figure}
+\centering
+\includegraphics[width=0.5\textwidth]{img/words-options}
+\caption{Word options for an Harvard sentence. A word with no options represents the
+exactly matching word predictions.}
+\label{fig:words-options}
+\end{figure}
+
 \begin{table}[h]
 \centering
 {%\small
@@ -419,14 +436,6 @@ model and using the dictionary, the word is found.}
 \caption{Percentage of words recovered with at most the given number of errors in predictions}
 \label{tab:harvard-labels}
 \end{table}
-
-\begin{figure}
-\centering
-\includegraphics[width=0.5\textwidth]{img/words-options}
-\caption{Word options for an Harvard sentence. A word with no options represents the
-exactly matching word predictions.}
-\label{fig:words-options}
-\end{figure}
 
 %ACKNOWLEDGMENTS are optional
 %\section*{Acknowledgments}
