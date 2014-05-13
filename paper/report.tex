@@ -18,6 +18,10 @@
 %% reduces the space before and after the paragraphs
 \parskip 0pt
 
+%% provides the \comment{} macro
+\usepackage{verbatim}
+\renewcommand{\comment}[1]{}
+
 \usepackage{subfig}
 
 \begin{document}
@@ -79,10 +83,10 @@ the widespread attention to privacy concerns and security breaches caused by eav
 of great importance in motivating smartphone vendors
 to restrict the usage of accelerometers to permitted applications only.\\
 \end{enumerate}
-
-The remainder of the paper is structured as follows: 
-We present related work in recovering keystrokes from keyboard vibrations in Section~\ref{sec:related}. We then describe our threat model and our constructed framework. Section~\ref{sec:implementation} include analysis and implementation, and the framework work flow. We show experimental results in Section~\ref{sec:experimentation} and conclude in Section~\ref{sec:conclusion}.
-
+%\begin{comment}
+\comment{The remainder of the paper is structured as follows: 
+We present related work in recovering keystrokes from keyboard vibrations in Section~\ref{sec:related}. We then describe our threat model and our constructed framework. Section~\ref{sec:implementation} include analysis and implementation, and the framework work flow. We show experimental results in Section~\ref{sec:experimentation} and conclude in Section~\ref{sec:conclusion}.}
+%\end{comment}
 \section{Related Work}
 \label{sec:related}
 Researchers have studied malicious code on mobile devices that
@@ -110,9 +114,7 @@ uses orientation of the smartphone device to infer the keystrokes.
 
 \section{Threat Model}
 \label{sec:threatmodel}
-Our attack is based upon the following two observations.
-
-Different from most of the sensors on a smartphone such as microphone, camera and GPS, the access of the accelerometer is not protected by the permission mechanism mentioned earlier. That is to say, any application is able to access the accelerometer feed if they wish to. However, due to the frequent usage needs of the accelerometer to determine window orientation and update screen orientation, we envision that this problem will not be fixed in the near future. Therefore, the number of smartphones that are vulnerable to this threat will only increase in the near future.
+Our attack is based upon the following two observations. Different from most of the sensors on a smartphone such as microphone, camera and GPS, the access of the accelerometer is not protected by the permission mechanism mentioned earlier. That is to say, any application is able to access the accelerometer feed if they wish to. However, due to the frequent usage needs of the accelerometer to determine window orientation and update screen orientation, we envision that this problem will not be fixed in the near future. Therefore, the number of smartphones that are vulnerable to this threat will only increase in the near future.
 
 Our second observation is that smartphones are often placed very closely to a laptop or the keyboard of a computer. This is mainly because smartphone users tend to put their phone within their reaching area while working so they can monitor the phone should any text or notification pop up. This user behavior enables the accelerometer within the smartphone to record keystroke signals that are transmitted from keyboard to smartphone through the underlying table surface. This clearly exacerbates the threat that accelerometer data is not protected since malicious applications can exploit the signals to reconstruct typed keys.
 
@@ -149,13 +151,13 @@ Our triad assignment is as follows:
 
 \section{Analysis \& Implementation}
 \label{sec:implementation}
-We present the implementation details of the algorithms used to generate a prediction model on the training. The given dataset is broken into training (66\%) and testing (33\%) sets. We then generate the prediction model by 10-fold cross-validation on the training set. In~\cite{spiphone}, Marquardt \emph{et. al} use a neural network to build the signal profiles of the letters typed by the user. Our analysis builds upon their paper, but compares the accuracy of multiple algorithms. We use AdaBoost with Random Forests as the weak learner, AdaBoost with Decision Stumps as the weak learner, and Neural networks to determine the accuracies of the respective models on the testing set (shown in Table~\ref{tab:algos-compare}). The results corresponding to Random Forests are using 10 decision trees. The accuracy of using Decision Stump is better than that of Random Forests because of over-fitting that takes place in the Random Forests. When the number of trees in the Random Forests was increased, the training error decreases and the test error increases. Since Random Forests represent a multitude of decision trees, the higher number of trees increases the testing error. On the other hand, Decision Stumps are one node trees and are less prone to overfitting on the training data and provide the similar accuracies as Random Forests with less complex hypotheses/model. 
+We present the implementation details of the algorithms used to generate a prediction model on the training. The given dataset is broken into training (66\%) and testing (33\%) sets. We then generate the prediction model by 10-fold cross-validation on the training set. In~\cite{spiphone}, Marquardt \emph{et. al} use a neural network to build the signal profiles of the letters typed by the user. Our analysis builds upon their paper, but compares the accuracy of multiple algorithms. We use AdaBoost with Random Forests as the weak learner, AdaBoost with Decision Stumps as the weak learner, and Neural networks to determine the accuracies of the respective models on the testing set (shown in Table~\ref{tab:algos-compare}). The results corresponding to Random Forests are using 10 decision trees. The accuracy of using Decision Stump is better than that of Random Forests because of over-fitting that takes place in the Random Forests. When the number of trees in the Random Forests was increased, the training error decreases and the test error increases. Since Random Forests represent a multitude of decision trees, the higher number of trees increases the testing error. On the other hand, Decision Stumps are one node trees and are less prone to over-fitting on the training data and provide the similar accuracies as Random Forests with less complex hypotheses/model. 
 
-Neural Networks achieves almost similar accuracies as the AdaBoost implementations, but we do not use this as our choice of algorithm for the experimentations (Section~\ref{sec:experimentation}). This is because firstly we do not have the MFCCs features extracted from the keystroke signal and these which provides better representation of cepstral information about the signal and capture by the neural network. Secondly, Marquardt \emph{et. al} have presented a solution to the threat model using neural networks and in order to benefit the research community, we attempt to provide an orthogonal analysis with less features and using a different machine learning approach. Thirdly, by the principle of Occam's razor, we prefer to use the classifier which uses a simple hypothesis and does not overfit the data.
+Neural Network achieves almost similar accuracies as the AdaBoost implementations, but we do not use this as our choice of algorithm for the experimentations (Section~\ref{sec:experimentation}). This is because firstly we do not have the MFCCs features extracted from the keystroke signal and these which provides better representation of cepstral information about the signal and capture by the neural network. Secondly, Marquardt \emph{et. al} have presented a solution to the threat model using neural networks and in order to benefit the research community, we attempt to provide an orthogonal analysis with less features and using a different machine learning approach. Thirdly, by the principle of Occam's razor, we prefer to use the classifier which uses a simple hypothesis and does not overfit the data.
 
 The cepstral features corresponding to the FFTs have significant impact on the predictions of the model. Table~\ref{tab:ffts-non-ffts} shows the test accuracies using AdaBoost with Decision Stumps. FFTs alone provide 10\% higher correct predictions compared to the rest of the features in the case of L/R dataset. The combined prediction accuracy when using all the features is better than when using just the FFTs and this demonstrates that the frequency of the vibration signal received from the different keystrokes has significant impact in making correct alphabet predictions.
 
-In addition to L/R and U/D datasets, we compute the predictions of the algorithms on the Triads dataset. Table~\ref{tab:algos-compare} shows that the models generated make poor predictions about the triad to which a keystroke belongs. This is, firstly, due to the assumption that the alphabets grouped into the same triad do not necessarily have similar keystroke vibrations. Careful triads construction is expected to give better predictions but this analysis is beyond the scope of this project study and we leave it as future work in the interest of limited time for this project. Therefore, for the purpose of experimentation, we use L/R and U/D label predictions only for determining the keystrokes of the user. Section~\ref{sec:experimentation} will demonstrate that good triad predictions, in addition to L/R and U/D predictions, will increase the accuracy with which the words typed by the user are identified. Additionally, we built a neural network on the alphabet labeled dataset and achieved 41.34\% accuracy for the 26 letter labels. This is significantly better than random classification but is not sufficient for word recovery from the typed key strokes.
+In addition to L/R and U/D datasets, we compute the predictions of the algorithms on the Triads dataset. Table~\ref{tab:algos-compare} shows that the models generated make poor predictions about the triad to which a keystroke belongs. This is, firstly, due to the assumption that the alphabets grouped into the same triad do not necessarily have similar keystroke vibrations. Careful triads construction is expected to give better predictions but this analysis is beyond the scope of this project study. Therefore, for the purpose of experimentation, we use L/R and U/D label predictions only for determining the keystrokes of the user. Additionally, we built a neural network on the alphabet labeled dataset and achieved 41.34\% accuracy for the 26 letter labels. This is significantly better than random classification but is not sufficient for word recovery from the typed key strokes.
 
 \section{Framework Work Flow}
 \label{sec:framework}
@@ -166,7 +168,7 @@ predictions made by the model.
 In the learning phase, as shown in Figure~\ref{fig:flowchart1}, we use the 1000 data points collected (Section~\ref{sec:dataset-capturing})
 for training the model. Each session of the collected data results in one raw accelerometer readings' file.
 Since the readings have noise peaks at the start and end of the signal, it is passed through the Clipper
-which strips out the ends. The clipped file is then processed by the SignalBreaker to
+which strips out the ends. The clipped file is then processed by our SignalBreaker module to
 get the raw accelerometer data for the letters that constitute the session. The segregated letter files are used
 to generate two labeled datasets - L/R labels and U/D labels - for the letters. This allows for generating two
 trained models in the learning. The labeled letters are passed through the Feature Extractor module
@@ -201,12 +203,10 @@ are leveraged from the RWeka package for the purpose of the experiments.
 We demonstrate the accuracies of our prediction model on the Harvard
 sentences~\cite{harvard-sentences}. We chose this list of sentences because
 it is phonetically-balanced, \emph{i.e.} it uses specific English phonemes
-with a uniform distribution. For testing the accuracy of text recovery when
-a user types on the near-by keyboard, we wrote a module, SignalBreaker, to break the vibration
-signal received corresponding to each word into corresponding set of letters for
-the particular word. There is a distinct peak corresponding to each key press and
-the duration of a keypress is approximately 100ms~\cite{spiphone}. SignalBreaker
-uses this information to create segments. It achieves an accuracy of 100\% in
+with a uniform distribution. The words, when passed through the SignalBreaker,
+show distinct peaks corresponding to each key press and
+the duration of a key press is approximately 100ms~\cite{spiphone}.
+SignalBreaker module achieves an accuracy of 100\% in
 determining the peaks and constructing the letter signals from the corresponding word
 signal. To test the accuracies of the L/R and U/D classifiers, the letter signals
 for an unknown word signal are fed to the classifiers. The L/R and U/D predictions
@@ -218,7 +218,7 @@ of this project study.
 
 We provide a workaround to this by breaking the collected dataset of
 letters into 66\% training set TR and the remaining 33\% as the test set TS.
-The $1/3^{rd}$ of the recorded
+The recorded
 alphabet signals in TS (Section~\ref{sec:dataset-capturing}) are unseen by the classifiers.
 For any sequence of words, our module SignalGen generates a
 signal for that word from the set TS of the recorded alphabet signals.
@@ -253,10 +253,8 @@ number of letter mispredictions. This demonstrates the practical utility of Eave
 
 \section{Challenges and Future Work}
 Despite achieving good text recovery accuracy for practical use, we faced many challenges in
-this project which we aim to resolve in the future. 
-
-For one, the accelerometer is extremely sensitive to surrounding noises. Better understanding and usage of the signal
-filtering techniques is required. In addition, advanced signal filtering techniques can be used to
+this project which we aim to resolve in the future.
+For one, the accelerometer is extremely sensitive to surrounding noises. In addition, advanced signal filtering techniques can be used to
 profile consecutive key presses into the model. Clustering on the letters' signals and labeling them based on the frequency of
 each letter's average appearance might provide better accuracy. Also, building the model on a word's signal
 instead of the letter's signal might capture word signatures in a better way.
@@ -269,12 +267,11 @@ to reduce the search space.
 Another direction for future work is to use Hidden Markov Models (HMMs) to model contextual information of the text in order to more accurately predict words.
 
 
-\section{Conclusions}
+\section{Conclusion}
 \label{sec:conclusion}
-
 Today's smartphones contain an array of powerful sensors which can be used to build increasingly interactive devices, but also to offer potential exploitation by malicious applications. The accelerometer is one such sensor with currently unrestricted access for developers, which we deem particularly problematic due to the security and privacy risks this poses. One particular threat involves using a smartphone accelerometer to eavesdrop on a nearby typing computer user by recording the vibrations of the keyboard and employing it to reconstruct the typed text.
 
-We present EavesDroid, a proof-of-concept application to recover keystrokes using accelerometer data. We demonstrate that EavesDroid is able to record and reconstruct words typed on a nearby keyboard with up to 85\% accuracy with an expected error rate of 2 letters per word. While previous approaches used only Neural Networks, we evaluated the performance of 3 different models (Neural Networks, AdaBoost with Random Forests and AdaBoost with Decision Stumps) and conclude that AdaBoost with Deciscion Stumps yields the highest accuracy.
+We present EavesDroid, a proof-of-concept application to recover keystrokes using accelerometer data. We demonstrate that EavesDroid is able to record and reconstruct words typed on a nearby keyboard with up to 85\% accuracy with an expected error rate of 2 letters per word. While previous approaches used only Neural Networks, we evaluated the performance of 3 different models (Neural Networks, AdaBoost with Random Forests and AdaBoost with Decision Stumps) and conclude that AdaBoost with Decision Stumps yields the highest accuracy.
 
 Our contributions in developing EavesDroid include an full pipeline for recording and processing keystroke vibrations. We believe that this framework will be helpful for future research, as the modular design allows parts to be easily exchanged and improved.
 Furthermore, we provide a dataset of 1000 recorded keystroke vibrations, the first such dataset to the best of our knowledge.
