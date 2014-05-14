@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -20,41 +21,83 @@ public class FeatureExtractor {
     
     public static final double G = 9.81;
     public static final BigInteger FACTOR = new BigInteger("1000");
-    public static boolean WANT_GFORCE_DATA = true;
-    public static final boolean WANT_LR_LABEL = true;
-    public static final boolean WANT_UP_LABEL = false;
+    public static boolean WANT_GFORCE_DATA = false;
+    public static boolean WANT_LR_LABEL = false;
+    public static boolean WANT_UP_LABEL = false;
     public static final boolean WANT_PAIRED_LABEL = false;
-    public static final boolean WANT_TRIAD_LABEL = false;
+    public static boolean WANT_TRIAD_LABEL = false;
     public static final boolean WANT_SEPTET_LABEL = false;
     public static BigInteger BEFORE_THRESH = new BigInteger("40000"); // 40ms
     public static BigInteger AFTER_THRESH = new BigInteger("85000"); // 85ms
     public static final boolean WANT_WINDOW_SIGNAL = false;
+    private String inputDir = null;
     
     private static ArrayList<Features> featuresList;
 
-    public static void main(String[] args) throws IOException {
+    private void parseCommandLineArgs(String[] args) {
         if (args.length < 1) {
-            System.out.println("Usage: java FeatureExtractor " +
-                    "<data-folder or 'all'> <<gforce>>");
-            System.out.println("'all' defaults to ./../data/" +
-                    "original-recordings/");
-            System.out.println("Example: java FeatureExtractor a");
+            System.out.println("Usage: java FeatureExtractor <dir-name>");
+            System.out.println("Example: java FeatureExtractor data");
+            System.out.println("for details: java FeatureExtractor --help");
             System.exit(0);
         }
-        if (args.length == 2) {
-            if (args[1].equals("gforce")) {
-                WANT_GFORCE_DATA = true;
+        ArrayList<String> cmd_args = new ArrayList<String>(Arrays.asList(args));
+        if (cmd_args.contains("-h")) {
+            this.printHelpMessage();
+            System.exit(0);
+        } else {
+            int index = cmd_args.indexOf("-d");
+            if (index == -1) {
+                System.out.println("No directory name provided.");
+                this.printHelpMessage();
+                System.exit(0);
+            }
+            this.inputDir = cmd_args.get(index + 1);
+            File dir = new File("../../data/" + inputDir);
+            if (!dir.exists() || !dir.isDirectory()) {
+                System.out.println(this.inputDir + " is not a directory.");
+                System.exit(0);
             }
         }
-        String path = "../../data/" + args[0];
-        if (args[0].equals("all"))
-            path = "../../data/original_recordings/";
-        File directory = new File(path);
+        if (cmd_args.contains("-gforce")) {
+            WANT_GFORCE_DATA = true;
+        }
+        if (cmd_args.contains("-label")) {
+            int index = cmd_args.indexOf("-label");
+            String label_type = cmd_args.get(index + 1);
+            if (label_type.equals("lr")) {
+                WANT_LR_LABEL = true;
+            } else if (label_type.equals("ud")) {
+                WANT_UP_LABEL = true;
+            } else if (label_type.equals("triad")) {
+                WANT_TRIAD_LABEL = true;
+            }
+        }
+    }
 
+    private void printHelpMessage() {
+        System.out.println("Usage: java FeatureExtractor <dir-name>");
+        System.out.println("Example: java FeatureExtractor data");
+        System.out.println("for details: java FeatureExtractor --help");
+        System.out.println("Arguments:\n");
+        System.out.println("\t-d <dir-name>\tthe directory which you want" +
+                " to process");
+        System.out.println("\t-h\t\tdisplays this message");
+        System.out.println("\t-gforce\t\tgenerates gforce values in addition" +
+                " to the features");
+        System.out.println("\t-label <arg>\tthe label that you want:\n\t\t\tlr "
+                + "for L/R labels,\n\t\t\tud for U/D labels,\n\t\t\ttriad for" +
+                " Triad labelling\n\t\t\t" +
+                "It defaults to 26 alphabet labelling.");
+    }
+
+    public static void main(String[] args) throws IOException {
         FeatureExtractor ob = new FeatureExtractor();
+        ob.parseCommandLineArgs(args);
+        String path = "../../data/" + ob.inputDir;
+        File directory = new File(path);
         featuresList = new ArrayList<Features>();
         ob.processKeyPresses(directory);
-        
         String featuresFile = "../../data/features/" + args[0] + ".csv";
         ob.writeToFile(featuresList, featuresFile);
     }
