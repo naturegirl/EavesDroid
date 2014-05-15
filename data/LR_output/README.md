@@ -1,1 +1,0 @@
-output of the L/R predictor
