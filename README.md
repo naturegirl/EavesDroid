@@ -37,7 +37,7 @@ It creates the models at the locations
 say ```data/dictionary/harvard1.txt```, the following steps need to be followed
  1. **Automated Feature Generation**: Generating features for the simulated
 signals of the corresponding words
-from the file ```data/dataset/testing.csv```
+from the file ```data/dataset/testing.csv```  
 ```$ cd data/tester```  
 ```$ java GenParagraphArff < data/dictionary/harvard1.txt```  
 This generates the *un-labeled* features for all the words in the given text at
