@@ -1,11 +1,14 @@
 EavesDroid: Keystroke Recovery using Smartphone Accelerometers
 =============
 
-In this paper we demonstrate the usage of a smartphone accelerometer to
+In this [paper](https://github.com/naturegirl/EavesDroid/blob/master/paper/report.pdf),
+we demonstrate the usage of a smartphone accelerometer to
 eavesdrop on a nearby computer user and recover text based on recorded
 keyboard vibrations. We present EavesDroid, a proof-of-concept application
 that can be used to record and process accelerometer data and leverage it to
-reconstruct the original typed text. EavesDroid uses AdaBoost with Decision
+reconstruct the original typed text.
+[EavesDroid](https://github.com/naturegirl/EavesDroid/blob/master/paper/report.pdf)
+uses AdaBoost with Decision
 Stumps and achieves up to 85% accuracy in recovering original words with an
 expected error rate of 2 letters per word. We also make our dataset of
 accelerometer recordings available to the public, the first such dataset to the
