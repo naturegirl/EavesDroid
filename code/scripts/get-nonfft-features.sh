@@ -10,21 +10,13 @@ then
 fi
 
 path=../../data
-outdir=__$1
 
 # copy the class files to this directory
 cp ../feature_extractor/*.java .
 javac *.java
 
-# clean the directories if they already exist
-rm -rf $path/$outdir
-
-# run the ends clipping script on the dataset
-python ../preprocessor/ends_clipper.py $path/$1 $path/$outdir
-
 # run the feature extractor to extract the gforce values
-java -cp . FeatureExtractor -d $outdir -gforce -label $2
-mv $path/features/$outdir.csv $path/features/$1.csv
+java -cp . FeatureExtractor -d $1 -gforce -label $2
 echo "features file written at ... $path/features/$1.csv"
 
 # clean the class files
@@ -35,9 +27,6 @@ echo "cleaning .class files"
 rm -rf $path/$1-gforce
 mkdir $path/$1-gforce
 echo "new directory created '$path/$1-gforce'"
-cp -r $path/$outdir/* $path/$1-gforce/
-find $path/$outdir -name "*gforce\.csv" -exec rm -f {} +
+cp -r $path/$1/* $path/$1-gforce/
+find $path/$1 -name "*gforce\.csv" -exec rm -f {} +
 find $path/$1-gforce ! -name "*gforce\.csv" -type f -exec rm -f {} +
-
-# clean tmp files
-rm -rf $path/$outdir

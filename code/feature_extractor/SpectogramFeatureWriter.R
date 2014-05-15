@@ -1,6 +1,6 @@
 args <- commandArgs(trailingOnly = TRUE)
 NUM_FEATURES = 30   # frequency range is divided into 15 parts
-inputdir <- "./../../data/window-signals-lr-gforce"
+inputdir <- "./../../data/all-letters-gforce"
 diagram_outputdir <- "./../../data/spectograms/"
 feature_outputdir <- "./../../data/features/"
 if (length(args) >= 1) {
