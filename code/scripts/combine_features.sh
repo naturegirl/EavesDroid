@@ -53,4 +53,6 @@ rm -f $path/$1_combined.tmp.csv
 rm -f $path/without_label.tmp.csv
 rm -f $path/labels.tmp.csv
 
-echo "combined features file written to.... $path/$1_combined.csv"
+# mv to all-letters-labeled.csv
+mv $path/$1_combined.csv $path/$1-labeled.csv
+echo "combined features file written to.... $path/$1-labeled.csv"
