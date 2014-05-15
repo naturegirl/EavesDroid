@@ -64,13 +64,21 @@ public class FeatureExtractor {
         }
         if (cmd_args.contains("-label")) {
             int index = cmd_args.indexOf("-label");
-            String label_type = cmd_args.get(index + 1);
-            if (label_type.equals("lr")) {
-                WANT_LR_LABEL = true;
-            } else if (label_type.equals("ud")) {
-                WANT_UP_LABEL = true;
-            } else if (label_type.equals("triad")) {
-                WANT_TRIAD_LABEL = true;
+            String label_type = null;
+            try {
+                label_type = cmd_args.get(index + 1);
+                if (label_type.equals("lr")) {
+                    WANT_LR_LABEL = true;
+                    System.out.println("using L/R labeling scheme");
+                } else if (label_type.equals("ud")) {
+                    WANT_UP_LABEL = true;
+                    System.out.println("using U/D labeling scheme");
+                } else if (label_type.equals("triad")) {
+                    WANT_TRIAD_LABEL = true;
+                    System.out.println("using Triad labeling scheme");
+                }
+            } catch (IndexOutOfBoundsException e) {
+                System.out.println("using default labeling scheme");
             }
         }
     }
@@ -80,8 +88,8 @@ public class FeatureExtractor {
         System.out.println("Example: java FeatureExtractor data");
         System.out.println("for details: java FeatureExtractor --help");
         System.out.println("Arguments:\n");
-        System.out.println("\t-d <dir-name>\tthe directory which you want" +
-                " to process");
+        System.out.println("\t-d <dir-name>\tthe directory (in ../data/) which "
+                +"you want to process");
         System.out.println("\t-h\t\tdisplays this message");
         System.out.println("\t-gforce\t\tgenerates gforce values in addition" +
                 " to the features");
@@ -98,7 +106,7 @@ public class FeatureExtractor {
         File directory = new File(path);
         featuresList = new ArrayList<Features>();
         ob.processKeyPresses(directory);
-        String featuresFile = "../../data/features/" + args[0] + ".csv";
+        String featuresFile = "../../data/features/" + ob.inputDir + ".csv";
         ob.writeToFile(featuresList, featuresFile);
     }
     
