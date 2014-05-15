@@ -12,7 +12,7 @@ accelerometer recordings available to the public, the first such dataset to the
 best of our knowledge.
 
 ##Workflow
-- **Generate Features**: Follow the steps in ```code/scripts/README.md``` to
+- **Generate Features**: Follow the steps in [```code/scripts/README.md```](https://github.com/naturegirl/EavesDroid/blob/master/code/scripts/README.md) to
 generate the *default* labeled features file
 ```data/features/all-letters-labeled.csv``` for the whole of raw data
 - **Generate Training/Test Set**: Divide the features into training (66%) and
