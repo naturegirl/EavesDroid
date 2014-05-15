@@ -29,8 +29,7 @@ Generates the FFT features for each letter in ```data/features/fft_*.csv```
 ```$ cd code/scripts```  
 ```$ combine_features.sh all-letters.csv```
 
-Generates the all the labeled features in the file
-```data/features/all-letters_combined.csv```
+Generates the all the labeled features in the file ```data/features/all-letters_combined.csv```
 
 <h4> Prepare training file </h4>
 ```$ cd data/features```  
